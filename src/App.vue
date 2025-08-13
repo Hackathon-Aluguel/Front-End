@@ -1,9 +1,9 @@
 <script setup>
-
+import FooterComponent from '../components/FooterComponent.vue';
 </script>
 
 <template>
- <h1></h1>
+    <FooterComponent/>
 </template>
 
 <style scoped>
