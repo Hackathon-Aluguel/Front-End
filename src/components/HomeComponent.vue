@@ -1,7 +1,9 @@
 <script setup>
 import 'vue3-carousel/carousel.css'
+import { ref } from 'vue';
 import { Carousel, Slide, Navigation } from 'vue3-carousel'
 
+const showNav = ref(false);
 // Carrossel de 1 imagem
 const imagesSingle = Array.from({ length: 10 }, (_, index) => ({
   id: index + 1,
@@ -24,6 +26,13 @@ const imagesMulti = [
 // Carousel configuration
 // Configuração carrossel 1 imagem
 const configSingle = {
+  height: 510,
+  itemsToShow: 1,
+  gap: 5,
+  snapAlign: 'center',
+  breakpointMode: 'carousel',
+}
+const configSingle2 = {
   height: 400,
   itemsToShow: 1,
   gap: 5,
@@ -63,14 +72,27 @@ const configMulti1 = {
   },
 }
 </script>
-
+                   
 <template>
-  <!-- Resizable container for testing 'carousel' breakpointMode -->
-  <!-- Drag the right edge to adjust the width and see the breakpoints change -->
   <section>
     <div class="meio">
       <div class="carousel__wrapper">
         <Carousel v-bind="configSingle">
+          <Slide v-for="image in imagesSingle" :key="image.id">
+            <img :src="image.url" alt="image" />
+          </Slide>
+
+          <template #addons>
+            <Navigation />
+          </template>
+        </Carousel>
+      </div>
+    </div>
+  </section>
+  <section>
+    <div class="meio">
+      <div class="carousel2">
+        <Carousel v-bind="configSingle2">
           <Slide v-for="image in imagesSingle" :key="image.id">
             <img :src="image.url" alt="image" />
           </Slide>
@@ -98,16 +120,17 @@ const configMulti1 = {
       </div>
     </div>
   </section>
-  <section>
-    <h1>Mais vendidos</h1>
+  <section class="carro3">
+
+    <h1 class="titulo">Mais v<span>e</span>ndidos</h1>
     <div class="meio">
       <div class="carousel2">
-        <Carousel v-bind="configMulti1">
+        <Carousel v-bind="configMulti1" >
           <Slide v-for="categoria in imagesMulti" :key="categoria.id">
             <div class="produto">
 
-              <div class="imagem">
-                <Carousel v-bind="configSingle1">
+              <div class="imagem" @mouseover="showNav = true" @mouseleave="showNav = false">
+                <Carousel v-bind="configSingle1" class="carroProduto">
                   <Slide v-for="image in imagesSingle1" :key="image.id">
                     <img :src="image.url" alt="image" />
                   </Slide>
@@ -120,10 +143,10 @@ const configMulti1 = {
               <h1>texto</h1>
 
               <div class="info">
-                <strong>10 reais</strong>
-                <p>5 estrelas</p>
+                <strong>R$15/dia</strong>
+                <p>5 <span class="mdi mdi-star"></span></p>
               </div>
-              <button>Comprar</button>
+              <button class="alugar">Alugar</button>
             </div>
           </Slide>
           <template #addons>
@@ -133,12 +156,12 @@ const configMulti1 = {
       </div>
     </div>
   </section>
-  
 </template>
 
 <style>
 :root {
   background-color: #242424;
+  
 }
 /* PRIMEIRO CARROSELLLLLLLLLLLLLLLL */
 .carousel {
@@ -153,34 +176,38 @@ const configMulti1 = {
 }
 img {
   border-radius: 8px;
-  width: 70%;
+  width: 100%;
   height: 80%;
   object-fit: cover;
 }
-
+.carousel__wrapper img {
+  width: 100%;
+  height: 100%;
+}
 .carousel__wrapper {
   resize: horizontal;
   border-radius: 32px;
   overflow: auto;
-  max-width: 800px;
-  height: 450px;
+  max-width: 950px;
+  height: 524px;
   padding: 2px;
   margin: 80px 0 0 0;
-  background-color: #386cbe;
   display: block;
   justify-content: center;
   align-items: center;
+  display: flex;
 }
 /* SEGUNDO CARROSSELLLLLLLLLLLLLLLLLLL */
 .carousel1 {
-  max-width: 1000px;
-  width: 1000px;
+  max-width: 1100px;
+  width: 1100px;
+  margin: 50px 0 50px 0;
 }
 
 .carousel1 button.nome {
   background-color: #1d2d51;
-  width: 200px;
-  height: 100px;
+  width: 230px;
+  height: 136px;
   align-items: center;
   border-radius: 10px;
   border: none;
@@ -214,11 +241,23 @@ img {
   right: -40px;
 }
 /* TERCEIRO CARROSELLLLLLLLLLLL */
+.carro3 h1.titulo {
+  margin: 0 0 20px 20px;
+  font-weight: bold;
+  color: black;
+  font-size: 1.81rem;
+}
+.carro3 h1.titulo span {
+  font-weight: bold;
+  color: #244e84;
+  font-size: 1.81rem;
+}
 .carousel2 {
   width: 100%;
   max-width: 1300px;       /* suficiente para 4 produtos */
   padding: 0 10px;
   box-sizing: border-box;
+  margin: 0 0 20px 0;
 }
 div.produto {
   max-width: 250px;        /* largura de cada produto */
@@ -228,9 +267,46 @@ div.produto {
   box-shadow: 0 4px 15px rgba(0,0,0,0.1);
   box-sizing: border-box;
   border: 1px solid #244e84;
+  text-align: center;
 }
 div.produto img {
     width: 100%;
 }
-div.produto h1
+section.carro3 div.produto h1 {
+  margin: 0 0 0 14px;
+  color: black;
+  text-align: left;
+}
+div.produto div.info {
+  display: flex;
+  justify-content: space-between;
+  margin: 3px 15px 3px 14px ;
+}
+div.produto button.alugar{
+  width: 220px;
+  height: 40px;
+  background-color: #244e84;
+  color: white;
+  border: none;
+  border-radius: 14px;
+  margin: 10px 0 10px 0;
+  font-size: 17px;
+}
+div.produto p span {
+  color: #FFD700;
+}
+
+.carousel2 .carousel {
+  --vc-nav-background: transparent;
+  --vc-nav-color: black;
+  --vc-nav-size: 40px;
+  --vc-nav-margin: 30px;
+  
+}
+
+.carousel2 .carousel.carroProduto {
+  --vc-nav-background: white;
+  --vc-nav-color: #244e84;
+  --vc-nav-size: 40px;
+}
 </style>
