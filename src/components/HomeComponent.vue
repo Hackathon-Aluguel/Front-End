@@ -75,7 +75,7 @@ const configMulti = {
   itemsToShow: 3,
   snapAlign: 'center',
   breakpointMode: 'carousel',
-  wrapAround: true,
+
   gap: 10,
 }
 const configMulti1 = {
@@ -405,9 +405,6 @@ function toggleLike(produto) {
 </template>
 
 <style>
-:root {
-  background-color: #242424;
-}
 
 .meio {
   display: flex;
@@ -927,8 +924,8 @@ section.passoApasso ul {
   /* cada li embaixo do outro */
   justify-content: center;
   align-items: center;
-  width: 100%;
-  margin: 6vw 0 4vw 15vw;
+   margin: 6vw auto 4vw auto; 
+  width: 80%; 
 }
 
 /* PAASSO 1 */
