@@ -11,6 +11,7 @@ const produtos = reactive([
     periodoInicial: '28/08/2025',
     periodoFinal: '30/08/2025',
     imagem: 'https://picsum.photos/400/300?random=100',
+    categoria: 'camping'
   },
   {
     id: 2,
@@ -22,6 +23,7 @@ const produtos = reactive([
     periodoInicial: '20/08/2025',
     periodoFinal: '22/08/2025',
     imagem: 'https://picsum.photos/400/300?random=101',
+    categoria: 'camping'
   },
   {
     id: 3,
@@ -33,6 +35,7 @@ const produtos = reactive([
     periodoInicial: '21/08/2025',
     periodoFinal: '23/08/2025',
     imagem: 'https://picsum.photos/400/300?random=102',
+    categoria: 'iluminação'
   },
   {
     id: 4,
@@ -44,6 +47,7 @@ const produtos = reactive([
     periodoInicial: '19/08/2025',
     periodoFinal: '21/08/2025',
     imagem: 'https://picsum.photos/400/300?random=103',
+    categoria: 'cozinha'
   },
   {
     id: 5,
@@ -55,9 +59,12 @@ const produtos = reactive([
     periodoInicial: '25/08/2025',
     periodoFinal: '28/08/2025',
     imagem: 'https://picsum.photos/400/300?random=104',
+    categoria: 'mochila'
   },
 ])
-
+function remover(produto) {
+  produtos.splice(produto -1, 1)
+}
 const imagesSingle = Array.from({ length: 10 }, (_, index) => ({
   id: index + 1,
   url: `https://picsum.photos/400/300?random=${index + 100}`,
@@ -77,9 +84,20 @@ const imagesSingle = Array.from({ length: 10 }, (_, index) => ({
       </ul>
       <div class="carrinhoProduto">
         <ul>
-          <li v-for="produto in produtos" :key="produto.id">
-            <img :src="produto.imagem" :alt="produto.nome" width="200" />
-            <p>{{ produto.nome }} - R$ {{ produto.preco }}</p>
+          <li v-for="produto in produtos" :key="produto.id" class="produto">
+            <div class="info">
+              <img :src="produto.imagem" :alt="produto.nome" width="200" />
+              <div class="nome">
+                <p>{{ produto.nome }}</p>
+                <p>{{ produto.categoria }}</p>
+              </div>
+            </div>
+            <div class="periodo">
+              <p>{{ produto.periodoInicial }} <span class="mdi mdi-arrow-right-thin"></span> {{ produto.periodoFinal }}</p>
+              <p>editar</p>
+            </div>
+            <p>R${{ produto.preco }}</p>
+            <button @click="remover(produto.id)"><span class="mdi mdi-close"></span></button>
           </li>
         </ul>
       </div>
@@ -111,6 +129,25 @@ section div.carrinho h1 span {
 }
 section div.carrinho ul.titulos {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-around;
+    margin: 0 0 0 5vw;
+}
+section div.carrinho ul li.produto {
+  display: flex;
+  justify-content: space-between;
+  gap: 12vw;
+  border: 1px solid #CDCDCD;
+  padding: 1vw;
+  margin: 1vw 4vw;
+  border-radius: 1vw;
+}
+section div.carrinho ul li.produto div.info {
+  display: flex;
+}
+section div.carrinho ul li.produto div.info img {
+  border-radius: 0.5vw;
+}
+section div.carrinho ul li.produto div.info button {
+
 }
 </style>
