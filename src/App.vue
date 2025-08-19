@@ -1,9 +1,9 @@
 <script setup>
-import carrinhoComponent from './components/carrinhoComponent.vue';
+import CarrinhoComponent from './components/CarrinhoComponent.vue';
 </script>
 
 <template>
- <carrinhoComponent />
+ <CarrinhoComponent />
 </template>
 
 <style scoped>
