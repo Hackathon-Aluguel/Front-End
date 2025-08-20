@@ -70,7 +70,27 @@ const produtos = reactive([
     editando: false,
   },
 ])
-
+let aberto = ref(false);
+function abrir() {
+  aberto.value = !aberto.value;
+}
+let abertoProduto = ref(false)
+function abrirProduto() {
+  abertoProduto.value = !abertoProduto.value;
+}
+function limparTudo() {
+  produtos.splice(0, produtos.length)
+}
+function preco() {
+  let subTotal = 0;
+  for (const prod of produtos) {
+    subTotal += calcularPreco(prod);
+  }
+  return subTotal
+}
+function desconto() {
+  return 2
+}
 function calcularDias(produto) {
   const inicio = new Date(produto.periodoInicial) // garante que seja Date
   const fim = new Date(produto.periodoFinal)
@@ -130,9 +150,28 @@ function remover(id) {
 <template>
   <section>
     <div class="carrinho">
-      <h1>
-        Carrinho <span>({{ produtos.length }} produtos)</span>
-      </h1>
+      <div class="titu">
+        <h1>
+          Carrinho <span>({{ produtos.length }} produtos)</span>
+        </h1>
+        <button class="lixeira" @click="abrir">
+          <span class="mdi mdi-close"></span>
+          <h2>
+            Deletar Carrinho
+          </h2>
+        </button>
+      </div>
+      <div v-if="aberto">
+        <div class="overlay">
+          <div class="lixeiraAberta">
+            <h2>Tem certeza que voce quer apagar tudo?</h2>
+            <div class="botoes">
+              <button @click="abrir">Cancelar</button>
+              <button @click="limparTudo">Sim</button>
+            </div>
+          </div>
+        </div>
+      </div>
       <ul class="titulos">
         <li class="prod">Produto</li>
         <li class="peri">Periodo</li>
@@ -155,31 +194,21 @@ function remover(id) {
                 {{ formatarData(produto.periodoFinal) }}
               </p>
               <button @click="editarProduto(produto)">Editar datas</button>
-              <div v-if="produto.editando" >
+              <div v-if="produto.editando">
                 <div class="overlay" @click="pararEditar(produto)"></div>
                 <div class="aberto">
                   <h3>Editar datas</h3>
                   <label>
                     <p>Data inicial</p>
-                    <Datepicker
-                      v-model="datasTemporarias.periodoInicial"
-                      :format="'dd/MM/yyyy'"
-                      :input-format="'dd/MM/yyyy'"
-                      :use-utc="true"
-                      :time-picker="false"
-                      placeholder="Selecione a data"
-                    />
+                    <Datepicker v-model="datasTemporarias.periodoInicial" :format="'dd/MM/yyyy'"
+                      :input-format="'dd/MM/yyyy'" :use-utc="true" :time-picker="false"
+                      placeholder="Selecione a data" />
                   </label>
                   <label>
                     <p>Data final</p>
-                    <Datepicker
-                      v-model="datasTemporarias.periodoFinal"
-                      :format="'dd/MM/yyyy'"
-                      :input-format="'dd/MM/yyyy'"
-                      :use-utc="true"
-                      :time-picker="false"
-                      placeholder="Selecione a data"
-                    />
+                    <Datepicker v-model="datasTemporarias.periodoFinal" :format="'dd/MM/yyyy'"
+                      :input-format="'dd/MM/yyyy'" :use-utc="true" :time-picker="false"
+                      placeholder="Selecione a data" />
                   </label>
                   <div class="botoes">
                     <button @click="salvar(produto)">Salvar</button>
@@ -189,10 +218,49 @@ function remover(id) {
               </div>
             </div>
             <p class="preco">R${{ calcularPreco(produto) }}</p>
-            <button @click="remover(produto.id)" class="remover"><span class="mdi mdi-close"></span></button>
+            <button @click="abrirProduto" class="remover"><span class="mdi mdi-close"></span></button>
+            <div v-if="abertoProduto">
+              <div class="overlay">
+                <div class="lixeiraAberta">
+                  <h2>Tem certeza que voce quer apagar esse produto?</h2>
+                  <div class="botoes">
+                    <button @click="abrirProduto">Cancelar</button>
+                    <button @click="remover(produto.id)">Sim</button>
+                  </div>
+                </div>
+              </div>
+            </div>
           </li>
         </ul>
       </div>
+    </div>
+    <div class="promocao">
+      <h2 class="principal">
+        Codigo Promocional
+      </h2>
+
+      <div class="container">
+        <form action="" class="search-bar">
+          <input type="text" placeholder="Escreva aqui" name="q" />
+          <button type="submit">Pronto</button>
+        </form>
+      </div>
+      <hr class="linha">
+      <ul>
+        <li>
+          <h3>subtotal</h3>
+          <h3>R${{ preco() }}</h3>
+        </li>
+        <li>
+          <h3>desconto</h3>
+          <h3>R${{ desconto() }}</h3>
+        </li>
+        <li>
+          <h3>total</h3>
+          <h3><span>R${{ preco() - desconto() }}</span></h3>
+        </li>
+      </ul>
+      <button class="continuar">Continue para o checkout</button>
     </div>
   </section>
 </template>
@@ -206,12 +274,110 @@ ul {
   list-style: none;
 }
 
+div.promocao {
+  background-color: #244e84;
+  height: 39vh;
+  width: 20vw;
+  border-radius: 15px;
+  margin: 4vw 4vw 0 2vw;
+}
+
+div.promocao h2.principal {
+  color: white;
+  margin: 1vw 0 0 1vw
+}
+
+.container {
+  display: flex;
+  padding: 20px;
+}
+
+.search-bar {
+  display: flex;
+  gap: 9px;
+}
+
+.search-bar input {
+  padding: 0.6vw 1vw;
+  border: 1px solid #cdcdcd;
+  border-radius: 5px;
+  outline: none;
+  font-size: 14px;
+  color: #cdcdcd;
+  background: transparent;
+}
+
+.search-bar input::placeholder {
+  color: #cdcdcd;
+  font-size: 1vw;
+}
+
+.search-bar button {
+  padding: 0.8vw 1vw;
+  border: none;
+  border-radius: 5px;
+  color: #0066cc;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.2s ease;
+  width: 6.6vw;
+}
+
+.search-bar button span {
+  color: red;
+  font-size: 1.8vw;
+}
+
+hr {
+  margin: 0.5vw 1vw 0.5vw 1vw;
+}
+
+div.promocao ul {
+  margin: 0;
+  padding: 0;
+  /* tira o espaço interno */
+
+}
+
+div.promocao ul li {
+  display: flex;
+  justify-content: space-between;
+  margin: 0.5vw 1vw 0 1vw;
+}
+
+div.promocao ul li h3 {
+  font-size: 18px;
+  color: #cdcdcd;
+}
+
+div.promocao ul li h3 span {
+  color: white;
+  font-weight: bold;
+}
+
+div.promocao button.continuar {
+  background-color: #1d2d51;
+  border: none;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  margin: 0 auto;
+  margin-top: 0.8vw;
+  width: 16vw;
+  height: 6vh;
+  color: white;
+}
+
+/* CARRRINHOOOOOOOO */
 section div.carrinho {
   border: 1px solid #cdcdcd;
   border-radius: 1vw;
-  margin: 4vw;
+  margin: 4vw 4vw 0 4vw;
   width: 65%;
 }
+
 section div.carrinho .carrinhoProduto {
   max-height: 35vw;
   /* altura máxima da lista */
@@ -220,14 +386,57 @@ section div.carrinho .carrinhoProduto {
   border-radius: 1vw;
   margin: 0 2vw 1vw 2vw;
 }
+
+section div.carrinho .titu {
+  display: flex;
+  justify-content: space-between;
+}
+
 section div.carrinho h1 {
   color: black;
   font-size: 1.4vw;
   font-weight: bold;
+  margin: 2vw 0 2vw 4vw;
+}
+
+section div.carrinho .titu button.lixeira {
+  border: none;
+  background: transparent;
+  display: flex;
+  color: #1d2d51;
+  margin: 2vw 4vw 2vw 0;
+  justify-content: center;
+  align-items: center;
+  font-size: 14px;
+  cursor: pointer;
+
+  position: relative;
+  /* mantém o botão no lugar */
+}
+
+section div.carrinho .titu button.lixeira span {
+  font-size: 2vw;
 }
 
 section div.carrinho h1 span {
   color: #cdcdcd;
+}
+
+section div.carrinho div div.overlay div.lixeiraAberta {
+  position: fixed;
+  width: 20vw;
+  height: 20vh;
+  background: white;
+  border: 1px solid #cdcdcd;
+  border-radius: 1vw;
+  padding: 1vw;
+  margin-top: 0.5vw;
+  z-index: 10;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 section div.carrinho ul.titulos {
@@ -236,15 +445,19 @@ section div.carrinho ul.titulos {
   font-size: 1.1vw;
   color: black;
 }
+
 section div.carrinho ul.titulos li {
   font-weight: bold;
 }
+
 section div.carrinho ul.titulos li.peri {
-  margin: 0 0 0 15vw ;
+  margin: 0 0 0 15vw;
 }
+
 section div.carrinho ul.titulos li.preco {
   margin: 0 10vw 0 0;
 }
+
 section div.carrinho ul li.produto {
   display: flex;
   justify-content: space-between;
@@ -252,7 +465,7 @@ section div.carrinho ul li.produto {
   padding: 1vw;
   margin: 1vw 4vw 1vw 0;
   border-radius: 1vw;
-   display: flex;
+  display: flex;
   justify-content: space-between;
   align-items: center;
 }
@@ -285,8 +498,10 @@ section div.carrinho ul li.produto div.info .nome p {
 
 .periodo {
   display: flex;
-  flex-direction: column; /* mantém datas e botão em coluna */
-  align-items: center; /* centraliza horizontalmente */
+  flex-direction: column;
+  /* mantém datas e botão em coluna */
+  align-items: center;
+  /* centraliza horizontalmente */
 }
 
 .periodo p {
@@ -296,7 +511,8 @@ section div.carrinho ul li.produto div.info .nome p {
   margin: 0;
   display: flex;
   align-items: center;
-  gap: 0.3vw; /* espaço entre datas e ícone */
+  gap: 0.3vw;
+  /* espaço entre datas e ícone */
 }
 
 .periodo span.mdi {
@@ -314,11 +530,13 @@ section div.carrinho ul li.produto div.info .nome p {
   background-color: white;
   text-decoration: underline;
 }
+
 section div.carrinho ul li.produto p.preco {
   font-size: 1.1vw;
   font-weight: bold;
   color: black;
 }
+
 section div.carrinho ul li.produto button.remover {
   border: none;
   background-color: white;
@@ -358,26 +576,17 @@ section div.carrinho ul li.produto button.remover {
   left: 50%;
   transform: translate(-50%, -50%);
 }
+
 .overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(0, 0, 0, 0.5); /* preto semitransparente */
-  z-index: 0; /* menor que o modal, que está em 10 */
-}
-.aberto1 {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
   background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
+  /* preto semitransparente */
+  z-index: 0;
+  /* menor que o modal, que está em 10 */
 }
 
 .aberto h3 {
