@@ -70,48 +70,46 @@ const produtos = reactive([
     editando: false,
   },
 ])
-let aberto = ref(false);
-function abrir() {
-  aberto.value = !aberto.value;
+
+const aberto = ref(false)
+const abertoProduto = ref(null)
+
+function abrirProduto(id) {
+  abertoProduto.value = id
 }
-let abertoProduto = ref(false)
-function abrirProduto() {
-  abertoProduto.value = !abertoProduto.value;
+function fecharProduto() {
+  abertoProduto.value = null
+}
+
+function abrirTudo() {
+  aberto.value = !aberto.value
 }
 function limparTudo() {
   produtos.splice(0, produtos.length)
+  aberto.value = !aberto.value
 }
+
 function preco() {
-  let subTotal = 0;
-  for (const prod of produtos) {
-    subTotal += calcularPreco(prod);
-  }
-  return subTotal
+  return produtos.reduce((total, prod) => total + calcularPreco(prod), 0)
 }
 function desconto() {
   return 2
 }
+
 function calcularDias(produto) {
-  const inicio = new Date(produto.periodoInicial) // garante que seja Date
+  const inicio = new Date(produto.periodoInicial)
   const fim = new Date(produto.periodoFinal)
-  const diff = fim - inicio // diferença em milissegundos
-  const dias = Math.ceil(diff / (1000 * 60 * 60 * 24)) // converter para dias
-  return dias
+  const diff = fim - inicio
+  return Math.ceil(diff / (1000 * 60 * 60 * 24))
 }
 
 function calcularPreco(produto) {
-  const dias = calcularDias(produto)
-  return produto.preco * dias
+  return produto.preco * calcularDias(produto)
 }
-
-// Exemplo de uso
-produtos.forEach(produto => {
-  console.log(`${produto.nome}: ${calcularDias(produto)} dias, R$ ${calcularPreco(produto)}`)
-})
 
 const datasTemporarias = reactive({
   periodoInicial: null,
-  periodoFinal: null
+  periodoFinal: null,
 })
 
 function formatarData(date) {
@@ -124,14 +122,11 @@ function formatarData(date) {
 
 function editarProduto(produto) {
   produto.editando = true
-  produtoEditando.value = produto
-  // copia os valores atuais para edição temporária
   datasTemporarias.periodoInicial = produto.periodoInicial
   datasTemporarias.periodoFinal = produto.periodoFinal
 }
 
 function salvar(produto) {
-  // só aqui atualiza o produto real
   produto.periodoInicial = datasTemporarias.periodoInicial
   produto.periodoFinal = datasTemporarias.periodoFinal
   pararEditar(produto)
@@ -139,11 +134,12 @@ function salvar(produto) {
 
 function pararEditar(produto) {
   produto.editando = false
-  produtoEditando.value = null
 }
+
 function remover(id) {
   const index = produtos.findIndex((p) => p.id === id)
   if (index !== -1) produtos.splice(index, 1)
+  abertoProduto.value = null
 }
 </script>
 
@@ -154,19 +150,19 @@ function remover(id) {
         <h1>
           Carrinho <span>({{ produtos.length }} produtos)</span>
         </h1>
-        <button class="lixeira" @click="abrir">
+        <button class="lixeira" @click="abrirTudo">
           <span class="mdi mdi-close"></span>
           <h2>
-            Deletar Carrinho
+            Limpar Carrinho
           </h2>
         </button>
       </div>
       <div v-if="aberto">
         <div class="overlay">
           <div class="lixeiraAberta">
-            <h2>Tem certeza que voce quer apagar tudo?</h2>
+            <h2>Tem certeza que voce quer limpar tudo?</h2>
             <div class="botoes">
-              <button @click="abrir">Cancelar</button>
+              <button @click="abrirTudo">Cancelar</button>
               <button @click="limparTudo">Sim</button>
             </div>
           </div>
@@ -218,19 +214,17 @@ function remover(id) {
               </div>
             </div>
             <p class="preco">R${{ calcularPreco(produto) }}</p>
-            <button @click="abrirProduto" class="remover"><span class="mdi mdi-close"></span></button>
-            <div v-if="abertoProduto">
-              <div class="overlay">
-                <div class="lixeiraAberta">
-                  <h2>Tem certeza que voce quer apagar esse produto?</h2>
-                  <div class="botoes">
-                    <button @click="abrirProduto">Cancelar</button>
-                    <button @click="remover(produto.id)">Sim</button>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <button @click="abrirProduto(produto.id)" class="remover"><span class="mdi mdi-close"></span></button>
           </li>
+          <div v-if="abertoProduto" class="overlay">
+  <div class="lixeiraAberta">
+    <h2>Tem certeza que voce quer apagar esse produto?</h2>
+    <div class="botoes">
+      <button @click="fecharProduto">Cancelar</button>
+      <button @click="remover(abertoProduto)">Sim</button>
+    </div>
+  </div>
+</div>
         </ul>
       </div>
     </div>
