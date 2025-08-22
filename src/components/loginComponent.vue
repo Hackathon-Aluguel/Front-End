@@ -1,3 +1,32 @@
+<script setup>
+import { reactive, ref } from 'vue'
+import api from '@/services/api'   // << usa a instância configurada
+
+const user = reactive({
+  email: '',
+  password: ''
+})
+
+const userData = ref({})
+
+async function login() {
+  try {
+    const response = await api.post('token/', {
+      email: user.email,
+      password: user.password
+    })
+
+    localStorage.setItem('access_token', response.data.access)
+    localStorage.setItem('refresh_token', response.data.refresh)
+
+    Object.assign(userData.value, response.data)
+    console.log("Login OK:", response.data)
+  } catch (error) {
+    console.error("Erro no login:", error.response?.data || error.message)
+  }
+}
+</script>
+
 <template>
   <section>
   <div class="square">
@@ -10,16 +39,17 @@
         <p class="sub">
           Por favor, preecha os seguintes campos para logar
         </p>
-        <input class="email" type="text" placeholder="Insira o seu email...">
-        <input type="text" class="senha" placeholder="Insira a sua senha...">
+        <input class="email" type="text" v-model="user.email" placeholder="Insira o seu email...">
+        <input  class="senha" type="password" v-model="user.password" placeholder="Insira a sua senha...">
         <p class="esq">
           <a class="esq" href="">Esqueceu sua senha?</a>
 
         </p>
 
-        <button class="bum"><p>Entrar</p></button>
+        <button class="bum" @click="login"><p>Entrar</p></button>
       </div>
       <div class="hr">
+        
         <hr>
         <p>ou</p>
         <hr>
