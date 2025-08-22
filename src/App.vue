@@ -1,11 +1,10 @@
 <script setup>
-
+import PerfilComponent from './views/PerfilComponent.vue';
 </script>
 
 <template>
- <h1></h1>
+  <PerfilComponent/>
 </template>
 
 <style scoped>
-
 </style>
