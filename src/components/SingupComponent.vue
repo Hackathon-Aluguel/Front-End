@@ -1,30 +1,4 @@
 <script setup>
-import { reactive, ref } from 'vue'
-import api from '@/services/api'   // << usa a instância configurada
-
-const user = reactive({
-  email: '',
-  password: ''
-})
-
-const userData = ref({})
-
-async function login() {
-  try {
-    const response = await api.post('token/', {
-      email: user.email,
-      password: user.password
-    })
-
-    localStorage.setItem('access_token', response.data.access)
-    localStorage.setItem('refresh_token', response.data.refresh)
-
-    Object.assign(userData.value, response.data)
-    console.log("Login OK:", response.data)
-  } catch (error) {
-    console.error("Erro no login:", error.response?.data || error.message)
-  }
-}
 </script>
 
 <template>
@@ -32,33 +6,33 @@ async function login() {
   <div class="square">
     <div class="um">
 
-        <h1>B<span>e</span>m vindo de volta</h1>
+        <h1>Criar cont<span>a</span></h1>
 
 
       <div class="campos">
         <p class="sub">
-          Por favor, preecha os seguintes campos para logar
+          Já possui uma conta? <a href="">Log in</a>
         </p>
-        <input class="email" type="text" v-model="user.email" placeholder="Insira o seu email...">
-        <input  class="senha" type="password" v-model="user.password" placeholder="Insira a sua senha...">
+        <div class="peq">
+          <input class="usu" type="text" placeholder="Nome de usuário">
+          <input class="num" type="text" placeholder="número de telefone">
+
+        </div>
+        <input class="email" type="text" placeholder="Insira o seu email...">
+        <input type="text" class="senha" placeholder="Insira a sua senha...">
         <p class="esq">
-          <a class="esq" href="">Esqueceu sua senha?</a>
+          <input class="che" type="checkbox">Concordo com os<a class="con" href="">Termos & condições</a>
 
         </p>
 
-        <button class="bum" @click="login"><p>Entrar</p></button>
+        <button class="bum"><p>Criar Conta</p></button>
       </div>
       <div class="hr">
-        
         <hr>
         <p>ou</p>
         <hr>
       </div>
       <button class="gog"><img src="/public/imgs/Google__G__logo.svg.png" alt="X"><p>Continuar com o google</p></button>
-      <p class="nt">
-        Não tem uma conta ainda?<a href="">Criar conta</a>
-      </p>
-
 
 
     </div>
@@ -116,11 +90,12 @@ section{
   align-items: center;
   margin-left: 8vw;
 
+
 }
 .um h1{
   text-align: center;
   position: relative;
-  bottom: 9vh;
+  bottom: 6.2vh;
 
 
 
@@ -133,7 +108,7 @@ section{
   color: black;
   font-family: poppins, sans-serif;
   font-weight: 600;
-  font-size: 0.6rem;
+  font-size: 0.7rem;
   text-align: left;
   margin-left: 1.3vw;
   margin-bottom: 1vh;
@@ -141,9 +116,29 @@ section{
 
 
 }
+.sub a{
+  text-decoration: none;
+  color: #3853be;
+  font-weight: 600;
+
+}
+.usu, .num{
+  width: 13vw;
+  height: 4.8vh;
+  border-radius: 0.8vw;
+  border: none;
+  background-color:#d9d9d9 ;
+  padding: 1.3vw;
+  color:#a1a1a1 ;
+  font-size: 0.7rem;
+  margin-bottom: 3vh;
+}
+.usu{
+  margin-right: 2vw;
+}
 .email, .senha{
   width: 28vw;
-  height: 5vh;
+  height: 4.8vh;
   border-radius: 0.8vw;
   border: none;
   background-color:#d9d9d9 ;
@@ -153,7 +148,8 @@ section{
 
 }
 .senha{
-  margin-top: 1.6vw;
+  margin-top: 3vh;
+  margin-bottom: 5vh;
 }
 
 
@@ -161,15 +157,33 @@ section{
   display: flex;
   flex-direction: column;
   justify-content: left;
+
 }
 .esq{
-  text-align: end;
-  color: #3853be;
+  color: black;
   font-family: poppins, sans-serif;
   font-size: 0.7rem;
   font-weight: 600;
   text-decoration: none;
-  margin-top: 0.4vh;
+  margin-left: 1vw;
+  display: flex;
+  align-items: center;
+
+
+}
+.esq a{color: #333F7E;
+  font-family: poppins, sans-serif;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-decoration: none;
+  margin-left: 0.2vw;
+}
+.esq .che{
+  transform: scale(1.5);
+  border: 3px solid #333F7E;
+  color: #333F7E;
+  accent-color: #333f7e;
+  cursor: pointer;
   margin-right: 0.4vw;
 
 

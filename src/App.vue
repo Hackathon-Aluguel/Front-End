@@ -1,11 +1,11 @@
 <script setup>
-import LoginComponent from './components/loginComponent.vue';
+
 
 
 </script>
 
 <template>
- <LoginComponent />
+  <h1></h1>
 </template>
 
 <style scoped>
