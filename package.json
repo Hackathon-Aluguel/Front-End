@@ -2,10 +2,19 @@
   "name": "front-end",
   "version": "0.0.0",
   "private": true,
-  "type": "module",
-  "engines": {
-    "node": "^20.19.0 || >=22.12.0"
+  "description": "Este é o front-end da plataforma **Alugaê**, um marketplace cômico e prático de aluguel de itens entre pessoas.",
+  "homepage": "https://github.com/Hackathon-Aluguel/Front-End#readme",
+  "bugs": {
+    "url": "https://github.com/Hackathon-Aluguel/Front-End/issues"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Hackathon-Aluguel/Front-End.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "module",
+  "main": "eslint.config.js",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -14,6 +23,12 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
+<<<<<<< Updated upstream
+    "axios": "^1.11.0",
+=======
+    "@mdi/font": "^7.4.47",
+    "oh-vue-icons": "^1.0.0-rc3",
+>>>>>>> Stashed changes
     "pinia": "^3.0.3",
     "vue": "^3.5.18",
     "vue-router": "^4.5.1"
@@ -29,16 +44,7 @@
     "vite": "^7.0.6",
     "vite-plugin-vue-devtools": "^8.0.0"
   },
-  "description": "Este é o front-end da plataforma **Alugaê**, um marketplace cômico e prático de aluguel de itens entre pessoas.",
-  "main": "eslint.config.js",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Hackathon-Aluguel/Front-End.git"
-  },
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/Hackathon-Aluguel/Front-End/issues"
-  },
-  "homepage": "https://github.com/Hackathon-Aluguel/Front-End#readme"
+  "engines": {
+    "node": "^20.19.0 || >=22.12.0"
+  }
 }
