@@ -4,6 +4,8 @@ import HomeComponent from './components/HomeComponent.vue';
 
 <template>
  <HomeComponent />
+ 
+  <h1></h1>
 </template>
 
 <style scoped>
