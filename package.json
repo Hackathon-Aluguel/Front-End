@@ -23,12 +23,9 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
-<<<<<<< Updated upstream
     "axios": "^1.11.0",
-=======
     "@mdi/font": "^7.4.47",
     "oh-vue-icons": "^1.0.0-rc3",
->>>>>>> Stashed changes
     "pinia": "^3.0.3",
     "vue": "^3.5.18",
     "vue-router": "^4.5.1"
