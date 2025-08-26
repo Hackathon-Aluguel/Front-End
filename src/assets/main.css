@@ -1,1 +1,13 @@
 @import './base.css';
+
+ul {
+    list-style: none;
+}
+* {
+    font-family: 'Poppins';
+}
+a{
+    text-decoration: none;
+}
+
+
