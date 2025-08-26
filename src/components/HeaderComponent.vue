@@ -6,7 +6,7 @@
     <nav>
       <div class="topo-header">
         <h1>
-          Aluga<span class="alugae">ê</span>
+          <RouterLink to="/">Aluga<span class="alugae">ê</span></RouterLink>
         </h1>
 
         <div class="container">
@@ -22,8 +22,8 @@
         </ul>
 
         <ul class="login">
-          <li><a class="log">Log in</a></li>
-          <li><a class="conta">Criar Conta</a></li>
+          <li><a class="log"><RouterLink to="/login">Log in</RouterLink></a></li>
+          <li><a class="conta"><RouterLink to="/register">Criar Conta</RouterLink></a></li>
         </ul>
       </div>
       <div class="menu">
@@ -46,10 +46,10 @@ header nav div.topo-header {
 
 header div.topo-header h1 {
   color: #000;
-  font-family: Poppins;
+  font-family: Poppins, sans-serif;
   font-size: 36px;
   font-style: normal;
-  font-weight: 700;
+  font-weight: 600;
   line-height: normal;
   margin: 0 3vw 0 0;
 }

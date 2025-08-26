@@ -1,14 +1,9 @@
 <script setup>
-import HeaderComponent from './components/HeaderComponent.vue';
-import HomeComponent from './components/HomeComponent.vue';
-import FooterComponent from '../components/FooterComponent.vue';
+
 </script>
 
 <template>
-  <HeaderComponent/>
-  <FooterComponent/>
-  <HomeComponent />
-  
+  <RouterView />
   <h1></h1>
 
 

@@ -2,6 +2,10 @@
 import 'vue3-carousel/carousel.css'
 import { ref, reactive } from 'vue'
 import { Carousel, Slide, Navigation } from 'vue3-carousel'
+
+import HeaderComponent from "./HeaderComponent.vue";
+import FooterComponent from './FooterComponent.vue';
+
 const liked = ref(false)
 const likes = ref(0)
 
@@ -104,6 +108,7 @@ function toggleLike(produto) {
 </script>
 
 <template>
+  <HeaderComponent/>
   <section class="primeira">
     <div class="primeiro">
       <h1>
@@ -400,8 +405,9 @@ function toggleLike(produto) {
       </li>
     </ul>
   </section>
+  
 
-
+<FooterComponent/>
 </template>
 
 <style>

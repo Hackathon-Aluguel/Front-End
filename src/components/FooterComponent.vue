@@ -44,21 +44,18 @@
 
 .tom1 {
     background-color: #1D2D51;
-    position: absolute;
     height: 100px;
     top: 0px;
 }
 
 .tom2 {
     background-color: #244E8A;
-    position: absolute;
     height: 50px;
     top: 40px;
 }
 
 .tom3 {
     background-color: #386CBE;
-    position: absolute;
     height: 50px;
     top: 80px;
 }
