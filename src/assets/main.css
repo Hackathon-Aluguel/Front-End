@@ -10,4 +10,6 @@ a{
     text-decoration: none;
 }
 
-
+html,body {
+    background-color: white;
+}
