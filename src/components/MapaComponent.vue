@@ -82,6 +82,8 @@ function toggleLike(produto) {
   produto.liked = !produto.liked
   produto.likes += produto.liked ? 1 : -1
 }
+
+// ICONEEEE //
 </script>
 
 <template>
