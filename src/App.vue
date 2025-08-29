@@ -1,5 +1,5 @@
 <script setup>
-import PerfilComponent from './views/PerfilComponent.vue';
+import PerfilComponent from './components/PerfilComponent.vue';
 </script>
 
 <template>
