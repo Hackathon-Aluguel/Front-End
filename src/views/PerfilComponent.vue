@@ -4,433 +4,419 @@
     import { ref, reactive } from 'vue'
 
     const avaliacoes = [
-        { id: 1, nome: 'Pietro', texto: 'Não sabia sobre esse site, depois que conheci ele consegui fazer minhas coisas sem precisar gastar muito' },
-        { id: 2, nome: 'Mariana', texto: 'Consegui alugar o que eu precisava de forma rápida e prática, super recomendo!' },
-        { id: 3, nome: 'Lucas', texto: 'Achei muito útil, economizei dinheiro e ainda conheci um serviço confiável.' },
-        { id: 4, nome: 'Beatriz', texto: 'Experiência excelente, o atendimento foi ótimo e o processo bem simples.' },
-        { id: 5, nome: 'Rafael', texto: 'Já usei várias vezes e sempre deu tudo certo, muito melhor do que comprar algo que vou usar pouco.' },
-        { id: 6, nome: 'Carolina', texto: 'Adorei a ideia, é sustentável e ajuda bastante no dia a dia.' },
-        { id: 7, nome: 'Fernanda', texto: 'Me surpreendi com a qualidade do serviço, certamente vou usar de novo.' },
-        { id: 8, nome: 'João', texto: 'Muito prático, facilitou bastante minha vida em um momento que eu precisava.' },
+      { id: 1, nome: 'Pietro', texto: 'Não sabia sobre esse site, depois que conheci ele consegui fazer minhas coisas sem precisar gastar muito' },
+      { id: 2, nome: 'Mariana', texto: 'Consegui alugar o que eu precisava de forma rápida e prática, super recomendo!' },
+      { id: 3, nome: 'Lucas', texto: 'Achei muito útil, economizei dinheiro e ainda conheci um serviço confiável.' },
+      { id: 4, nome: 'Beatriz', texto: 'Experiência excelente, o atendimento foi ótimo e o processo bem simples.' },
+      { id: 5, nome: 'Rafael', texto: 'Já usei várias vezes e sempre deu tudo certo, muito melhor do que comprar algo que vou usar pouco.' },
+      { id: 6, nome: 'Carolina', texto: 'Adorei a ideia, é sustentável e ajuda bastante no dia a dia.' },
+      { id: 7, nome: 'Fernanda', texto: 'Me surpreendi com a qualidade do serviço, certamente vou usar de novo.' },
+      { id: 8, nome: 'João', texto: 'Muito prático, facilitou bastante minha vida em um momento que eu precisava.' },
     ]
 
     // Carousel configuration
     const config = {
-        height: 200,
-        itemsToShow: 1,
-        gap: 5,
-        snapAlign: 'center',
+      height: 200,
+      itemsToShow: 1,
+      gap: 5,
+      snapAlign: 'center',
 
-        // 'breakpointMode' determines how the carousel breakpoints are calculated
-        // Acceptable values: 'viewport' (default) | 'carousel'
-        // 'viewport' - breakpoints are based on the viewport width
-        // 'carousel' - breakpoints are based on the carousel width
-        breakpointMode: 'carousel',
+      // 'breakpointMode' determines how the carousel breakpoints are calculated
+      // Acceptable values: 'viewport' (default) | 'carousel'
+      // 'viewport' - breakpoints are based on the viewport width
+      // 'carousel' - breakpoints are based on the carousel width
+      breakpointMode: 'carousel',
 
-        // Breakpoints are mobile-first
-        // Any settings not specified will fall back to the carousel's default settings
-        breakpoints: {
-            // 300px and up
-            300: {
-                itemsToShow: 2,
-                snapAlign: 'center',
-            },
-            // 400px and up
-            400: {
-                itemsToShow: 3,
-                snapAlign: 'start',
-            },
-            // 500px and up
-            500: {
-                itemsToShow: 4,
-                snapAlign: 'start',
-            },
+      // Breakpoints are mobile-first
+      // Any settings not specified will fall back to the carousel's default settings
+      breakpoints: {
+        // 300px and up
+        300: {
+          itemsToShow: 2,
+          snapAlign: 'center',
         },
+        // 400px and up
+        400: {
+          itemsToShow: 3,
+          snapAlign: 'start',
+        },
+        // 500px and up
+        500: {
+          itemsToShow: 4,
+          snapAlign: 'start',
+        },
+      },
     }
     const showNav = ref(false)
-    
+
     const imagesSingle1 = Array.from({ length: 10 }, (_, index) => ({
-  id: index + 1,
-  url: `https://picsum.photos/400/300?random=${index + 100}`,
-}))
+      id: index + 1,
+      url: `https://picsum.photos/400/300?random=${index + 100}`,
+    }))
 
-const configMulti1 = {
-  itemsToShow: 4, // mantém 4 produtos por slide
-  snapAlign: 'start',
-  breakpointMode: 'carousel',
-  breakpoints: {
-    300: { itemsToShow: 1 },
-    600: { itemsToShow: 2 },
-    900: { itemsToShow: 3 },
-    1200: { itemsToShow: 4 },
-  },
-}
+    const configMulti1 = {
+      itemsToShow: 4, // mantém 4 produtos por slide
+      snapAlign: 'start',
+      breakpointMode: 'carousel',
+      breakpoints: {
+        300: { itemsToShow: 1 },
+        600: { itemsToShow: 2 },
+        900: { itemsToShow: 3 },
+        1200: { itemsToShow: 4 },
+      },
+    }
 
-const produtos = reactive([
-  { id: 1, nome: 'barraca', preco: 30, estrelas: 4, likes: 20, liked: false },
-  { id: 2, nome: 'saco de dormir', preco: 25, estrelas: 5, likes: 4, liked: false },
-  { id: 3, nome: 'lanterna', preco: 10, estrelas: 4, likes: 14, liked: false },
-  { id: 4, nome: 'fogareiro', preco: 40, estrelas: 3, likes: 12, liked: false },
-  { id: 5, nome: 'mochila', preco: 50, estrelas: 5, likes: 10, liked: false },
-])
-function toggleLike(produto) {
-  produto.liked = !produto.liked
-  produto.likes += produto.liked ? 1 : -1
-}
+    const produtos = reactive([
+      { id: 1, nome: 'barraca', preco: 30, estrelas: 4, likes: 20, liked: false },
+      { id: 2, nome: 'saco de dormir', preco: 25, estrelas: 5, likes: 4, liked: false },
+      { id: 3, nome: 'lanterna', preco: 10, estrelas: 4, likes: 14, liked: false },
+      { id: 4, nome: 'fogareiro', preco: 40, estrelas: 3, likes: 12, liked: false },
+      { id: 5, nome: 'mochila', preco: 50, estrelas: 5, likes: 10, liked: false },
+    ])
+    function toggleLike(produto) {
+      produto.liked = !produto.liked
+      produto.likes += produto.liked ? 1 : -1
+    }
 
-    
+    const dragExterno = ref(true)
 </script>
 
     <template>
-        <section class="infos">
-            <div class="p1">
-                <div class="superior">
-                    <ul>
-                        <li>
-                            <img src="https://s2.glbimg.com/CZ7vt10tkQki58E3X37KbSrW8PA=/620x430/e.glbimg.com/og/ed/f/original/2022/04/11/dall_e_ia.png"
-                                alt="Foto de Perfil">
-                        </li>
-                        <li>
-                            <h1>Nome</h1>
-                            <p><span class="mdi mdi-map-marker"></span> Cidade - estado</p>
-                            <button>Mandar mensagem <span class="mdi mdi-send-circle"></span></button>
-                        </li>
-                    </ul>
-                </div>
-                <div class="inferior">
-                    <div>
-                        <p class="num">23</p>
-                        <!-- Número Avaliações -->
-                        <p>avaliações</p>
-                    </div>
-                    <div>
-                        <p class="num">5,0 <span class="mdi mdi-star"></span></p>
-                        <!-- Total de estrelas -->
-                        <p>estrelas</p>
-                    </div>
-                    <div>
-                        <p class="num">2</p>
-                        <!-- Tempo alugando -->
-                        <p>ano alugando</p>
-                    </div>
-                </div>
+      <section class="infos">
+        <div class="p1">
+          <div class="superior">
+            <ul>
+              <li>
+                <img
+                  src="https://s2.glbimg.com/CZ7vt10tkQki58E3X37KbSrW8PA=/620x430/e.glbimg.com/og/ed/f/original/2022/04/11/dall_e_ia.png"
+                  alt="Foto de Perfil">
+              </li>
+              <li>
+                <h1>Nome</h1>
+                <p><span class="mdi mdi-map-marker"></span> Cidade - estado</p>
+                <button>Mandar mensagem <span class="mdi mdi-send-circle"></span></button>
+              </li>
+            </ul>
+          </div>
+          <div class="inferior">
+            <div>
+              <p class="num">23</p>
+              <!-- Número Avaliações -->
+              <p>avaliações</p>
             </div>
-            <div class="p2">
-                <h2>Sobre "Nome da pessoa"</h2>
-                <p><span class="mdi mdi-notebook"></span>Onde estudei: Escola Municipal Dr Sadalla Amin Ghanem</p>
-                <p><span class="mdi mdi-briefcase-account-outline"></span>Trabalho: Garoto de programa</p>
-                <p class="off"><span class="mdi mdi-heart"></span>Curto muito: pintar boobie goods</p>
-                <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Sed hic iste id recusandae! Eveniet,
-                    repudiandae aliquid earum fugiat adipisci cupiditate placeat enim ex doloremque culpa incidunt optio
-                    molestiae quaerat accusantium!</p>
-
+            <div>
+              <p class="num">5,0 <span class="mdi mdi-star"></span></p>
+              <!-- Total de estrelas -->
+              <p>estrelas</p>
             </div>
-        </section>
+            <div>
+              <p class="num">2</p>
+              <!-- Tempo alugando -->
+              <p>ano alugando</p>
+            </div>
+          </div>
+        </div>
+        <div class="p2">
+          <h2>Sobre "Nome da pessoa"</h2>
+          <p><span class="mdi mdi-notebook"></span>Onde estudei: Escola Municipal Dr Sadalla Amin Ghanem</p>
+          <p><span class="mdi mdi-briefcase-account-outline"></span>Trabalho: Garoto de programa</p>
+          <p class="off"><span class="mdi mdi-heart"></span>Curto muito: pintar boobie goods</p>
+          <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Sed hic iste id recusandae! Eveniet,
+            repudiandae aliquid earum fugiat adipisci cupiditate placeat enim ex doloremque culpa incidunt optio
+            molestiae quaerat accusantium!</p>
 
-        <section class="avaliacao">
-            <h2>Avaliações de "Nome da pessoa"</h2>
+        </div>
+      </section>
 
-            <div class="carousel__wrapper">
-                <Carousel v-bind="config">
-                    <Slide v-for="avaliacao in avaliacoes" :key="avaliacao.id">
-                        <ul>
-                            <li><img src="https://s2.glbimg.com/CZ7vt10tkQki58E3X37KbSrW8PA=/620x430/e.glbimg.com/og/ed/f/original/2022/04/11/dall_e_ia.png"
-                                    alt="Foto de Perfil" style="height: 50px; width: 50px; border-radius: 30px;"></li>
-                            <li>
-                                <h2>Nome pessoa</h2>
-                            </li>
-                        </ul>
-                        <div class="textos_Inferiores">
-                            <p>Estrelinhas Obs: Ver depois!</p>
-                            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Asperiores facilis officia
-                                iusto.
-                                Quod animi voluptates rerum? Exercitationem ut dolores ipsum modi at possimus adipisci
-                                officia rerum cupiditate rem, aliquam molestiae. </p>
-                        </div>
+      <section class="avaliacao">
+        <h2>Avaliações de "Nome da pessoa"</h2>
+
+        <div class="carousel__wrapper">
+          <Carousel v-bind="config">
+            <Slide v-for="avaliacao in avaliacoes" :key="avaliacao.id">
+              <ul>
+                <li><img
+                    src="https://s2.glbimg.com/CZ7vt10tkQki58E3X37KbSrW8PA=/620x430/e.glbimg.com/og/ed/f/original/2022/04/11/dall_e_ia.png"
+                    alt="Foto de Perfil" style="height: 50px; width: 50px; border-radius: 30px;"></li>
+                <li>
+                  <h2>Nome pessoa</h2>
+                </li>
+              </ul>
+              <div class="textos_Inferiores">
+                <p>Estrelinhas Obs: Ver depois!</p>
+                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Asperiores facilis officia
+                  iusto.
+                  Quod animi voluptates rerum? Exercitationem ut dolores ipsum modi at possimus adipisci
+                  officia rerum cupiditate rem, aliquam molestiae. </p>
+              </div>
+            </Slide>
+
+            <template #addons>
+              <Navigation />
+            </template>
+          </Carousel>
+        </div>
+      </section>
+
+      <section class="produto_Usuario">
+        <h2>Produtos de "Nome da pessoa"</h2>
+        <div class="carousel2">
+          <Carousel v-bind="configMulti1" :mouseDrag="dragExterno">
+            <Slide v-for="produto in produtos" v-bind:key="produto.id">
+              <div class="produto">
+                <button class="like-btn" @click="toggleLike(produto)">
+                  <span :class="produto.liked ? 'mdi mdi-heart' : 'mdi mdi-heart-outline'"></span>
+                  {{ produto.likes }}
+                </button>
+
+                <div class="imagem" @mouseenter="dragExterno = false" @mouseleave="dragExterno = true">
+                  <Carousel v-bind="configSingle1" class="carroProduto">
+                    <Slide v-for="image in imagesSingle1" :key="image.id">
+                      <img :src="image.url" alt="image" />
                     </Slide>
-
                     <template #addons>
-                        <Navigation />
+                      <Navigation />
                     </template>
-                </Carousel>
-            </div>
-        </section>
+                  </Carousel>
+                </div>
 
-        <section class="produto_Usuario">
-            <h2>Produtos de "Nome da pessoa"</h2>
-            <div class="carousel2">
-        <Carousel v-bind="configMulti1">
-          <Slide v-for="produto in produtos" v-bind:key="produto.id">
-            <div class="produto">
-              <button class="like-btn" @click="toggleLike(produto)">
-                <span :class="produto.liked ? 'mdi mdi-heart' : 'mdi mdi-heart-outline'"></span>
-                {{ produto.likes }}
-              </button>
+                <h1>{{ produto.nome }}</h1>
 
-              <div class="imagem" @mouseover="showNav = true" @mouseleave="showNav = false">
-                <Carousel v-bind="configSingle1" class="carroProduto">
-                  <Slide v-for="image in imagesSingle1" :key="image.id">
-                    <img :src="image.url" alt="image" />
-                  </Slide>
-                  <template #addons>
-                    <Navigation />
-                  </template>
-                </Carousel>
+                <div class="info">
+                  <strong>R${{ produto.preco }}/dia</strong>
+                  <p>{{ produto.estrelas }} <span class="mdi mdi-star"></span></p>
+                </div>
+                <button class="alugar">Alugar</button>
               </div>
-
-              <h1>{{ produto.nome }}</h1>
-
-              <div class="info">
-                <strong>R${{ produto.preco }}/dia</strong>
-                <p>{{ produto.estrelas }} <span class="mdi mdi-star"></span></p>
-              </div>
-              <button class="alugar">Alugar</button>
-            </div>
-          </Slide>
-          <template #addons>
-            <Navigation />
-          </template>
-        </Carousel>
-      </div>
-
-        </section>
+            </Slide>
+            <template #addons>
+              <Navigation />
+            </template>
+          </Carousel>
+        </div>
+      </section>
+      <section class="denuncia">
+        <button><span class="mdi mdi-flag"></span>Denunciar "Nome da Pessoa"</button>
+      </section>
     </template>
 
 <style lang="scss">
 .infos {
+  display: flex;
+  gap: 9vw;
+  margin: 0 5vw;
+  margin-top: 5vw;
+  padding-bottom: 5vw;
+  border-bottom: solid 2px #d3d1d1;
+
+  & .p1 {
     display: flex;
-    gap: 9vw;
-    margin: 0 5vw;
-    margin-top: 5vw;
-    padding-bottom: 5vw;
-    border-bottom: solid 2px #d3d1d1;
+    flex-direction: column;
+    align-items: center;
+    height: 330px;
+    width: 30%;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+    border-radius: 6px;
 
-    & .p1 {
+    & .superior {
+      & ul {
         display: flex;
-        flex-direction: column;
-        align-items: center;
-        height: 330px;
-        width: 30%;
-        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
-        border-radius: 6px;
+        list-style: none;
+        padding: 0;
 
-        & .superior {
-            & ul {
-                display: flex;
-                list-style: none;
-                padding: 0;
-
-                & img {
-                    height: 215px;
-                    width: 220px;
-                    background-color: #1D2D51;
-                    border-radius: 120px;
-                    margin-right: 20px;
-                }
-
-                & li:last-of-type {
-                    width: 210px;
-                }
-
-                & h1 {
-                    margin-top: 30px;
-                    font-weight: bold;
-                    font-size: 30px;
-                    height: 45px;
-                    color: black;
-                }
-
-                & p {
-                    color: #CDCDCD;
-                    margin-bottom: 25px;
-                }
-
-                & button {
-                    padding: 16px 15px 12px 15px;
-                    font-size: 15px;
-                    background-color: #1D2D51;
-                    color: #FFFFFF;
-                    border: none;
-                    border-radius: 8px;
-                    display: block;
-                    margin: 0 auto;
-                    display: flex;
-                    gap: 8px;
-
-
-                    & span {
-                        font-size: 20px;
-                    }
-                }
-            }
-
-
+        & img {
+          height: 215px;
+          width: 220px;
+          background-color: #1D2D51;
+          border-radius: 120px;
+          margin-right: 20px;
         }
 
-        & .inferior {
-            display: flex;
-            gap: 65px;
-            justify-content: center;
-            padding-top: 20px;
-
-            & .num {
-                font-size: 30px;
-                font-weight: bold;
-                height: 37px;
-            }
-
-            & div:first-of-type {
-                margin-left: 2vw;
-            }
-
-            & p {
-                color: black;
-            }
-
+        & li:last-of-type {
+          width: 210px;
         }
-    }
 
-    & .p2 {
-        & h2 {
-            font-size: 25px;
-            color: black;
-            font-weight: bold;
-            margin-bottom: 20px;
+        & h1 {
+          margin-top: 30px;
+          font-weight: bold;
+          font-size: 30px;
+          height: 45px;
+          color: black;
         }
 
         & p {
-            color: black;
+          color: #CDCDCD;
+          margin-bottom: 25px;
         }
 
-        & p:not(p.off) {
-            margin-bottom: 6px;
-        }
+        & button {
+          padding: 16px 15px 12px 15px;
+          font-size: 15px;
+          background-color: #1D2D51;
+          color: #FFFFFF;
+          border: none;
+          border-radius: 8px;
+          display: block;
+          margin: 0 auto;
+          display: flex;
+          gap: 8px;
 
-        & p.off {
-            margin-bottom: 35px;
-        }
 
-        & p:last-of-type {
-            width: 500px;
+          & span {
+            font-size: 20px;
+          }
         }
+      }
 
-        & span {
-            margin: 0 8px;
-            font-size: 18px;
-        }
 
     }
+
+    & .inferior {
+      display: flex;
+      gap: 65px;
+      justify-content: center;
+      padding-top: 20px;
+
+      & .num {
+        font-size: 30px;
+        font-weight: bold;
+        height: 37px;
+      }
+
+      & div:first-of-type {
+        margin-left: 2vw;
+      }
+
+      & p {
+        color: black;
+      }
+
+    }
+  }
+
+  & .p2 {
+    & h2 {
+      font-size: 25px;
+      color: black;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+
+    & p {
+      color: black;
+    }
+
+    & p:not(p.off) {
+      margin-bottom: 6px;
+    }
+
+    & p.off {
+      margin-bottom: 35px;
+    }
+
+    & p:last-of-type {
+      width: 500px;
+    }
+
+    & span {
+      margin: 0 8px;
+      font-size: 18px;
+    }
+
+  }
 }
 
 .avaliacao {
-    margin: 0 5vw;
-    margin-top: 5vw;
-    border-bottom: solid 2px #d3d1d1;
+  margin: 0 5vw;
+  margin-top: 5vw;
+  border-bottom: solid 2px #d3d1d1;
 
-    & h2 {
-        font-size: 25px;
-        color: black;
-        font-weight: bold;
-        margin-bottom: 20px;
+  & h2 {
+    font-size: 25px;
+    color: black;
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
+
+
+  & .carousel__wrapper {
+    padding: 20px;
+    width: 100%;
+    height: 330px;
+    display: block;
+
+
+    & ul {
+      display: flex;
+      list-style: none;
+      padding: 0;
+
+      & img {
+        margin-right: 20px;
+      }
+
+      & h2 {
+        font-size: 20px;
+        margin-top: 8px;
+      }
     }
 
+    & .textos_Inferiores {
 
-    & .carousel__wrapper {
-        padding: 20px;
-        width: 100%;
-        height: 330px;
-        display: block;
+      & p:first-of-type {
+        margin-bottom: 10px;
+      }
 
+      & p:last-of-type {
+        overflow: auto;
+        max-height: 100px;
 
-        & ul {
-            display: flex;
-            list-style: none;
-            padding: 0;
-
-            & img {
-                margin-right: 20px;
-            }
-
-            & h2 {
-                font-size: 20px;
-                margin-top: 8px;
-            }
-        }
-
-        & .textos_Inferiores {
-
-            & p:first-of-type {
-                margin-bottom: 10px;
-            }
-
-            & p:last-of-type {
-                overflow: auto;
-                max-height: 100px;
-
-            }
-        }
-
+      }
     }
 
-    & .carousel__slide {
-        display: block;
-        min-width: 530px;
-    }
+  }
 
-    & .carousel__slide:not(:last-of-type) {
-        padding: 0 40px;
-        border-right: solid 2px #d3d1d1;
-    }
+  & .carousel__slide {
+    display: block;
+    min-width: 530px;
+  }
 
-    .carousel__slide:last-of-type {
-        padding-left: 40px
-    }
+  & .carousel__slide:not(:last-of-type) {
+    padding: 0 40px;
+    border-right: solid 2px #d3d1d1;
+  }
+
+  .carousel__slide:last-of-type {
+    padding-left: 40px
+  }
 
 }
 
 .produto_Usuario {
-    & h2 {
-        margin: 2vw 5vw 0 5vw;
-        font-size: 25px;
-        color: black;
-        font-weight: bold;
-        margin-bottom: 20px;
-    }
+  margin-bottom: 7vw;
+
+  & h2 {
+    margin: 2vw 5vw 0 5vw;
+    font-size: 25px;
+    color: black;
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
 }
-.carro3 h1.principal {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  color: #000;
-  font-size: 30px;
-  font-weight: bold;
-}
+
 
 .carro3 h2.secundaria {
   display: block;
   /* garante que o width funcione */
   margin: 1vw auto;
   /* centraliza horizontalmente com auto */
-  text-align: center;
-  /* centraliza o texto dentro do h2 */
+  
   color: #cdcdcd;
   font-size: 20px;
   width: 30%;
 }
 
-.carro3 h1.titulo {
-  margin: 4vw 0 2vw 2vw;
-  font-weight: bold;
-  color: black;
-  font-size: 1.81rem;
-}
 
-.carro3 h1.titulo span {
-  font-weight: bold;
-  color: #244e84;
-  font-size: 1.81rem;
-}
 
 div.produto {
   max-width: 18vw;
@@ -446,23 +432,22 @@ div.produto {
 }
 
 .carousel2 {
-  margin: 0 4vw 0 4vw;
+  margin: 0 6vw 0 6vw;
 }
 
 div.produto img {
-  width: 100%;
+  width: 93%;
   position: relative;
   /* necessário para o botão ficar relativo à imagem */
   border-radius: 8px;
-  width: 100%;
-  height: 80%;
+  height: 87%;
   object-fit: cover;
 }
 
 div.produto .like-btn {
   position: absolute;
-  top: 1.8vw;
-  right: 3.5vw;
+  top: 1.3vw;
+  right: 2.9vw;
   z-index: 10;
   /* garante que fique acima do carousel/imagem */
   background: #244e84;
@@ -481,28 +466,40 @@ div.produto .like-btn {
 section.carro3 div.produto h1 {
   margin: 0 0 0 14px;
   color: black;
-  text-align: left;
 }
 
 div.produto div.info {
   display: flex;
   justify-content: space-between;
-  margin: 3px 15px 3px 14px;
+  margin: 15px 15px 3px 14px;
 }
 
 div.produto button.alugar {
-  width: 90%;
+  width: 93%;
   height: 40px;
   background-color: #244e84;
   color: white;
   border: none;
-  border-radius: 14px;
-  margin: 10px 0 10px 0;
+  border-radius: 18px;
+  margin-bottom: 10px;
   font-size: 1vw;
 }
 
 div.produto p span {
   color: #ffd700;
+}
+div.produto h1 {
+  text-align: left; 
+  padding: 0 25px;  
+  display: block; 
+}
+
+strong {
+  padding-left: 10px;
+}
+
+.info p {
+  padding-right: 10px;
 }
 
 .carousel2 .carousel {
@@ -591,7 +588,12 @@ section.carro4 div.produto .like-btn2 {
   cursor: pointer;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
-
+.carousel__icon {
+  display: none;
+}
+.carousel__icon:hover{
+  display: block;
+}
 .carousel4 {
   resize: horizontal;
   border: 2px dashed gray;
@@ -606,4 +608,22 @@ section.carro4 div.esquerda img {
   height: 90%;
 }
 
+
+
+.denuncia {
+  & button {
+    padding: 15px 10px;
+    font-size: 18px;
+    background-color: #1D2D51;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 6px;
+    margin: 2vw 5vw 5vw 5vw;
+  }
+
+  & span {
+    margin-right: 3px;
+    font-size: 22px;
+  }
+}
 </style>
