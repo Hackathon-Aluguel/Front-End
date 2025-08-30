@@ -1,8 +1,86 @@
 <script setup>
-import { onMounted, ref } from "vue";
+import { onMounted, ref, reactive } from "vue";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { Carousel, Slide, Navigation } from 'vue3-carousel';
+
+const produtos = reactive([
+  {
+    id: 1,
+    nome: 'pantufas extremamente macias',
+    preco: 30,
+    estrelas: 4,
+    cidade: 'Joinville',
+    estado: 'SC',
+    endereco: 'Rua das Flores, 123',
+    lat: -26.3044,
+    lng: -48.8463,
+    likes: 20,
+    liked: false,
+    imagem: 'https://picsum.photos/400/300?random=100',
+    categoria: 'Roupas e acessorios',
+  },
+  {
+    id: 2,
+    nome: 'saco de dormir',
+    preco: 25,
+    estrelas: 5,
+    cidade: 'Joinville',
+    estado: 'SC',
+    endereco: 'Rua das Palmeiras, 50',
+    lat: -26.3052,
+    lng: -48.8439,
+    likes: 4,
+    liked: false,
+    imagem: 'https://picsum.photos/400/300?random=101',
+    categoria: 'Esporte e lazer',
+  },
+  {
+    id: 3,
+    nome: 'lanterna',
+    preco: 10,
+    estrelas: 4,
+    cidade: 'Joinville',
+    estado: 'SC',
+    endereco: 'Rua Porto Rico, 147',
+    lat: -26.3060,
+    lng: -48.8450,
+    likes: 14,
+    liked: false,
+    imagem: 'https://picsum.photos/400/300?random=102',
+    categoria: 'Casa e utilidades',
+  },
+  {
+    id: 4,
+    nome: 'fogareiro',
+    preco: 40,
+    estrelas: 3,
+    cidade: 'Joinville',
+    estado: 'SC',
+    endereco: 'Rua das Palmeiras, 12',
+    lat: -26.3055,
+    lng: -48.8447,
+    likes: 12,
+    liked: false,
+    imagem: 'https://picsum.photos/400/300?random=103',
+    categoria: 'Esporte e lazer',
+  },
+  {
+    id: 5,
+    nome: 'mochila',
+    preco: 50,
+    estrelas: 5,
+    cidade: 'Joinville',
+    estado: 'SC',
+    endereco: 'Rua das Flores, 200',
+    lat: -26.3048,
+    lng: -48.8472,
+    likes: 10,
+    liked: false,
+    imagem: 'https://picsum.photos/400/300?random=104',
+    categoria: 'Roupas e acessorios',
+  },
+]);
 
 // coordenadas reativas
 const latitude = ref(0);
@@ -15,7 +93,7 @@ const showCarrossel = ref(false);
 const cardTop = ref(0);
 const cardLeft = ref(0);
 
-// imagens do carrossel
+// imagens do carrossel (mock)
 const imagesSingle1 = Array.from({ length: 5 }, (_, index) => ({
   id: index + 1,
   url: `https://picsum.photos/400/300?random=${index + 100}`,
@@ -40,7 +118,7 @@ let userMarker = null;
 let firstLocation = true;
 
 onMounted(() => {
-  window.map = L.map("map").setView([0, 0], 2);
+  window.map = L.map("map").setView([-26.3044, -48.8463], 14);
 
   L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
     attribution: "&copy; OpenStreetMap &copy; CARTO",
@@ -48,6 +126,16 @@ onMounted(() => {
     maxZoom: 19,
   }).addTo(window.map);
 
+  // adiciona os marcadores dos produtos diretamente
+  for (const produto of produtos) {
+    if (produto.lat && produto.lng) {
+      L.marker([produto.lat, produto.lng], { icon: packageIcon })
+        .addTo(window.map)
+        .bindPopup(produto.nome);
+    }
+  }
+
+  // ativa localização do usuário
   window.map.locate({ watch: true, setView: false, maxZoom: 16, enableHighAccuracy: true });
 
   window.map.on("locationfound", (e) => {
@@ -64,7 +152,6 @@ onMounted(() => {
     } else {
       userMarker = L.marker(e.latlng, { icon: packageIcon }).addTo(window.map);
 
-      // clique no marcador para mostrar o card
       userMarker.on("click", () => {
         showCarrossel.value = true;
         updateCardPosition();
@@ -76,17 +163,14 @@ onMounted(() => {
     console.error("Erro ao obter localização:", e.message);
   });
 
-  // atualiza o card enquanto move ou dá zoom
   window.map.on("move zoomend", () => {
     updateCardPosition();
   });
 
-  // esconde o card ao clicar no mapa (fora do card)
   window.map.on("click", () => {
     showCarrossel.value = false;
   });
 
-  // controla visibilidade do marcador pelo zoom
   window.map.on("zoomend", () => {
     const zoom = window.map.getZoom();
     if (userMarker) {
@@ -154,7 +238,6 @@ html, body, #app {
   padding: 5px;
 }
 
-/* imagens do carrossel */
 .carrossel-container img {
   width: 100%;
   height: 180px;
@@ -162,7 +245,6 @@ html, body, #app {
   border-radius: 8px;
 }
 
-/* textos do produto */
 .carrossel-container h1 {
   font-size: 1.6rem;
   margin: 5px 0 2px 0;
@@ -182,7 +264,6 @@ html, body, #app {
   font-weight: bold;
 }
 
-/* botão do card */
 .botaoProduto {
   display: block;
   background: none;
@@ -194,7 +275,6 @@ html, body, #app {
   cursor: pointer;
 }
 
-/* botão fechar */
 .fecharBotao {
   background-color: #244e84;
   color: white;
