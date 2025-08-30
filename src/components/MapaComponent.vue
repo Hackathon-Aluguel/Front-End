@@ -1,99 +1,41 @@
 <script setup>
-import { reactive } from 'vue'
+import { reactive, ref } from 'vue'
 import MapaScriptComponent from './MapaScriptComponent.vue'
+
 const produtos = reactive([
-  {
-    id: 1,
-    nome: 'pantufas extremamente macias',
-    preco: 30,
-    estrelas: 4,
-    cidade: 'Joinville',
-    estado: 'SC',
-    likes: 20,
-    liked: false,
-    periodoInicial: new Date(2025, 7, 28),
-    periodoFinal: new Date(2025, 7, 30),
-    imagem: 'https://picsum.photos/400/300?random=100',
-    categoria: 'Roupas e acessorios',
-    editando: false,
-  },
-  {
-    id: 2,
-    nome: 'saco de dormir',
-    preco: 25,
-    estrelas: 5,
-    cidade: 'Joinville',
-    estado: 'SC',
-    likes: 4,
-    liked: false,
-    periodoInicial: new Date(2025, 7, 28),
-    periodoFinal: new Date(2025, 7, 30),
-    imagem: 'https://picsum.photos/400/300?random=101',
-    categoria: 'esporte e lazer',
-    editando: false,
-  },
-  {
-    id: 3,
-    nome: 'lanterna',
-    preco: 10,
-    estrelas: 4,
-    cidade: 'Joinville',
-    estado: 'SC',
-    likes: 14,
-    liked: false,
-    periodoInicial: new Date(2025, 7, 28),
-    periodoFinal: new Date(2025, 7, 30),
-    imagem: 'https://picsum.photos/400/300?random=102',
-    categoria: 'Casa e utilidades',
-    editando: false,
-  },
-  {
-    id: 4,
-    nome: 'fogareiro',
-    preco: 40,
-    estrelas: 3,
-    cidade: 'Joinville',
-    estado: 'SC',
-    likes: 12,
-    liked: false,
-    periodoInicial: new Date(2025, 7, 28),
-    periodoFinal: new Date(2025, 7, 30),
-    imagem: 'https://picsum.photos/400/300?random=103',
-    categoria: 'esporte e lazer',
-    editando: false,
-  },
-  {
-    id: 5,
-    nome: 'mochila',
-    preco: 50,
-    estrelas: 5,
-    cidade: 'Joinville',
-    estado: 'SC',
-    likes: 10,
-    liked: false,
-    periodoInicial: new Date(2025, 7, 28),
-    periodoFinal: new Date(2025, 7, 30),
-    imagem: 'https://picsum.photos/400/300?random=104',
-    categoria: 'Roupas e acessorios',
-    editando: false,
-  },
+  { id: 1, nome: 'Pantufas extremamente macias', preco: 30, estrelas: 4, cidade: 'Joinville', estado: 'SC', likes: 20, liked: false, imagem: 'https://picsum.photos/400/300?random=100', categoria: 'Roupas e acessorios' },
+  { id: 2, nome: 'Saco de dormir', preco: 25, estrelas: 5, cidade: 'Joinville', estado: 'SC', likes: 4, liked: false, imagem: 'https://picsum.photos/400/300?random=101', categoria: 'Esporte e lazer' },
+  { id: 3, nome: 'Lanterna', preco: 10, estrelas: 4, cidade: 'Joinville', estado: 'SC', likes: 14, liked: false, imagem: 'https://picsum.photos/400/300?random=102', categoria: 'Casa e utilidades' },
+  { id: 4, nome: 'Fogareiro', preco: 40, estrelas: 3, cidade: 'Joinville', estado: 'SC', likes: 12, liked: false, imagem: 'https://picsum.photos/400/300?random=103', categoria: 'Esporte e lazer' },
+  { id: 5, nome: 'Mochila', preco: 50, estrelas: 5, cidade: 'Joinville', estado: 'SC', likes: 10, liked: false, imagem: 'https://picsum.photos/400/300?random=104', categoria: 'Roupas e acessorios' },
 ])
+
+const hoverId = ref(-1)
+
 function toggleLike(produto) {
   produto.liked = !produto.liked
   produto.likes += produto.liked ? 1 : -1
 }
 
-// ICONEEEE //
+function marcarHover(id) {
+  hoverId.value = id
+}
+
+function removerHover() {
+  hoverId.value = -1
+}
 </script>
 
 <template>
-    <section>
-        <div class="produtosTodo">
-        <div class="rolagem">
-<ul>
-          <li v-for="produto in produtos" :key="produto.id" class="produto">
+  <section>
+    <div class="produtosTodo">
+      <div class="rolagem">
+        <ul>
+          <li v-for="produto in produtos" :key="produto.id" class="produto"
+              @mouseover="marcarHover(produto.id)"
+              @mouseleave="removerHover()">
             <div class="info">
-              <img :src="produto.imagem" :alt="produto.nome" width="200" />
+              <img :src="produto.imagem" :alt="produto.nome" />
               <div class="nome">
                 <h2>{{ produto.nome }}</h2>
                 <p class="categoria">{{ produto.categoria }}</p>
@@ -101,18 +43,18 @@ function toggleLike(produto) {
                 <h2 class="preco">R${{ produto.preco }}/dia</h2>
               </div>
             </div>
-                <button class="like-btn" @click="toggleLike(produto)">
-                <span :class="produto.liked ? 'mdi mdi-heart' : 'mdi mdi-heart-outline'"></span>
-                {{ produto.likes }}
-              </button>
-            </li>
-            </ul>
-        </div>
-        </div>
-        <div class="mapa">
-          <MapaScriptComponent />
-        </div>
-    </section>
+            <button class="like-btn" @click="toggleLike(produto)">
+              <span :class="produto.liked ? 'mdi mdi-heart' : 'mdi mdi-heart-outline'"></span>
+              {{ produto.likes }}
+            </button>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="mapa">
+      <MapaScriptComponent :hoverId="hoverId" />
+    </div>
+  </section>
 </template>
 
 <style scoped>
