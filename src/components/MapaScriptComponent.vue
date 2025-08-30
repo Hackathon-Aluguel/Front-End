@@ -1,36 +1,60 @@
 <script setup>
-import { onMounted, watch } from "vue";
+import { ref, onMounted, watch, reactive } from "vue";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
+import { Carousel, Slide, Navigation } from 'vue3-carousel';
+import 'vue3-carousel/dist/carousel.css'
 
-const props = defineProps({
-  hoverId: Number
-})
+const produtos = reactive([
+  { id: 1, nome: 'Pantufas extremamente macias', preco: 30, estrelas: 4, cidade: 'Joinville', estado: 'SC', likes: 20, liked: false, imagem: 'https://picsum.photos/400/300?random=100', categoria: 'Roupas e acessorios', lat: -26.3044, lng: -48.8463 },
+  { id: 2, nome: 'Saco de dormir', preco: 25, estrelas: 5, cidade: 'Joinville', estado: 'SC', likes: 4, liked: false, imagem: 'https://picsum.photos/400/300?random=101', categoria: 'Esporte e lazer', lat: -26.3052, lng: -48.8439 },
+  { id: 3, nome: 'Lanterna', preco: 10, estrelas: 4, cidade: 'Joinville', estado: 'SC', likes: 14, liked: false, imagem: 'https://picsum.photos/400/300?random=102', categoria: 'Casa e utilidades', lat: -26.3060, lng: -48.8450 },
+  { id: 4, nome: 'Fogareiro', preco: 40, estrelas: 3, cidade: 'Joinville', estado: 'SC', likes: 12, liked: false, imagem: 'https://picsum.photos/400/300?random=103', categoria: 'Esporte e lazer', lat: -26.3055, lng: -48.8447 },
+  { id: 5, nome: 'Mochila', preco: 50, estrelas: 5, cidade: 'Joinville', estado: 'SC', likes: 10, liked: false, imagem: 'https://picsum.photos/400/300?random=104', categoria: 'Roupas e acessorios', lat: -26.3048, lng: -48.8472 },
+])
+// Controle do card
+const showCarrossel = ref(false)
+const produtoSelecionado = ref(null)
+const cardTop = ref(0)
+const cardLeft = ref(0)
+
+// Função para abrir o card
+function abrirCarrossel(produto, marker) {
+  produtoSelecionado.value = produto;
+  showCarrossel.value = true;
+  updateCardPosition(marker);
+}
+
+// Carrossel de imagens
+const imagesSingle1 = Array.from({ length: 5 }, (_, index) => ({ id: index+1, url: `https://picsum.photos/400/300?random=${index+100}` }))
+const configSingle1 = { height: 200, width: 300, itemsToShow: 1, snapAlign: 'start' }
+
+// Props para hover
+const props = defineProps({ hoverId: Number })
 
 let userMarker = null
 let firstLocation = true
 const produtoMarkers = []
 
-// ícone azul/vermelho dependendo do hover
+// Ícone dos marcadores
 function packageIcon(background = '#244e84', color = 'white') {
   return L.divIcon({
-    html: `<span class="mdi mdi-package-variant-closed" style="font-size: 20px; color: ${color}; background-color: ${background}; border-radius: 50%; padding: 6px; box-shadow: 0 2px 6px rgba(0,0,0,0.3);"></span>`,
+    html: `<span class="mdi mdi-package-variant-closed" style="font-size: 20px; color: ${color}; background-color: ${background}; border-radius: 50%; padding: 6px; box-shadow: 0 2px 6px rgba(0,0,0,0.3); display:inline-block; text-align:center; line-height:1;"></span>`,
     className: 'custom-mdi-icon',
-    iconSize: [32, 32],
-    iconAnchor: [16, 16],
+    iconSize: [32,32],
+    iconAnchor: [16,16]
   })
 }
 
-const produtos = [
-  { id: 1, lat: -26.3044, lng: -48.8463 },
-  { id: 2, lat: -26.3052, lng: -48.8439 },
-  { id: 3, lat: -26.3060, lng: -48.8450 },
-  { id: 4, lat: -26.3055, lng: -48.8447 },
-  { id: 5, lat: -26.3048, lng: -48.8472 },
-]
+// Lista de produtos com coordenadas fixas
 
-function abrirCarrossel(produto) {
-  console.log('Clicou no produto', produto.id)
+// Atualiza posição do card sobre o marcador
+function updateCardPosition(marker) {
+  const latlng = marker ? marker.getLatLng() : userMarker?.getLatLng()
+  if (!latlng) return
+  const point = window.map.latLngToContainerPoint(latlng)
+  cardTop.value = point.y - 220
+  cardLeft.value = point.x - 160
 }
 
 onMounted(() => {
@@ -42,48 +66,85 @@ onMounted(() => {
     maxZoom: 19,
   }).addTo(window.map);
 
-  // Marcadores
+  // Marcadores dos produtos
   for (const produto of produtos) {
     const marker = L.marker([produto.lat, produto.lng], { icon: packageIcon() }).addTo(window.map);
     marker.produtoId = produto.id
-    marker.on("click", () => abrirCarrossel(produto));
+    marker.on("click", () => abrirCarrossel(produto, marker));
     produtoMarkers.push(marker)
   }
 
   // Localização do usuário
   window.map.locate({ watch: true, setView: false, maxZoom: 16, enableHighAccuracy: true });
-
   window.map.on("locationfound", (e) => {
-    if (firstLocation) {
-      window.map.setView(e.latlng, 16);
-      firstLocation = false;
+    if (firstLocation) { window.map.setView(e.latlng, 16); firstLocation=false; }
+    if (userMarker) userMarker.setLatLng(e.latlng)
+    else {
+      userMarker = L.marker(e.latlng, { icon: packageIcon() }).addTo(window.map)
+      userMarker.on("click", () => {
+        showCarrossel.value = true
+        updateCardPosition(userMarker)
+      })
     }
-  });
+  })
+  window.map.on("locationerror", (e) => console.error("Erro ao obter localização:", e.message))
 
-  window.map.on("locationerror", (e) => console.error("Erro ao obter localização:", e.message));
+  // Fecha o card ao clicar fora
+  window.map.on("click", () => { showCarrossel.value = false })
+
+  // Atualiza posição do card ao mover ou dar zoom
+  window.map.on("move zoomend", () => {
+    if (showCarrossel.value && produtoSelecionado.value) {
+      const marker = produtoMarkers.find(m => m.produtoId === produtoSelecionado.value.id)
+      updateCardPosition(marker)
+    }
+  })
 })
 
+// Watch para hover nos marcadores
 watch(() => props.hoverId, (id) => {
   produtoMarkers.forEach(marker => {
    if(marker.produtoId === id) 
-      marker.setIcon(packageIcon('white', '#244e84')) // ícone vermelho e caixa rosa
+      marker.setIcon(packageIcon('white', '#244e84')) // hover
     else 
-      marker.setIcon(packageIcon('#244e84', 'white')) // azul normal
+      marker.setIcon(packageIcon('#244e84', 'white')) // normal
   })
 })
 </script>
 
 <template>
-  <div id="map" style="height:80vh; width:55vw;"></div>
+  <div id="map">
+    <div v-if="showCarrossel && produtoSelecionado" class="carrossel-container"
+         :style="{ top: cardTop + 'px', left: cardLeft + 'px' }"
+         @click.stop>
+      <button class="botaoProduto">
+        <Carousel v-bind="configSingle1">
+          <Slide v-for="image in imagesSingle1" :key="image.id">
+            <img :src="image.url" alt="image" />
+          </Slide>
+          <template #addons>
+            <Navigation />
+          </template>
+        </Carousel>
+        <h1>{{ produtoSelecionado.nome }}</h1>
+        <h3>{{ produtoSelecionado.categoria }}</h3>
+        <h2>R${{ produtoSelecionado.preco }}/dia</h2>
+      </button>
+      <button @click="showCarrossel = false" class="fecharBotao">Fechar</button>
+    </div>
+  </div>
 </template>
 
 <style>
 #map { margin:4vw 0 0 0; height:80vh; width:55vw; position:relative; }
+p,h1,h2,button {
+  font-family: poppins, sans-serif;
+}
 .carrossel-container { position:absolute; width:320px; background:white; border-radius:12px; box-shadow:0 4px 12px rgba(0,0,0,0.25); display:flex; flex-direction:column; z-index:1000; padding:5px; }
 .carrossel-container img { width:100%; height:180px; object-fit:cover; border-radius:8px; }
-.carrossel-container h1 { font-size:1.6rem; margin:5px 0 2px 0; color:black; }
-.carrossel-container h3 { font-size:14px; margin:0 0 2px 0; color:#CDCDCD; }
-.carrossel-container h2 { font-size:1.4rem; margin:2px 0 2px 0; color:#244e84; font-weight:bold; }
+.carrossel-container h1 { font-size:1.6rem; margin:5px 0 2px 1vw; color:black; }
+.carrossel-container h3 { font-size:14px; margin:0 0 2px 1vw; color:#CDCDCD; }
+.carrossel-container h2 { font-size:1.4rem; margin:2px 0 2px 1vw; color:#244e84; font-weight:bold; }
 .botaoProduto { display:block; background:none; border:none; padding:0; margin:0; width:100%; text-align:left; cursor:pointer; }
 .fecharBotao { background-color:#244e84; color:white; border:none; border-radius:6px; padding:6px 12px; margin-top:5px; cursor:pointer; }
 </style>
