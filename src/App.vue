@@ -8,7 +8,6 @@ import MapaComponent from './components/MapaComponent.vue';
 <template>
   <!-- <HeaderComponent/>
   <FooterComponent/>
-  <HomeComponent />
   --><h1></h1> 
   <MapaComponent />
 

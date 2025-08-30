@@ -7,10 +7,7 @@ const likes = ref(0)
 
 const showNav = ref(false)
 // Carrossel de 1 imagem
-const imagesSingle = Array.from({ length: 10 }, (_, index) => ({
-  id: index + 1,
-  url: `https://picsum.photos/400/300?random=${index + 100}`,
-}))
+
 const imagesSingle1 = Array.from({ length: 10 }, (_, index) => ({
   id: index + 1,
   url: `https://picsum.photos/400/300?random=${index + 100}`,
@@ -53,13 +50,7 @@ const avaliacoesAnunciante = [
 ];
 // Carousel configuration
 // Configuração carrossel 1 imagem
-const configSingle = {
-  height: 510,
-  itemsToShow: 1,
-  gap: 5,
-  snapAlign: 'center',
-  breakpointMode: 'carousel',
-}
+
 const configDuo = {
   height: 510,
   itemsToShow: 2,

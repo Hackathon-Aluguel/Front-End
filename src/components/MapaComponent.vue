@@ -125,7 +125,7 @@ section {
 }
 section div.produtosTodo {
   margin: 4vw 4vw 0 0vw;
-  width: 48%;
+  width: 36%;
   background-color: white ;
 }
 section div.produtosTodo .rolagem {
@@ -151,7 +151,7 @@ section div.produtosTodo .rolagem {
 section ul li.produto {
     display: flex;
     justify-content: space-between;
-    width: 40vw;
+    width: 30vw;
     height: 20vh;
     border: 1px solid #cdcdcd;
     border-radius: 1vw;
