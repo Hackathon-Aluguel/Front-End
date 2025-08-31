@@ -140,10 +140,16 @@ function distancia(valor) {
   distanciaSelecionada.value = valor
 }
 const categoriasSelecionadas = ref([]); 
+// valores mínimo e máximo
+const min = ref(0);
+const max = ref(100);
+
+// valor selecionado
+const value = ref(50);
 </script>
 
 <template>
-  <div id="map">
+  <div id="map" >
     <div v-if="showCarrossel && produtoSelecionado" class="carrossel-container"
       :style="{ top: cardTop + 'px', left: cardLeft + 'px' }" @click.stop>
       <button class="botaoProduto">
@@ -185,6 +191,12 @@ const categoriasSelecionadas = ref([]);
           </label>
         </div>
       </div>
+      <h2>Preço do produto por dia</h2>
+      <div class="range-container">
+        <input type="text" id="range" min="0" max="100">
+        <span id="range-content">50</span>
+
+      </div>
     </div>
   </div>
 </template>
@@ -196,6 +208,7 @@ const categoriasSelecionadas = ref([]);
   width: 55vw;
   position: relative;
   border-radius: 10px;
+   pointer-events: auto;
 }
 
 p,
@@ -301,6 +314,7 @@ div.filtroAberto {
   width: 24vw;
   z-index: 1000;
   padding: 5px;
+  pointer-events: auto;
 }
 div.filtroAberto h1 {
   font-size: 32px;
@@ -387,6 +401,37 @@ label {
 
 /* Marca de check */
 
+.slider-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
 
+input[type="range"].slider {
+  width: 200px;
+  height: 6px;
+  background: red; /* cor da barra inteira */
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+input[type="range"].slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  background: #1D2D51;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid #fff;
+}
+
+input[type="range"].slider::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  background: #1D2D51;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid #fff;
+}
 
 </style>
