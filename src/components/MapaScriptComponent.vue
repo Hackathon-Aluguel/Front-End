@@ -192,10 +192,17 @@ const value = ref(50);
         </div>
       </div>
       <h2>Preço do produto por dia</h2>
-      <div class="range-container">
-        <input type="text" id="range" min="0" max="100">
-        <span id="range-content">50</span>
-
+      <div class="range">
+        <div class="sliderValue">
+          <span>100</span>
+        </div>
+        <div class="field">
+          <div class="value left">0</div>
+          <input type="range" min="0" max="200" value="100" step="1">
+          <div class="value right">200</div>
+        </div>
+        <span>
+        </span>
       </div>
     </div>
   </div>
@@ -401,37 +408,27 @@ label {
 
 /* Marca de check */
 
-.slider-container {
+.range {
+  height: 80px;
+  width: 380px;
+  background: #fff ;
+}
+.range .field {
+  position: relative;
   display: flex;
   align-items: center;
-  gap: 10px;
+  justify-content: center;
+  height: 100%;
+}
+.range .field input {
+  -webkit-appearance: none ;
+  height: 3px;
+  width: 100%;
+  background: #ddd;
+}
+.range .field .value {
+  
 }
 
-input[type="range"].slider {
-  width: 200px;
-  height: 6px;
-  background: red; /* cor da barra inteira */
-  border-radius: 3px;
-  cursor: pointer;
-}
-
-input[type="range"].slider::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  width: 20px;
-  height: 20px;
-  background: #1D2D51;
-  border-radius: 50%;
-  cursor: pointer;
-  border: 2px solid #fff;
-}
-
-input[type="range"].slider::-moz-range-thumb {
-  width: 20px;
-  height: 20px;
-  background: #1D2D51;
-  border-radius: 50%;
-  cursor: pointer;
-  border: 2px solid #fff;
-}
 
 </style>
