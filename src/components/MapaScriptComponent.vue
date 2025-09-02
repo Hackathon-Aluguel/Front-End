@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, watch, reactive } from "vue";
+import { ref, onMounted, watch, reactive, nextTick } from "vue";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { Carousel, Slide, Navigation } from 'vue3-carousel';
@@ -139,17 +139,42 @@ const distanciaSelecionada = ref(null)
 function distancia(valor) {
   distanciaSelecionada.value = valor
 }
-const categoriasSelecionadas = ref([]); 
+const categoriasSelecionadas = ref([]);
 // valores mínimo e máximo
 const min = ref(0);
 const max = ref(100);
 
 // valor selecionado
 const value = ref(50);
+
+// SLIDER DO FILTROOOOOOOOOOOO 
+const precoMin = 100
+const precoMax = 5000
+const precoSelecionado = ref(2500)
+const tooltipPos = ref(50)
+const rangeSlider = ref(null)
+
+function atualizarTooltip() {
+  const slider = rangeSlider.value
+  if (!slider) return
+
+  const val = precoSelecionado.value
+  const max = parseInt(slider.max)
+
+  tooltipPos.value = (val / max) * 100
+  const progress = tooltipPos.value
+  slider.style.background = `linear-gradient(to right, #1D2D51 ${progress}%, #ddd ${progress}%)`
+}
+
+// ✅ Isso garante que o background apareça assim que carregar
+onMounted(async () => {
+  await nextTick()
+  atualizarTooltip()
+})
 </script>
 
 <template>
-  <div id="map" >
+  <div id="map">
     <div v-if="showCarrossel && produtoSelecionado" class="carrossel-container"
       :style="{ top: cardTop + 'px', left: cardLeft + 'px' }" @click.stop>
       <button class="botaoProduto">
@@ -173,7 +198,7 @@ const value = ref(50);
       <h2>Filtrar & organizar </h2>
     </button>
 
-    <div v-if="filtroAberto" class="filtroAberto">
+    <div v-if="filtroAberto" class="filtroAberto" @mousedown.stop @touchstart.stop>
       <h1>Filtros</h1>
       <h2>Distancia</h2>
       <div class="distancia">
@@ -192,17 +217,25 @@ const value = ref(50);
         </div>
       </div>
       <h2>Preço do produto por dia</h2>
-      <div class="range">
-        <div class="sliderValue">
-          <span>100</span>
+      <div class="slider-overlay">
+        <div class="double-slider-box">
+          <div class="price-slider">
+            <h3>{{ precoMin }}</h3>
+            <div class="input-wrapper slider-event-shield">
+              <input type="range" class="range-slider" :min="precoMin" :max="precoMax" v-model="precoSelecionado"
+                @input="atualizarTooltip" @mousedown.stop @touchstart.stop ref="rangeSlider" />
+              <div class="tooltip" :style="{ left: tooltipPos + '%' }">
+                R${{ precoSelecionado }}
+              </div>
+            </div>
+            <h3>{{ precoMax }}</h3>
+          </div>
+
         </div>
-        <div class="field">
-          <div class="value left">0</div>
-          <input type="range" min="0" max="200" value="100" step="1">
-          <div class="value right">200</div>
-        </div>
-        <span>
-        </span>
+      </div>
+      <div class="botooes">
+        <button class="cancelar" @click="abrirFiltro()">Cancelar</button>
+        <button class="pronto">Pronto</button>
       </div>
     </div>
   </div>
@@ -215,7 +248,7 @@ const value = ref(50);
   width: 55vw;
   position: relative;
   border-radius: 10px;
-   pointer-events: auto;
+  pointer-events: auto;
 }
 
 p,
@@ -318,49 +351,68 @@ div.filtroAberto {
   border-radius: 6px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
   height: 75vh;
-  width: 24vw;
+  width: 28vw;
   z-index: 1000;
   padding: 5px;
   pointer-events: auto;
 }
+
 div.filtroAberto h1 {
   font-size: 32px;
-  margin: 1vw 1vw;
+  margin: 1vw 1vw 0 1vw;
   color: black;
 }
+
 div.filtroAberto h2 {
   color: black;
   font-size: 20px;
-  margin: 0.5vw 1vw 0.2vw 1vw; 
+  margin: 1.5vw 1vw 0.2vw 1vw;
 }
+
 div.filtroAberto div.distancia {
   margin: 0 0 0 1vw;
   gap: 10px;
 }
+
 div.filtroAberto div.distancia button {
   color: black;
   background-color: #D9D9D9;
   border: none;
-  width: 5vw;
-  height: 4vh;
+  width: 6vw;
+  height: 4.5vh;
   border-radius: 6px;
   font-size: 16px;
   margin: 0 10px 0 0;
 }
+
 div.filtroAberto div.distancia button.ativo {
   background-color: #1D2D51;
   color: white;
 }
-.filtroAberto .categorias {
-  display: flex;       /* organiza os filhos em linha */
-  flex-wrap: wrap;     /* permite quebrar para a próxima linha */
-  gap: 10px;           /* espaço entre as checkboxes */
+
+.categorias {
+  display: flex;
+  flex-wrap: wrap;
+  /* permite quebra de linha */
+  gap: 10px;
+  /* espaço entre os itens */
+  margin-left: 1vw;
+  max-width: 100%;
+  /* garante que o container respeite a largura da tela */
+}
+
+.checkbox-container {
+  flex: 1 1 200px;
+  /* cresce e encolhe, base 200px */
+  min-width: 150px;
+  /* nunca menor que 150px */
 }
 
 input[type="checkbox"] {
   width: 24px;
   height: 24px;
-  -webkit-appearance: none; /* remove estilo padrão */
+  -webkit-appearance: none;
+  /* remove estilo padrão */
   appearance: none;
   border: 2px solid #CDCDCD;
   border-radius: 4px;
@@ -372,7 +424,8 @@ input[type="checkbox"] {
 input[type="checkbox"]:checked::after {
   content: "";
   position: absolute;
-  left: 8px;   /* ajusta para centralizar */
+  left: 8px;
+  /* ajusta para centralizar */
   top: 4px;
   width: 6px;
   height: 12px;
@@ -386,49 +439,106 @@ input[type="checkbox"]:checked {
   background-color: #1D2D51;
   border: none;
 }
+
 .checkbox-container {
-  width: 200px;         /* largura fixa de cada checkbox + label */
+  width: 200px;
+  /* largura fixa de cada checkbox + label */
 }
+
 .categorias {
   display: flex;
-  flex-wrap: wrap;      /* permite quebrar linha */
-  gap: 10px;            /* espaço entre os checkboxes */
+  flex-wrap: wrap;
+  /* permite quebrar linha */
+  gap: 10px;
+  /* espaço entre os checkboxes */
   margin: 0 0 0 1vw;
 }
+
+.checkbox-container {
+  width: 200px;
+  /* largura fixa que permite múltiplos itens por linha */
+}
+
 label {
-  display: flex;           /* transforma em flex container */
-  align-items: center;     /* centraliza verticalmente */
-  gap: 8px;                /* espaço entre checkbox e texto */
-  cursor: pointer;         /* muda cursor ao passar o mouse */
+  display: flex;
+  /* transforma em flex container */
+  align-items: center;
+  /* centraliza verticalmente */
+  gap: 8px;
+  /* espaço entre checkbox e texto */
+  cursor: pointer;
+  /* muda cursor ao passar o mouse */
   color: black;
   font-size: 16px;
   width: 14vw;
 }
+
 /* Marca de seleção */
 
 /* Marca de check */
-
-.range {
-  height: 80px;
-  width: 380px;
-  background: #fff ;
+div.double-slider-box .price-slider h3 {
+  font-size: 1.2rem;
+  color: #1D2D51;
 }
-.range .field {
-  position: relative;
+
+div.double-slider-box {
+  margin-top: 20px;
+  padding: 10px 40px;
+  border-radius: 10px;
+}
+
+.price-slider {
+  margin: 30px 0;
   display: flex;
   align-items: center;
-  justify-content: center;
-  height: 100%;
+  flex-wrap: wrap;
 }
-.range .field input {
-  -webkit-appearance: none ;
-  height: 3px;
+
+.input-wrapper {
+  position: relative;
+  display: flex;
+  margin: 0 15px;
+  min-width: 200px;
+}
+
+.input-wrapper input {
+  -webkit-appearance: none;
+  height: 1rem;
+  outline: none;
+  border: none;
   width: 100%;
-  background: #ddd;
-}
-.range .field .value {
-  
+  background: linear-gradient(to right, #1D2D51 50%, #ddd 50%);
+  border-radius: 10px;
 }
 
+.input-wrapper input[type="range"]::-moz-range-thumb {
+  -moz-appearance: none;
+  border: 0.5rem solid white;
+  pointer-events: auto;
+  cursor: pointer;
+  border-radius: 10px;
+}
 
+.input-wrapper input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 3rem;
+  height: 3rem;
+  border: 1rem solid white;
+  background-color: #CDCDCD;
+  pointer-events: auto;
+  cursor: pointer;
+  border-radius: 10px;
+}
+
+.tooltip {
+  background-color: #1D2D51;
+  color: white;
+  border-radius: 25rem;
+  bottom: 120%;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%) translateY(-50%);
+  font-weight: 600;
+  padding: 10px;
+}
 </style>
