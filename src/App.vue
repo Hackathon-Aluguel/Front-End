@@ -1,8 +1,10 @@
 <script setup>
+import CadastroProdutoComponent from './components/CadastroProdutoComponent.vue';
 </script>
 
 <template>
-  <RouterView />
+  <CadastroProdutoComponent />
+  <!-- <RouterView /> -->
   <h1></h1>
 </template>
 
