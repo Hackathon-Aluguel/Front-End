@@ -1,6 +1,7 @@
 <script setup>
 import { reactive, ref } from 'vue'
-import api from '@/services/api'   // << usa a instância configurada
+import api from '@/services/api'
+import { RouterLink } from 'vue-router'
 
 const user = reactive({
   email: '',
@@ -29,46 +30,38 @@ async function login() {
 
 <template>
   <section>
-  <div class="square">
-    <div class="um">
-
+    <div class="square">
+      <div class="um">
         <h1>B<span>e</span>m vindo de volta</h1>
 
+        <div class="campos">
+          <p class="sub">Por favor, preencha os seguintes campos para logar</p>
+          <input class="email" type="text" v-model="user.email" placeholder="Insira o seu email...">
+          <input class="senha" type="password" v-model="user.password" placeholder="Insira a sua senha...">
+          <p class="esq"><a class="esq" href="">Esqueceu sua senha?</a></p>
+          <button class="bum" @click="login"><p>Entrar</p></button>
+        </div>
 
-      <div class="campos">
-        <p class="sub">
-          Por favor, preecha os seguintes campos para logar
+        <div class="hr">
+          <hr><p>ou</p><hr>
+        </div>
+
+        <button class="gog">
+          <img src="/public/imgs/Google__G__logo.svg.png" alt="X">
+          <p>Continuar com o Google</p>
+        </button>
+
+        <p class="nt">
+          Não tem uma conta ainda? 
+          <RouterLink to="/register">Criar Conta</RouterLink>
         </p>
-        <input class="email" type="text" v-model="user.email" placeholder="Insira o seu email...">
-        <input  class="senha" type="password" v-model="user.password" placeholder="Insira a sua senha...">
-        <p class="esq">
-          <a class="esq" href="">Esqueceu sua senha?</a>
-
-        </p>
-
-        <button class="bum" @click="login"><p>Entrar</p></button>
       </div>
-      <div class="hr">
-        
-        <hr>
-        <p>ou</p>
-        <hr>
+
+      <div class="dois">
+        <h1>Alugaê</h1>
+        <img src="/public/imgs/Design sem nome 1.png" alt="">
       </div>
-      <button class="gog"><img src="/public/imgs/Google__G__logo.svg.png" alt="X"><p>Continuar com o google</p></button>
-      <p class="nt">
-        Não tem uma conta ainda?<a href="">Criar conta</a>
-      </p>
-
-
-
     </div>
-    <div class="dois">
-      <h1>Alugaê</h1>
-      <img src="/public/imgs/Design sem nome 1.png" alt="">
-
-    </div>
-
-  </div>
   </section>
 </template>
 

@@ -1,31 +1,94 @@
 <script setup>
+import { reactive } from "vue";
+import axios from "axios";
+
+// estado do formulário
+const form = reactive({
+  username: "",
+  phone: "",
+  email: "",
+  password: "",
+  agree: false,
+});
+
+// função para enviar dados pro backend
+async function registerUser() {
+  if (!form.agree) {
+    alert("Você precisa aceitar os termos e condições.");
+    return;
+  }
+
+  try {
+    const response = await axios.post("http://127.0.0.1:8000/register/", {
+      username: form.username,
+      phone: form.phone,
+      email: form.email,
+      password: form.password,
+    });
+
+    console.log("Usuário criado:", response.data);
+    alert("Conta criada com sucesso!");
+    // exemplo: redirecionar para login depois
+    // router.push("/login")
+  } catch (error) {
+    console.error("Erro ao cadastrar:", error.response?.data || error.message);
+    if (error.response) {
+  console.error("Erro ao cadastrar:", error.response.data);
+  alert("Erro ao criar conta: " + JSON.stringify(error.response.data));
+} else {
+  console.error("Erro:", error.message);
+  alert("Erro inesperado: " + error.message);
+}
+  }
+}
 </script>
 
 <template>
   <section>
-  <div class="square">
-    <div class="um">
-
+    <div class="square">
+      <div class="um">
         <h1>Criar cont<span>a</span></h1>
 
+        <div class="campos">
+          <p class="sub">
+            Já possui uma conta? <a href="/login"><RouterLink to="/login">Log in</RouterLink></a>
+          </p>
+          <div class="peq">
+            <input
+              v-model="form.username"
+              class="usu"
+              type="text"
+              placeholder="Nome de usuário"
+            />
+            <input
+              v-model="form.phone"
+              class="num"
+              type="tel"
+              placeholder="Número de telefone"
+            />
+          </div>
+          <input
+            v-model="form.email"
+            class="email"
+            type="email"
+            placeholder="Insira o seu email..."
+          />
+          <input
+            v-model="form.password"
+            type="password"
+            class="senha"
+            placeholder="Insira a sua senha..."
+          />
 
-      <div class="campos">
-        <p class="sub">
-          Já possui uma conta? <a href="">Log in</a>
-        </p>
-        <div class="peq">
-          <input class="usu" type="text" placeholder="Nome de usuário">
-          <input class="num" type="text" placeholder="número de telefone">
+          <p class="esq">
+            <input v-model="form.agree" class="che" type="checkbox" /> Concordo
+            com os
+            <a class="con" href="">Termos & condições</a>
+          </p>
 
-        </div>
-        <input class="email" type="text" placeholder="Insira o seu email...">
-        <input type="text" class="senha" placeholder="Insira a sua senha...">
-        <p class="esq">
-          <input class="che" type="checkbox">Concordo com os<a class="con" href="">Termos & condições</a>
-
-        </p>
-
-        <button class="bum"><p>Criar Conta</p></button>
+        <button class="bum" @click="registerUser">
+            <p>Criar Conta</p>
+          </button>
       </div>
       <div class="hr">
         <hr>
@@ -68,8 +131,6 @@ section{
   display: flex;
   justify-content: center;
   align-items: center;
-
-
 }
 .square{
   width: 85vw ;
@@ -112,14 +173,17 @@ section{
   text-align: left;
   margin-left: 1.3vw;
   margin-bottom: 1vh;
-
-
-
 }
 .sub a{
   text-decoration: none;
   color: #3853be;
   font-weight: 600;
+}
+.peq{
+  display: flex;
+  flex-direction: row;
+  justify-content: left;
+  align-items: center;
 
 }
 .usu, .num{
@@ -132,6 +196,10 @@ section{
   color:#a1a1a1 ;
   font-size: 0.7rem;
   margin-bottom: 3vh;
+}
+.num{
+  position: relative !important;
+  z-index: 1000 !important;
 }
 .usu{
   margin-right: 2vw;
