@@ -1,1 +1,27 @@
 @import './base.css';
+
+ul {
+    list-style: none;
+}
+* {
+    font-family: 'Poppins';
+}
+a{
+    text-decoration: none;
+}
+p, h1, h2, h3, h4, h5, h6, a, span{
+    font-family: poppins, sans-serif;
+    text-decoration: none;
+}
+span {
+    font-weight: 600;
+}
+body {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    background-color: #f5f5f5;
+    overflow-x: hidden;
+}
+
+
