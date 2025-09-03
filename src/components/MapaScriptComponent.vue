@@ -11,8 +11,12 @@ const produtos = reactive([
   { id: 3, nome: 'Lanterna', preco: 10, estrelas: 4, cidade: 'Joinville', estado: 'SC', likes: 14, liked: false, imagem: 'https://picsum.photos/400/300?random=102', categoria: 'Casa e utilidades', lat: -26.3060, lng: -48.8450 },
   { id: 4, nome: 'Fogareiro', preco: 40, estrelas: 3, cidade: 'Joinville', estado: 'SC', likes: 12, liked: false, imagem: 'https://picsum.photos/400/300?random=103', categoria: 'Esporte e lazer', lat: -26.3055, lng: -48.8447 },
   { id: 5, nome: 'Mochila', preco: 50, estrelas: 5, cidade: 'Joinville', estado: 'SC', likes: 10, liked: false, imagem: 'https://picsum.photos/400/300?random=104', categoria: 'Roupas e acessorios', lat: -26.3048, lng: -48.8472 },
+  { id: 5, nome: 'Eu', preco: 50, estrelas: 5, cidade: 'Joinville', estado: 'SC', likes: 10, liked: false, imagem: 'https://picsum.photos/400/300?random=104', categoria: 'Roupas e acessorios', lat: -26.3045, lng: -48.8460 },
 ])
-
+const minhaLocalizacao = reactive({
+  lat: -26.3045,
+  lng: -48.8460
+});
 const categorias = [
   { id: 1, nome: 'Eventos e festas', imagem: './public/images/categoria/categoriaFantasias.jpg' },
   { id: 2, nome: 'Esporte e lazer', imagem: './public/images/categoria/categoriaCamping.jpg' },
@@ -138,6 +142,9 @@ const distanciaSelecionada = ref(null)
 
 function distancia(valor) {
   distanciaSelecionada.value = valor
+  for (produto of produtos) {
+    
+  }
 }
 const categoriasSelecionadas = ref([]);
 // valores mínimo e máximo
@@ -225,7 +232,7 @@ onMounted(async () => {
       <div class="slider-overlay">
         <div class="double-slider-box">
           <div class="price-slider">
-            <h3>{{ precoMin }}</h3>
+            <h3>R${{ precoMin }}</h3>
             <div class="input-wrapper slider-event-shield">
               <input type="range" class="range-slider" :min="precoMin" :max="precoMax" v-model="precoSelecionado"
                 @input="atualizarTooltip" @mousedown.stop @touchstart.stop ref="rangeSlider" />
@@ -233,7 +240,7 @@ onMounted(async () => {
                 R${{ precoSelecionado }}
               </div>
             </div>
-            <h3>{{ precoMax }}</h3>
+            <h3>R${{ precoMax }}</h3>
           </div>
 
         </div>
@@ -260,6 +267,8 @@ p,
 h1,
 h2,
 label,
+div,
+h3,
 button {
   font-family: poppins, sans-serif;
 }
@@ -356,7 +365,7 @@ div.filtroAberto {
   border-radius: 0.4vw;
   box-shadow: 0 0.2vw 0.6vw rgba(0, 0, 0, 0.25);
   height: 75vh;
-  width: 28vw;
+  width: 32vw;
   z-index: 1000;
   padding: 0.5vw;
   pointer-events: auto;
@@ -368,6 +377,9 @@ div.tituloFiltro {
   text-align: center;
   align-items: center;
   margin: 1vw 3vw 0 0.7vw;
+}
+div.tituloFiltro span {
+  cursor: pointer;
 }
 div.filtroAberto h1 {
   text-align: center;
@@ -384,6 +396,8 @@ div.filtroAberto h2 {
 }
 
 div.filtroAberto div.distancia {
+  display: flex;
+  justify-content: center;
   margin: 0 0 0 1vw;
   gap: 0.6vw;
 }
@@ -392,7 +406,7 @@ div.filtroAberto div.distancia button {
   color: black;
   background-color: #D9D9D9;
   border: none;
-  width: 5.7vw;
+  width: 6.5vw;
   height: 4.5vh;
   border-radius: 0.4vw;
   font-size: 1vw;
@@ -480,10 +494,8 @@ div.double-slider-box .price-slider h3 {
 }
 
 div.double-slider-box {
-  margin-top: 2vh;
-  padding: 1vh 3vw;
-  border-radius: 0.6vw;
-  width: 30vw;
+  margin: 4vw 2vw 2vw 2vw;
+  width: 40vw;
 }
 
 .price-slider {
