@@ -157,15 +157,16 @@ const rangeSlider = ref(null)
 function atualizarTooltip() {
   const slider = rangeSlider.value
   if (!slider) return
-
   const val = precoSelecionado.value
+  const min = parseInt(slider.min)
   const max = parseInt(slider.max)
-
-  tooltipPos.value = (val / max) * 100
-  const progress = tooltipPos.value
-  slider.style.background = `linear-gradient(to right, #1D2D51 ${progress}%, #ddd ${progress}%)`
+  const percent = ((val - min) / (max - min)) * 100
+  const sliderWidth = slider.offsetWidth
+  const thumbWidth = sliderWidth * 0.02
+  const offsetPercent = (thumbWidth / 2 / sliderWidth) * 100
+  tooltipPos.value = percent - offsetPercent
+  slider.style.background = `linear-gradient(to right, #1D2D51 ${percent}%, #ddd ${percent}%)`
 }
-
 // ✅ Isso garante que o background apareça assim que carregar
 onMounted(async () => {
   await nextTick()
@@ -199,7 +200,11 @@ onMounted(async () => {
     </button>
 
     <div v-if="filtroAberto" class="filtroAberto" @mousedown.stop @touchstart.stop>
+      <div class="tituloFiltro">
+      <span class="mdi  mdi-chevron-left" @click="abrirFiltro "></span>
       <h1>Filtros</h1>
+      </div>
+
       <h2>Distancia</h2>
       <div class="distancia">
         <button @click="distancia(2)" :class="{ ativo: distanciaSelecionada === 2 }">Até 2km</button>
@@ -327,7 +332,7 @@ button.filtro {
   border-radius: 6px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
   display: flex;
-  height: 5vh;
+  height: 7vh;
   justify-content: center;
   text-align: center;
   align-items: center;
@@ -345,44 +350,53 @@ button.filtro h2 {
 
 div.filtroAberto {
   position: absolute;
-  margin: 1vw 1vw 1vw 1vw;
+  margin: 1vw;
   background: white;
   border: none;
-  border-radius: 6px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  border-radius: 0.4vw;
+  box-shadow: 0 0.2vw 0.6vw rgba(0, 0, 0, 0.25);
   height: 75vh;
   width: 28vw;
   z-index: 1000;
-  padding: 5px;
+  padding: 0.5vw;
   pointer-events: auto;
 }
-
-div.filtroAberto h1 {
-  font-size: 32px;
-  margin: 1vw 1vw 0 1vw;
+div.tituloFiltro {
   color: black;
+  font-size: 2vw;
+  display: flex;
+  text-align: center;
+  align-items: center;
+  margin: 1vw 3vw 0 0.7vw;
 }
-
+div.filtroAberto h1 {
+  text-align: center;
+  margin: 1vw;
+  font-size: 2vw;
+  margin: 0 auto; /* centraliza horizontalmente */
+  color: black;
+  width: 100%; /* garante que ocupe toda a largura do container */
+}
 div.filtroAberto h2 {
   color: black;
-  font-size: 20px;
-  margin: 1.5vw 1vw 0.2vw 1vw;
+  font-size: 1.2vw;
+  margin: 0.7vw 1vw 0.2vw 1vw;
 }
 
 div.filtroAberto div.distancia {
   margin: 0 0 0 1vw;
-  gap: 10px;
+  gap: 0.6vw;
 }
 
 div.filtroAberto div.distancia button {
   color: black;
   background-color: #D9D9D9;
   border: none;
-  width: 6vw;
+  width: 5.7vw;
   height: 4.5vh;
-  border-radius: 6px;
-  font-size: 16px;
-  margin: 0 10px 0 0;
+  border-radius: 0.4vw;
+  font-size: 1vw;
+  margin: 0 0.6vw 0 0;
 }
 
 div.filtroAberto div.distancia button.ativo {
@@ -393,29 +407,23 @@ div.filtroAberto div.distancia button.ativo {
 .categorias {
   display: flex;
   flex-wrap: wrap;
-  /* permite quebra de linha */
-  gap: 10px;
-  /* espaço entre os itens */
+  gap: 0.6vw;
   margin-left: 1vw;
   max-width: 100%;
-  /* garante que o container respeite a largura da tela */
 }
 
 .checkbox-container {
-  flex: 1 1 200px;
-  /* cresce e encolhe, base 200px */
-  min-width: 150px;
-  /* nunca menor que 150px */
+  flex: 1 1 10vw; /* cresce e encolhe, base 10vw */
+  min-width: 8vw;
 }
 
 input[type="checkbox"] {
-  width: 24px;
-  height: 24px;
+  width: 1.3vw;
+  height: 1.3vw;
   -webkit-appearance: none;
-  /* remove estilo padrão */
   appearance: none;
-  border: 2px solid #CDCDCD;
-  border-radius: 4px;
+  border: 0.1vw solid #CDCDCD;
+  border-radius: 0.3vw;
   position: relative;
   cursor: pointer;
 }
@@ -424,13 +432,12 @@ input[type="checkbox"] {
 input[type="checkbox"]:checked::after {
   content: "";
   position: absolute;
-  left: 8px;
-  /* ajusta para centralizar */
-  top: 4px;
-  width: 6px;
-  height: 12px;
+  left: 0.5vw;
+  top: 0.2vw;
+  width: 0.4vw;
+  height: 0.8vw;
   border: solid white;
-  border-width: 0 2px 2px 0;
+  border-width: 0 0.2vw 0.2vw 0;
   transform: rotate(45deg);
 }
 
@@ -441,54 +448,46 @@ input[type="checkbox"]:checked {
 }
 
 .checkbox-container {
-  width: 200px;
-  /* largura fixa de cada checkbox + label */
+  width: 10vw;
 }
 
 .categorias {
   display: flex;
   flex-wrap: wrap;
-  /* permite quebrar linha */
-  gap: 10px;
-  /* espaço entre os checkboxes */
+  gap: 0.5vw;
   margin: 0 0 0 1vw;
 }
 
 .checkbox-container {
-  width: 200px;
-  /* largura fixa que permite múltiplos itens por linha */
+  width: 10vw;
 }
 
 label {
   display: flex;
-  /* transforma em flex container */
   align-items: center;
-  /* centraliza verticalmente */
-  gap: 8px;
-  /* espaço entre checkbox e texto */
+  gap: 0.5vw;
   cursor: pointer;
-  /* muda cursor ao passar o mouse */
   color: black;
-  font-size: 16px;
-  width: 14vw;
+  font-size: 1vw;
+  width: 18vw;
 }
-
 /* Marca de seleção */
 
 /* Marca de check */
 div.double-slider-box .price-slider h3 {
-  font-size: 1.2rem;
+  font-size: 1.2vw;
   color: #1D2D51;
 }
 
 div.double-slider-box {
-  margin-top: 20px;
-  padding: 10px 40px;
-  border-radius: 10px;
+  margin-top: 2vh;
+  padding: 1vh 3vw;
+  border-radius: 0.6vw;
+  width: 30vw;
 }
 
 .price-slider {
-  margin: 30px 0;
+  margin: 3vh 0;
   display: flex;
   align-items: center;
   flex-wrap: wrap;
@@ -497,48 +496,75 @@ div.double-slider-box {
 .input-wrapper {
   position: relative;
   display: flex;
-  margin: 0 15px;
-  min-width: 200px;
+  margin: 0 1vw;
+  min-width: 15vw;
 }
 
 .input-wrapper input {
   -webkit-appearance: none;
-  height: 1rem;
+  height: 1vh;
   outline: none;
   border: none;
   width: 100%;
   background: linear-gradient(to right, #1D2D51 50%, #ddd 50%);
-  border-radius: 10px;
+  border-radius: 0.6vw;
 }
 
 .input-wrapper input[type="range"]::-moz-range-thumb {
   -moz-appearance: none;
-  border: 0.5rem solid white;
+  border: none;
+  background-color: #1D2D51;
   pointer-events: auto;
   cursor: pointer;
-  border-radius: 10px;
+  border-radius: 0.6vw;
+    border-radius: 50%; /* bolinha perfeita */
 }
 
 .input-wrapper input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
-  width: 3rem;
-  height: 3rem;
-  border: 1rem solid white;
-  background-color: #CDCDCD;
+  width: 1.5vw;
+  height: 1.5vw;
+  border: none;
+  background-color: #1D2D51;
+  border-radius: 50%; /* bolinha perfeita */
   pointer-events: auto;
   cursor: pointer;
-  border-radius: 10px;
 }
-
 .tooltip {
   background-color: #1D2D51;
   color: white;
-  border-radius: 25rem;
-  bottom: 120%;
+  border-radius: 50vw;
   position: absolute;
-  left: 50%;
-  transform: translateX(-50%) translateY(-50%);
+  transform: translateX(-50%) translateY(-100%);
+  bottom: 0vw;
   font-weight: 600;
-  padding: 10px;
+  padding: 0.3vw 0.8vw;
+  font-size: 0.9vw;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 10;
+  transition: left 0.05s ease;
+}
+div.botooes {
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  align-items: center;
+  gap: 1.4vw;
+}
+div.botooes button.cancelar {
+  width: 7vw;
+  height: 5vh;
+  border: none;
+  border-radius: 0.5vw;
+}
+div.botooes button.pronto {
+  width: 7vw;
+  height: 5vh;
+  background-color: #1D2D51;
+  color: white;
+  font-weight: bold;
+  border: none;
+  border-radius: 0.5vw;
 }
 </style>

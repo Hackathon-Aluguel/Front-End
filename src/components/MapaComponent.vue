@@ -108,7 +108,9 @@ section ul li.produto img {
 }
 section ul li.produto div.info{
 display: flex;
-
+}
+section ul li.produto div.info div.nome {
+  width: 11vw;
 }
 section ul li.produto div.info p.categoria {
   color: #BEBEBE;
