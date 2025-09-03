@@ -51,7 +51,7 @@ async function registerUser() {
 
         <div class="campos">
           <p class="sub">
-            Já possui uma conta? <a href="/login"><RouterLink to="/login">Log in</RouterLink></a>
+            Já possui uma conta? <RouterLink to="/login">Log in</RouterLink>
           </p>
           <div class="peq">
             <input

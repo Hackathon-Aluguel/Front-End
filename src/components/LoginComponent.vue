@@ -1,31 +1,51 @@
 <script setup>
 import { reactive, ref } from 'vue'
+import { useRouter } from 'vue-router'
 import api from '@/services/api'
-import { RouterLink } from 'vue-router'
+
+const router = useRouter()
 
 const user = reactive({
   email: '',
   password: ''
 })
 
-const userData = ref({})
+// feedback visual (pode usar no template se quiser)
+const loading = ref(false)
+const errorMessage = ref('')
 
 async function login() {
+  loading.value = true
+  errorMessage.value = ''
+
   try {
     const response = await api.post('token/', {
       email: user.email,
-      password: user.password
+      password: user.password,
     })
 
+    // salva tokens
     localStorage.setItem('access_token', response.data.access)
     localStorage.setItem('refresh_token', response.data.refresh)
 
-    Object.assign(userData.value, response.data)
-    console.log("Login OK:", response.data)
+    console.log('Login OK:', response.data)
+
+    // redireciona para home (ou dashboard, ajuste se quiser)
+    router.push('/')
   } catch (error) {
-    console.error("Erro no login:", error.response?.data || error.message)
+  console.error('Erro no login:', error.response?.data || error.message)
+
+  if (error.response?.data?.detail) {
+    // pega a mensagem de erro enviada pelo backend
+    errorMessage.value = error.response.data.detail
+  } else {
+    errorMessage.value = 'Erro ao conectar com o servidor.'
   }
 }
+}
+
+console.log('Mensagem de erro que vai aparecer:', errorMessage.value)
+
 </script>
 
 <template>
@@ -40,6 +60,11 @@ async function login() {
           <input class="senha" type="password" v-model="user.password" placeholder="Insira a sua senha...">
           <p class="esq"><a class="esq" href="">Esqueceu sua senha?</a></p>
           <button class="bum" @click="login"><p>Entrar</p></button>
+
+          <div class="error-container">
+          <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
+          </div>
+
         </div>
 
         <div class="hr">
@@ -52,7 +77,7 @@ async function login() {
         </button>
 
         <p class="nt">
-          Não tem uma conta ainda? 
+          Não tem uma conta ainda?
           <RouterLink to="/register">Criar Conta</RouterLink>
         </p>
       </div>
@@ -95,11 +120,12 @@ section{
   height: 90vh;
   border-radius: 1.4vw;
   background-color: rgb(255, 255, 255);
-  display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
   position: relative;
+  display: flex;
+  flex-wrap: wrap;
 }
 .um{
   display: flex;
@@ -113,9 +139,7 @@ section{
 .um h1{
   text-align: center;
   position: relative;
-  bottom: 9vh;
-
-
+  bottom: 3vh;
 
   font-weight: 700;
   color: black;
@@ -130,12 +154,10 @@ section{
   text-align: left;
   margin-left: 1.3vw;
   margin-bottom: 1vh;
-
-
-
 }
 .email, .senha{
-  width: 28vw;
+  width: 87%;
+
   height: 5vh;
   border-radius: 0.8vw;
   border: none;
@@ -149,11 +171,12 @@ section{
   margin-top: 1.6vw;
 }
 
-
 .campos{
   display: flex;
   flex-direction: column;
-  justify-content: left;
+  justify-content: center;
+  max-width: 100%;
+  object-fit: contain;
 }
 .esq{
   text-align: end;
@@ -164,14 +187,22 @@ section{
   text-decoration: none;
   margin-top: 0.4vh;
   margin-right: 0.4vw;
-
-
+}
+.error-container {
+    width: 100%;
+    text-align: center;
+    margin-top: 50px; /* Ajustável */
+}
+.error-message {
+    color: red;
+    font-size: 14px;
 }
 .bum{
   position: relative;
   top: 5vh;
   border: none;
-  width: 28VW;
+  width: 100%;
+  max-width: 400px;
   height: 5vh;
   border-radius: 0.8vw;
   font-family: poppins, sans-serif;
@@ -185,7 +216,7 @@ section{
   justify-content: center;
 }
 .hr{
-  margin-top: 3.5vw;
+  margin-top: 1vw;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -261,14 +292,16 @@ section{
 
 }
 .dois img{
-
+  width: 100%;
+  max-height: 100%;
+  object-fit: contain;
   width: 58vw;
   height: 75vh;
   position: relative;
-  right: 1vw;
-  top: 10vh;
-  position: absolute;
+  right: 21vw;
+  top: -8vh;
 
+  pointer-events: none;
 
 }
 
