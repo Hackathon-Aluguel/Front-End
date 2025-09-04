@@ -1,3 +1,4 @@
+
 <script setup>
 import { ref, onMounted, watch, reactive, nextTick } from "vue";
 import L from "leaflet";
@@ -5,18 +6,21 @@ import "leaflet/dist/leaflet.css";
 import { Carousel, Slide, Navigation } from 'vue3-carousel';
 import 'vue3-carousel/dist/carousel.css'
 
-const produtos = reactive([
+const produtos = reactive([])
+
+const produtosAntes = reactive([
   { id: 1, nome: 'Pantufas extremamente macias', preco: 30, estrelas: 4, cidade: 'Joinville', estado: 'SC', likes: 20, liked: false, imagem: 'https://picsum.photos/400/300?random=100', categoria: 'Roupas e acessorios', lat: -26.3044, lng: -48.8463 },
   { id: 2, nome: 'Saco de dormir', preco: 25, estrelas: 5, cidade: 'Joinville', estado: 'SC', likes: 4, liked: false, imagem: 'https://picsum.photos/400/300?random=101', categoria: 'Esporte e lazer', lat: -26.3052, lng: -48.8439 },
   { id: 3, nome: 'Lanterna', preco: 10, estrelas: 4, cidade: 'Joinville', estado: 'SC', likes: 14, liked: false, imagem: 'https://picsum.photos/400/300?random=102', categoria: 'Casa e utilidades', lat: -26.3060, lng: -48.8450 },
   { id: 4, nome: 'Fogareiro', preco: 40, estrelas: 3, cidade: 'Joinville', estado: 'SC', likes: 12, liked: false, imagem: 'https://picsum.photos/400/300?random=103', categoria: 'Esporte e lazer', lat: -26.3055, lng: -48.8447 },
   { id: 5, nome: 'Mochila', preco: 50, estrelas: 5, cidade: 'Joinville', estado: 'SC', likes: 10, liked: false, imagem: 'https://picsum.photos/400/300?random=104', categoria: 'Roupas e acessorios', lat: -26.3048, lng: -48.8472 },
-  { id: 5, nome: 'Eu', preco: 50, estrelas: 5, cidade: 'Joinville', estado: 'SC', likes: 10, liked: false, imagem: 'https://picsum.photos/400/300?random=104', categoria: 'Roupas e acessorios', lat: -26.3045, lng: -48.8460 },
+  { id: 6, nome: 'Eu', preco: 50, estrelas: 5, cidade: 'Joinville', estado: 'SC', likes: 10, liked: false, imagem: 'https://picsum.photos/400/300?random=105', categoria: 'Roupas e acessorios', lat: -26.3045, lng: -48.8460 },
+  { id: 7, nome: 'Barraca de Camping', preco: 120, estrelas: 5, cidade: 'Araquari', estado: 'SC', likes: 8, liked: false, imagem: 'https://picsum.photos/400/300?random=106', categoria: 'Esporte e lazer', lat: -26.2610, lng: -48.7730 },
+  { id: 8, nome: 'Corda de Escalada', preco: 80, estrelas: 4, cidade: 'Jaraguá do Sul', estado: 'SC', likes: 15, liked: false, imagem: 'https://picsum.photos/400/300?random=107', categoria: 'Esporte e lazer', lat: -26.4850, lng: -49.0710 },
+  { id: 9, nome: 'Caiaque Inflável', preco: 150, estrelas: 5, cidade: 'Schroeder', estado: 'SC', likes: 12, liked: false, imagem: 'https://picsum.photos/400/300?random=108', categoria: 'Esporte e lazer', lat: -26.3580, lng: -48.8700 },
+  { id: 10, nome: 'Kit Pesca', preco: 60, estrelas: 4, cidade: 'Garuva', estado: 'SC', likes: 5, liked: false, imagem: 'https://picsum.photos/400/300?random=109', categoria: 'Esporte e lazer', lat: -26.1680, lng: -48.6010 },
 ])
-const minhaLocalizacao = reactive({
-  lat: -26.3045,
-  lng: -48.8460
-});
+
 const categorias = [
   { id: 1, nome: 'Eventos e festas', imagem: './public/images/categoria/categoriaFantasias.jpg' },
   { id: 2, nome: 'Esporte e lazer', imagem: './public/images/categoria/categoriaCamping.jpg' },
@@ -27,24 +31,26 @@ const categorias = [
   { id: 7, nome: 'Roupas e acessorios', imagem: './public/images/categoria/categoriaLimpeza.jpg' },
   { id: 8, nome: 'Instrumentos musicais', imagem: './public/images/categoria/categoriaLimpeza.jpg' },
 ]
+const minhaLocalizacao = reactive({
+  lat: -26.3045,
+  lng: -48.8460
+});
+
 // Controle do card
 const showCarrossel = ref(false)
 const produtoSelecionado = ref(null)
 const cardTop = ref(0)
 const cardLeft = ref(0)
 
-// Função para abrir o card
 function abrirCarrossel(produto, marker) {
   produtoSelecionado.value = produto;
   showCarrossel.value = true;
   updateCardPosition(marker);
 }
 
-// Carrossel de imagens
 const imagesSingle1 = Array.from({ length: 5 }, (_, index) => ({ id: index + 1, url: `https://picsum.photos/400/300?random=${index + 100}` }))
 const configSingle1 = { height: 200, width: 300, itemsToShow: 1, snapAlign: 'start' }
 
-// Props para hover
 const props = defineProps({ hoverId: Number })
 
 let userMarker = null
@@ -61,9 +67,7 @@ function packageIcon(background = '#244e84', color = 'white') {
   })
 }
 
-// Lista de produtos com coordenadas fixas
-
-// Atualiza posição do card sobre o marcador
+// Atualiza posição do card
 function updateCardPosition(marker) {
   const latlng = marker ? marker.getLatLng() : userMarker?.getLatLng()
   if (!latlng) return
@@ -73,28 +77,31 @@ function updateCardPosition(marker) {
 }
 
 onMounted(() => {
-  window.map = L.map("map", {
-    zoomControl: false // desativa o zoom padrão
-  }).setView([-26.3044, -48.8463], 14);
+  window.addProdutoMarkers = addProdutoMarkers
+  function clearProdutoMarkers() {
+    produtoMarkers.forEach(m => window.map.removeLayer(m))
+    produtoMarkers.length = 0
+  }
 
-  // adiciona o zoom no canto superior direito
-  L.control.zoom({
-    position: "topright" // opções: 'topleft', 'topright', 'bottomleft', 'bottomright'
-  }).addTo(window.map);
+  function addProdutoMarkers(lista) {
+    clearProdutoMarkers()
+    for (const produto of lista) {
+      const marker = L.marker([produto.lat, produto.lng], { icon: packageIcon() }).addTo(window.map)
+      marker.produtoId = produto.id
+      marker.on("click", () => abrirCarrossel(produto, marker))
+      produtoMarkers.push(marker)
+    }
+  }
+
+  window.map = L.map("map", { zoomControl: false }).setView([-26.3044, -48.8463], 14);
+
+  L.control.zoom({ position: "topright" }).addTo(window.map);
 
   L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
     attribution: "&copy; OpenStreetMap &copy; CARTO",
     subdomains: "abcd",
     maxZoom: 19,
   }).addTo(window.map);
-
-  // Marcadores dos produtos
-  for (const produto of produtos) {
-    const marker = L.marker([produto.lat, produto.lng], { icon: packageIcon() }).addTo(window.map);
-    marker.produtoId = produto.id
-    marker.on("click", () => abrirCarrossel(produto, marker));
-    produtoMarkers.push(marker)
-  }
 
   // Localização do usuário
   window.map.locate({ watch: true, setView: false, maxZoom: 16, enableHighAccuracy: true });
@@ -108,53 +115,68 @@ onMounted(() => {
         updateCardPosition(userMarker)
       })
     }
-  })
-  window.map.on("locationerror", (e) => console.error("Erro ao obter localização:", e.message))
+    minhaLocalizacao.lat = e.latlng.lat
+    minhaLocalizacao.lng = e.latlng.lng
 
-  // Fecha o card ao clicar fora
+    // chama o filtro inicial após saber a localização do usuário
+    distancia(distanciaSelecionada.value)
+  })
+
   window.map.on("click", () => { showCarrossel.value = false })
 
-  // Atualiza posição do card ao mover ou dar zoom
   window.map.on("move zoomend", () => {
     if (showCarrossel.value && produtoSelecionado.value) {
       const marker = produtoMarkers.find(m => m.produtoId === produtoSelecionado.value.id)
       updateCardPosition(marker)
     }
   })
+
+  // 👉 Torna a função acessível fora do onMounted
+  window.addProdutoMarkers = addProdutoMarkers
 })
 
-// Watch para hover nos marcadores
 watch(() => props.hoverId, (id) => {
   produtoMarkers.forEach(marker => {
     if (marker.produtoId === id)
-      marker.setIcon(packageIcon('white', '#244e84')) // hover
+      marker.setIcon(packageIcon('white', '#244e84'))
     else
-      marker.setIcon(packageIcon('#244e84', 'white')) // normal
+      marker.setIcon(packageIcon('#244e84', 'white'))
   })
 })
+
 let filtroAberto = ref(false)
-function abrirFiltro() {
-  filtroAberto.value = !filtroAberto.value
+function abrirFiltro() { filtroAberto.value = !filtroAberto.value }
+
+// Calculo de distancia (Haversine)
+function calcularDistancia(lat1, lng1, lat2, lng2) {
+  const R = 6371
+  const toRad = (deg) => deg * Math.PI / 180
+  const dLat = toRad(lat2 - lat1)
+  const dLng = toRad(lng2 - lng1)
+  const a = Math.sin(dLat / 2) ** 2 +
+    Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+    Math.sin(dLng / 2) ** 2
+  const c = 2 * Math.asin(Math.sqrt(a))
+  return R * c
 }
 
+const distanciaSelecionada = ref(2) // valor inicial 2km
 
-const distanciaSelecionada = ref(null)
+function distancia(km) {
+  distanciaSelecionada.value = km
 
-function distancia(valor) {
-  distanciaSelecionada.value = valor
-  for (produto of produtos) {
-    
-  }
+  const filtrados = produtosAntes.filter(p => {
+    const d = calcularDistancia(minhaLocalizacao.lat, minhaLocalizacao.lng, p.lat, p.lng)
+    return d <= km
+  })
+
+  produtos.length = 0
+  filtrados.forEach(p => produtos.push(p))
+
+  if (window.addProdutoMarkers) window.addProdutoMarkers(produtos)
 }
-const categoriasSelecionadas = ref([]);
-// valores mínimo e máximo
-const min = ref(0);
-const max = ref(100);
 
-// valor selecionado
-const value = ref(50);
-
-// SLIDER DO FILTROOOOOOOOOOOO 
+// Slider de preço
 const precoMin = 100
 const precoMax = 5000
 const precoSelecionado = ref(2500)
@@ -174,13 +196,12 @@ function atualizarTooltip() {
   tooltipPos.value = percent - offsetPercent
   slider.style.background = `linear-gradient(to right, #1D2D51 ${percent}%, #ddd ${percent}%)`
 }
-// ✅ Isso garante que o background apareça assim que carregar
+
 onMounted(async () => {
   await nextTick()
   atualizarTooltip()
 })
 </script>
-
 <template>
   <div id="map">
     <div v-if="showCarrossel && produtoSelecionado" class="carrossel-container"
@@ -208,15 +229,15 @@ onMounted(async () => {
 
     <div v-if="filtroAberto" class="filtroAberto" @mousedown.stop @touchstart.stop>
       <div class="tituloFiltro">
-      <span class="mdi  mdi-chevron-left" @click="abrirFiltro "></span>
-      <h1>Filtros</h1>
+        <span class="mdi  mdi-chevron-left" @click="abrirFiltro"></span>
+        <h1>Filtros</h1>
       </div>
 
       <h2>Distancia</h2>
       <div class="distancia">
-        <button @click="distancia(2)" :class="{ ativo: distanciaSelecionada === 2 }">Até 2km</button>
-        <button @click="distancia(5)" :class="{ ativo: distanciaSelecionada === 5 }">5km</button>
-        <button @click="distancia(10)" :class="{ ativo: distanciaSelecionada === 10 }">10km</button>
+        <button @click="distancia(15)" :class="{ ativo: distanciaSelecionada === 5 }">Até 2km</button>
+        <button @click="distancia(16)" :class="{ ativo: distanciaSelecionada === 5 }">5km</button>
+        <button @click="distancia(17)" :class="{ ativo: distanciaSelecionada === 10 }">10km</button>
         <button @click="distancia(20)" :class="{ ativo: distanciaSelecionada === 20 }">20km</button>
       </div>
       <h2>Categoria</h2>
@@ -370,6 +391,7 @@ div.filtroAberto {
   padding: 0.5vw;
   pointer-events: auto;
 }
+
 div.tituloFiltro {
   color: black;
   font-size: 2vw;
@@ -378,17 +400,22 @@ div.tituloFiltro {
   align-items: center;
   margin: 1vw 3vw 0 0.7vw;
 }
+
 div.tituloFiltro span {
   cursor: pointer;
 }
+
 div.filtroAberto h1 {
   text-align: center;
   margin: 1vw;
   font-size: 2vw;
-  margin: 0 auto; /* centraliza horizontalmente */
+  margin: 0 auto;
+  /* centraliza horizontalmente */
   color: black;
-  width: 100%; /* garante que ocupe toda a largura do container */
+  width: 100%;
+  /* garante que ocupe toda a largura do container */
 }
+
 div.filtroAberto h2 {
   color: black;
   font-size: 1.2vw;
@@ -427,7 +454,8 @@ div.filtroAberto div.distancia button.ativo {
 }
 
 .checkbox-container {
-  flex: 1 1 10vw; /* cresce e encolhe, base 10vw */
+  flex: 1 1 10vw;
+  /* cresce e encolhe, base 10vw */
   min-width: 8vw;
 }
 
@@ -485,6 +513,7 @@ label {
   font-size: 1vw;
   width: 18vw;
 }
+
 /* Marca de seleção */
 
 /* Marca de check */
@@ -529,7 +558,8 @@ div.double-slider-box {
   pointer-events: auto;
   cursor: pointer;
   border-radius: 0.6vw;
-    border-radius: 50%; /* bolinha perfeita */
+  border-radius: 50%;
+  /* bolinha perfeita */
 }
 
 .input-wrapper input[type="range"]::-webkit-slider-thumb {
@@ -538,10 +568,12 @@ div.double-slider-box {
   height: 1.5vw;
   border: none;
   background-color: #1D2D51;
-  border-radius: 50%; /* bolinha perfeita */
+  border-radius: 50%;
+  /* bolinha perfeita */
   pointer-events: auto;
   cursor: pointer;
 }
+
 .tooltip {
   background-color: #1D2D51;
   color: white;
@@ -557,6 +589,7 @@ div.double-slider-box {
   z-index: 10;
   transition: left 0.05s ease;
 }
+
 div.botooes {
   display: flex;
   justify-content: center;
@@ -564,12 +597,14 @@ div.botooes {
   align-items: center;
   gap: 1.4vw;
 }
+
 div.botooes button.cancelar {
   width: 7vw;
   height: 5vh;
   border: none;
   border-radius: 0.5vw;
 }
+
 div.botooes button.pronto {
   width: 7vw;
   height: 5vh;
