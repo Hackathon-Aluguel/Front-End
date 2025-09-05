@@ -1,6 +1,8 @@
 <script setup>
 import { ref, onMounted, nextTick } from 'vue'
+import { useProdutosStore } from '@/stores/produtos'
 
+const produtosStore = useProdutosStore()
 const props = defineProps({
     produtosAntes: Array,
     precoMin: Number,
@@ -12,7 +14,6 @@ const emit = defineEmits(['filtrar', 'fechar'])
 const filtroAberto = ref(true)
 const categoriasSelecionadas = ref([])
 const precoSelecionado = ref(props.precoMax / 2)
-const distanciaSelecionada = ref(2)
 const tooltipPos = ref(50)
 const rangeSlider = ref(null)
 
@@ -20,13 +21,7 @@ const minhaLocalizacao = reactive({
     lat: -26.3045,
     lng: -48.8460
 });
-const produtos = reactive([
-    { id: 1, nome: 'Pantufas extremamente macias', preco: 30, estrelas: 4, cidade: 'Joinville', estado: 'SC', likes: 20, liked: false, imagem: 'https://picsum.photos/400/300?random=100', categoria: 'Roupas e acessorios' },
-    { id: 2, nome: 'Saco de dormir', preco: 25, estrelas: 5, cidade: 'Joinville', estado: 'SC', likes: 4, liked: false, imagem: 'https://picsum.photos/400/300?random=101', categoria: 'Esporte e lazer' },
-    { id: 3, nome: 'Lanterna', preco: 10, estrelas: 4, cidade: 'Joinville', estado: 'SC', likes: 14, liked: false, imagem: 'https://picsum.photos/400/300?random=102', categoria: 'Casa e utilidades' },
-    { id: 4, nome: 'Fogareiro', preco: 40, estrelas: 3, cidade: 'Joinville', estado: 'SC', likes: 12, liked: false, imagem: 'https://picsum.photos/400/300?random=103', categoria: 'Esporte e lazer' },
-    { id: 5, nome: 'Mochila', preco: 50, estrelas: 5, cidade: 'Joinville', estado: 'SC', likes: 10, liked: false, imagem: 'https://picsum.photos/400/300?random=104', categoria: 'Roupas e acessorios' },
-])
+
 
 const categorias = [
     { id: 1, nome: 'Eventos e festas', imagem: './public/images/categoria/categoriaFantasias.jpg' },
@@ -55,16 +50,17 @@ function calcularDistanciaMetros(lat1, lng1, lat2, lng2) {
 
     const distancia = R * c; // distância em metros
     return distancia;
-}
-const filtrados = [];
-distanciaSelecionada(distanciaMetros) {
-    for (const produto of produtos) {
+};
+function distanciaSelecionada(distanciaMetros) {
+    const filtrados = [];
+    for (const produto of produtosStore.produtos) {
         const distanciaFinal = calcularDistanciaMetros(produto.lat, produto.lng, minhaLocalizacao.lat, minhaLocalizacao.lng)
 
-        if (distanciaFinal > distanciaMetros) {
+        if (distanciaFinal <= distanciaMetros) {
             filtrados.push(produto)
         }
     }
+    return filtrados
 };
 
 </script>
