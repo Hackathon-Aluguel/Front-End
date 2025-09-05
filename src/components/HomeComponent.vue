@@ -318,7 +318,7 @@ function toggleLike(produto) {
           <h2>Depois de finalizar o aluguel, basta aguardar com tranquilidade: o produto será entregue no endereço
             informado de forma rápida e segura.</h2>
         </div>
-        
+
       </li>
       <li class="caminhoEsquerda">
         <img src="/public/images/passos/esquerdaDireita.png" alt="">
@@ -405,7 +405,7 @@ function toggleLike(produto) {
       </li>
     </ul>
   </section>
-  
+
 
 <FooterComponent/>
 </template>
@@ -930,8 +930,8 @@ section.passoApasso ul {
   /* cada li embaixo do outro */
   justify-content: center;
   align-items: center;
-   margin: 6vw auto 4vw auto; 
-  width: 80%; 
+   margin: 6vw auto 4vw auto;
+  width: 80%;
 }
 
 /* PAASSO 1 */
