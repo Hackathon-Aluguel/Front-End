@@ -4,7 +4,7 @@ import Datepicker from '@vuepic/vue-datepicker'
 import '@vuepic/vue-datepicker/dist/main.css'
 
 const produtos = reactive([
-  {
+   {
     id: 1,
     nome: 'pantufas extremamente macias',
     preco: 30,
@@ -144,7 +144,7 @@ function remover(id) {
 </script>
 
 <template>
-  <section>
+  <section v-if="produtos.length > 0">
     <div class="carrinho">
       <div class="titu">
         <h1>
@@ -256,6 +256,14 @@ function remover(id) {
       </ul>
       <button class="continuar">Continue para o checkout</button>
     </div>
+  </section>
+  <section v-else>
+    <div class="curtidas">
+        <h1>aluga<span>ê</span></h1>
+        <p>Você não possui produtos no carrinho ainda</p>
+        <button>Adicionar Produtos <span class="mdi mdi-arrow-right"></span>
+        </button>
+      </div>
   </section>
 </template>
 
@@ -622,5 +630,52 @@ section div.carrinho ul li.produto button.remover {
 .botoes button:last-child {
   background-color: #cdcdcd;
   color: #333;
+}
+
+/* PAGINA SEM NADAAAAAAAAAAAAAAAAAAAAAAAAAA */
+.curtidas {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* Preenche toda a altura da tela */
+  width: 100vw;
+  text-align: center;
+  flex-direction: column;
+}
+
+.curtidas h1 {
+  color: #000;
+  font-family: Poppins, sans-serif;
+  font-size: 40px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  margin: 0 0 1.8vw 0;
+}
+
+.curtidas h1 span {
+  color: #244E8A;
+  font-family: Poppins, sans-serif;
+  font-weight: 700;
+}
+
+.curtidas p {
+  color: #000;
+  font-family: Poppins, sans-serif;
+  font-size: 15px;
+  font-style: normal;
+  font-weight: 550;
+  line-height: normal;
+  margin: 0 0 15px 0;
+}
+
+.curtidas button {
+  all: unset;
+  cursor: pointer;
+  background-color: #244E8A;
+  border-radius: 6px;
+  width: 10vw;
+  height: 2vw;
+  color: #fff;
 }
 </style>
