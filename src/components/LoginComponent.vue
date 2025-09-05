@@ -33,15 +33,15 @@ async function login() {
     // redireciona para home (ou dashboard, ajuste se quiser)
     router.push('/')
   } catch (error) {
-  console.error('Erro no login:', error.response?.data || error.message)
+    console.error('Erro no login:', error.response?.data || error.message)
 
-  if (error.response?.data?.detail) {
-    // pega a mensagem de erro enviada pelo backend
-    errorMessage.value = error.response.data.detail
-  } else {
-    errorMessage.value = 'Erro ao conectar com o servidor.'
+    if (error.response?.data?.detail) {
+      // pega a mensagem de erro enviada pelo backend
+      errorMessage.value = error.response.data.detail
+    } else {
+      errorMessage.value = 'Erro ao conectar com o servidor.'
+    }
   }
-}
 }
 
 console.log('Mensagem de erro que vai aparecer:', errorMessage.value)
@@ -59,22 +59,26 @@ console.log('Mensagem de erro que vai aparecer:', errorMessage.value)
           <input class="email" type="text" v-model="user.email" placeholder="Insira o seu email...">
           <input class="senha" type="password" v-model="user.password" placeholder="Insira a sua senha...">
           <p class="esq"><a class="esq" href="">Esqueceu sua senha?</a></p>
-          <button class="bum" @click="login"><p>Entrar</p></button>
+          <button class="bum" @click="login">
+            <p>Entrar</p>
+          </button>
 
           <div class="error-container">
-          <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
+            <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
           </div>
 
         </div>
 
         <div class="hr">
-          <hr><p>ou</p><hr>
+          <hr>
+          <p>ou</p>
+          <hr>
         </div>
 
-        <button class="gog">
-          <img src="/public/imgs/Google__G__logo.svg.png" alt="X">
+        <a class="gog" href="http://localhost:8000/accounts/google/login/">
+          <img src="/public/imgs/Google__G__logo.svg.png" alt="Google" />
           <p>Continuar com o Google</p>
-        </button>
+        </a>
 
         <p class="nt">
           Não tem uma conta ainda?
@@ -92,21 +96,26 @@ console.log('Mensagem de erro que vai aparecer:', errorMessage.value)
 
 
 <style scoped>
-span{
+span {
   color: #3853be;
   text-align: center;
   font-weight: 700;
   font-size: 2.2rem
 }
-section{
-  background: conic-gradient(
-  from 180deg at 50% 50%,
-  #4A62C4 0deg,   /* azul mais suave que o inicial */
-  #3E52A1 72deg,  /* transição intermediária */
-  #333F7E 144deg, /* azul menos escuro */
-  #3E52A1 288deg, /* volta suave */
-  #4A62C4 360deg  /* igual ao inicial */
-);
+
+section {
+  background: conic-gradient(from 180deg at 50% 50%,
+      #4A62C4 0deg,
+      /* azul mais suave que o inicial */
+      #3E52A1 72deg,
+      /* transição intermediária */
+      #333F7E 144deg,
+      /* azul menos escuro */
+      #3E52A1 288deg,
+      /* volta suave */
+      #4A62C4 360deg
+      /* igual ao inicial */
+    );
   width: 100vw;
   height: 100vh;
   display: flex;
@@ -115,8 +124,9 @@ section{
 
 
 }
-.square{
-  width: 85vw ;
+
+.square {
+  width: 85vw;
   height: 90vh;
   border-radius: 1.4vw;
   background-color: rgb(255, 255, 255);
@@ -127,7 +137,8 @@ section{
   display: flex;
   flex-wrap: wrap;
 }
-.um{
+
+.um {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -136,7 +147,8 @@ section{
   margin-left: 8vw;
 
 }
-.um h1{
+
+.um h1 {
   text-align: center;
   position: relative;
   bottom: 3vh;
@@ -146,7 +158,8 @@ section{
   font-size: 2.2rem;
 
 }
-.sub{
+
+.sub {
   color: black;
   font-family: poppins, sans-serif;
   font-weight: 600;
@@ -155,30 +168,45 @@ section{
   margin-left: 1.3vw;
   margin-bottom: 1vh;
 }
-.email, .senha{
+
+.email,
+.senha {
   width: 87%;
 
   height: 5vh;
   border-radius: 0.8vw;
   border: none;
-  background-color:#d9d9d9 ;
+  background-color: #d9d9d9;
   padding: 1.3vw;
-  color:#a1a1a1 ;
+  color: #a1a1a1;
   font-size: 0.7rem;
-
 }
-.senha{
+
+.email::placeholder,
+.senha::placeholder {
+  color: #a1a1a1;
+  /* cinza só no placeholder */
+}
+
+.email,
+.senha {
+  color: #000000;
+  /* texto digitado em preto */
+}
+
+.senha {
   margin-top: 1.6vw;
 }
 
-.campos{
+.campos {
   display: flex;
   flex-direction: column;
   justify-content: center;
   max-width: 100%;
   object-fit: contain;
 }
-.esq{
+
+.esq {
   text-align: end;
   color: #3853be;
   font-family: poppins, sans-serif;
@@ -188,16 +216,20 @@ section{
   margin-top: 0.4vh;
   margin-right: 0.4vw;
 }
+
 .error-container {
-    width: 100%;
-    text-align: center;
-    margin-top: 50px; /* Ajustável */
+  width: 100%;
+  text-align: center;
+  margin-top: 50px;
+  /* Ajustável */
 }
+
 .error-message {
-    color: red;
-    font-size: 14px;
+  color: red;
+  font-size: 14px;
 }
-.bum{
+
+.bum {
   position: relative;
   top: 5vh;
   border: none;
@@ -215,7 +247,8 @@ section{
   align-items: center;
   justify-content: center;
 }
-.hr{
+
+.hr {
   margin-top: 1vw;
   display: flex;
   flex-direction: row;
@@ -223,10 +256,12 @@ section{
   align-items: center;
 
 }
-.hr p{
+
+.hr p {
   margin: 0 0.2vw;
   color: #c2c2c2;
 }
+
 :deep(hr) {
   border: none;
   height: 1px;
@@ -234,7 +269,8 @@ section{
   width: 12vw;
 
 }
-.gog{
+
+.gog {
   width: 14vw;
   height: 5vh;
   border: #a1a1a1 solid 1px;
@@ -247,18 +283,21 @@ section{
   justify-content: center;
 
 }
-.gog p{
-   font-size: 0.7rem;
+
+.gog p {
+  font-size: 0.7rem;
   font-weight: 600;
   font-family: poppins, sans-serif;
 }
-.gog img{
+
+.gog img {
   width: 1.4vw;
   height: 1.4vw;
   margin-right: 0.8vw;
 
 }
-.nt{
+
+.nt {
   color: black;
   font-size: 0.7rem;
   font-weight: 600;
@@ -266,14 +305,16 @@ section{
   margin-top: 4vh;
 
 }
-.nt a{
+
+.nt a {
   text-decoration: none;
   font-weight: 600;
   color: #3853be;
   margin-left: 0.4vw;
 
 }
-.dois{
+
+.dois {
   width: 38vw;
   height: 85vh;
   background-color: #3853be;
@@ -283,7 +324,8 @@ section{
   margin-right: 1.2vw;
 
 }
-.dois h1{
+
+.dois h1 {
   font-size: 1.8rem;
   font-weight: 700;
   color: white;
@@ -291,7 +333,8 @@ section{
   padding: 3vh 2.5vw;
 
 }
-.dois img{
+
+.dois img {
   width: 100%;
   max-height: 100%;
   object-fit: contain;
@@ -304,7 +347,4 @@ section{
   pointer-events: none;
 
 }
-
-
-
 </style>
