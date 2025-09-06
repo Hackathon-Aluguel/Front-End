@@ -1,117 +1,137 @@
 <script setup>
-import { ref, onMounted, nextTick } from 'vue'
-import { useProdutosStore } from '@/stores/produtos'
+import { ref, watch } from 'vue'
 
-const produtosStore = useProdutosStore()
+// Props do componente
 const props = defineProps({
-    produtosAntes: Array,
-    precoMin: Number,
-    precoMax: Number
+  produtosAntes: Array,
+  precoMin: Number,
+  precoMax: Number,
+  filtroAberto: Boolean,
+  minhaLocalizacao: Object
 })
 
+// Eventos emitidos
 const emit = defineEmits(['filtrar', 'fechar'])
 
-const filtroAberto = ref(true)
+const produtosFiltrados = ref([])
+const distanciaAtual = ref(2)
 const categoriasSelecionadas = ref([])
 const precoSelecionado = ref(props.precoMax / 2)
 const tooltipPos = ref(50)
 const rangeSlider = ref(null)
 
-const minhaLocalizacao = reactive({
-    lat: -26.3045,
-    lng: -48.8460
-});
+watch(() => props.minhaLocalizacao, (newVal, oldVal) => {
+  if (newVal.lat !== oldVal.lat || newVal.lng !== oldVal.lng) {
+    aplicarFiltro()
+  }
+}, { deep: true })
+
 
 
 const categorias = [
-    { id: 1, nome: 'Eventos e festas', imagem: './public/images/categoria/categoriaFantasias.jpg' },
-    { id: 2, nome: 'Esporte e lazer', imagem: './public/images/categoria/categoriaCamping.jpg' },
-    { id: 3, nome: 'Casa e Utilidades', imagem: './public/images/categoria/categoriaBrinquedos.jpg' },
-    { id: 4, nome: 'Tecnologia e Eletrônicos', imagem: './public/images/categoria/categoriaFerramentas.jpg' },
-    { id: 5, nome: 'Construção e Reforma', imagem: './public/images/categoria/categoriaConstrucao.jpg' },
-    { id: 6, nome: 'Infantil', imagem: './public/images/categoria/categoriaLimpeza.jpg' },
-    { id: 7, nome: 'Roupas e acessorios', imagem: './public/images/categoria/categoriaLimpeza.jpg' },
-    { id: 8, nome: 'Instrumentos musicais', imagem: './public/images/categoria/categoriaLimpeza.jpg' },
-];
+  'Eventos e festas', 'Esporte e lazer', 'Casa e utilidades', 
+  'Tecnologia e Eletrônicos', 'Construção e Reforma', 'Infantil', 
+  'Roupas e acessórios', 'Instrumentos musicais'
+]
 
+// Função de distância
 function calcularDistanciaMetros(lat1, lng1, lat2, lng2) {
-    const R = 6371e3; // Raio da Terra em metros
-    const toRad = (x) => (x * Math.PI) / 180;
+  const R = 6371e3
+  const toRad = x => (x * Math.PI) / 180
+  const dLat = toRad(lat2 - lat1)
+  const dLng = toRad(lng2 - lng1)
+  const a =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+    Math.sin(dLng / 2) ** 2
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+  return R * c
+}
 
-    const dLat = toRad(lat2 - lat1);
-    const dLng = toRad(lng2 - lng1);
+function filtrarPorDistancia(distanciaKm) {
+  return props.produtosAntes.filter(produto => {
+    const distanciaFinal = calcularDistanciaMetros(
+      produto.lat, produto.lng,
+      props.minhaLocalizacao.lat, props.minhaLocalizacao.lng
+    )
+    console.log(produto.nome, distanciaFinal / 1000, "km")
+    return distanciaFinal / 1000 <= distanciaKm
+  })
+}
 
-    const a =
-        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-        Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
-        Math.sin(dLng / 2) * Math.sin(dLng / 2);
+function atualizarTooltip() {
+  const slider = rangeSlider.value
+  if (!slider) return
+  const val = precoSelecionado.value
+  tooltipPos.value = ((val - slider.min) / (slider.max - slider.min)) * 100
+}
 
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+function aplicarFiltro() {
+  let filtrados = filtrarPorDistancia(distanciaAtual.value)
 
-    const distancia = R * c; // distância em metros
-    return distancia;
-};
-function distanciaSelecionada(distanciaMetros) {
-    const filtrados = [];
-    for (const produto of produtosStore.produtos) {
-        const distanciaFinal = calcularDistanciaMetros(produto.lat, produto.lng, minhaLocalizacao.lat, minhaLocalizacao.lng)
+  if (categoriasSelecionadas.value.length > 0) {
+    filtrados = filtrados.filter(produto =>
+      categoriasSelecionadas.value.includes(produto.categoria)
+    )
+  }
 
-        if (distanciaFinal <= distanciaMetros) {
-            filtrados.push(produto)
-        }
-    }
-    return filtrados
-};
+  filtrados = filtrados.filter(produto =>
+    produto.preco <= precoSelecionado.value
+  )
 
+  // Atualiza produtosFiltrados local
+  produtosFiltrados.value = filtrados
+
+  // Emite o evento com a lista filtrada  emit(\'filtrar\', [...produtosFiltrados.value]) 
+  emit('fechar')}
 </script>
 
 <template>
-    <div v-if="filtroAberto" class="filtroAberto" @mousedown.stop @touchstart.stop>
-        <div class="tituloFiltro">
-            <span class="mdi mdi-chevron-left" @click="abrirFiltro"></span>
-            <h1>Filtros</h1>
-        </div>
-
-        <h2>Distância</h2>
-        <div class="distancia">
-            <button @click="distanciaSelecionada = 2" :class="{ ativo: distanciaSelecionada === 2 }">Até 2km</button>
-            <button @click="distanciaSelecionada = 5" :class="{ ativo: distanciaSelecionada === 5 }">5km</button>
-            <button @click="distanciaSelecionada = 10" :class="{ ativo: distanciaSelecionada === 10 }">10km</button>
-            <button @click="distanciaSelecionada = 20" :class="{ ativo: distanciaSelecionada === 20 }">20km</button>
-        </div>
-
-        <h2>Categoria</h2>
-        <div class="categorias">
-            <div class="checkbox-container" v-for="categoria in categorias" :key="categoria.id">
-                <label>
-                    <input type="checkbox" :value="categoria.nome" v-model="categoriasSelecionadas" />
-                    {{ categoria.nome }}
-                </label>
-            </div>
-        </div>
-
-        <h2>Preço do produto por dia</h2>
-        <div class="slider-overlay">
-            <div class="double-slider-box">
-                <div class="price-slider">
-                    <h3>R${{ precoMin }}</h3>
-                    <div class="input-wrapper slider-event-shield">
-                        <input type="range" class="range-slider" :min="precoMin" :max="precoMax"
-                            v-model="precoSelecionado" @input="atualizarTooltip" ref="rangeSlider" />
-                        <div class="tooltip" :style="{ left: tooltipPos + '%' }">
-                            R${{ precoSelecionado }}
-                        </div>
-                    </div>
-                    <h3>R${{ precoMax }}</h3>
-                </div>
-            </div>
-        </div>
-
-        <div class="botooes">
-            <button class="cancelar" @click="abrirFiltro()">Cancelar</button>
-            <button class="pronto" @click="aplicarFiltro">Pronto</button>
-        </div>
+  <div v-if="filtroAberto" class="filtroAberto" @mousedown.stop @touchstart.stop>
+    <div class="tituloFiltro">
+   <span class="mdi mdi-chevron-left" @click="$emit('fechar')"></span>
+      <h1>Filtros</h1>
     </div>
+
+    <h2>Distância</h2>
+    <div class="distancia">
+      <button @click="distanciaAtual = 2; aplicarFiltro()" :class="{ ativo: distanciaAtual === 2 }">Até 2km</button>
+      <button @click="distanciaAtual = 5; aplicarFiltro()" :class="{ ativo: distanciaAtual === 5 }">5km</button>
+      <button @click="distanciaAtual = 10; aplicarFiltro()" :class="{ ativo: distanciaAtual === 10 }">10km</button>
+      <button @click="distanciaAtual = 20; aplicarFiltro()" :class="{ ativo: distanciaAtual === 20 }">20km</button>
+    </div>
+
+    <h2>Categoria</h2>
+    <div class="categorias">
+      <div class="checkbox-container" v-for="categoria in categorias" :key="categoria">
+        <label>
+          <input type="checkbox" :value="categoria" v-model="categoriasSelecionadas" />
+          {{ categoria }}
+        </label>
+      </div>
+    </div>
+
+    <h2>Preço do produto por dia</h2>
+    <div class="slider-overlay">
+      <div class="double-slider-box">
+        <div class="price-slider">
+          <h3>R${{ props.precoMin }}</h3>
+          <div class="input-wrapper slider-event-shield">
+            <input type="range" class="range-slider" :min="props.precoMin" :max="props.precoMax"
+              v-model="precoSelecionado" @input="atualizarTooltip" ref="rangeSlider" />
+            <div class="tooltip" :style="{ left: tooltipPos + '%' }">
+              R${{ precoSelecionado }}
+            </div>
+          </div>
+          <h3>R${{ props.precoMax }}</h3>
+        </div>
+      </div>
+        <div class="botooes">
+      <button class="cancelar" @click="$emit('fechar')">Cancelar</button>
+      <button class="pronto" @click="aplicarFiltro">Pronto</button>
+    </div>
+    </div>
+  </div>
 </template>
 
 <style scoped>
@@ -133,7 +153,7 @@ button {
     box-shadow: 0 0.2vw 0.6vw rgba(0, 0, 0, 0.25);
     height: 75vh;
     width: 32vw;
-    z-index: 1000;
+    z-index: 9999;
     padding: 0.5vw;
     pointer-events: auto;
 }
