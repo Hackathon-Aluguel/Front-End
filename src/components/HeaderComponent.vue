@@ -1,4 +1,20 @@
 <script setup>
+import { user } from '@/stores/user.js'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+
+function logout() {
+  // Remove os tokens
+  localStorage.removeItem('access_token')
+  localStorage.removeItem('refresh_token')
+
+  // Reseta o estado global do usuário
+  user.value = null
+
+  // Redireciona para a home ou login
+  router.push('/')
+}
 </script>
 
 <template>
@@ -21,10 +37,20 @@
           <li><span class="mdi mdi-heart-outline"></span></li>
         </ul>
 
-        <ul class="login">
+        <ul class="login" v-if="user">
+          <li>
+            <img :src="user.avatar" alt="Avatar" class="avatar" />
+            <span class="usuario">{{ user.email }}</span>
+            <button><span class="mdi mdi-chevron-down"></span></button>
+          </li>
+          <li><button @click="logout">Sair</button></li>
+        </ul>
+
+        <ul class="login" v-else>
           <li><a class="log"><RouterLink to="/login">Log in</RouterLink></a></li>
           <li><a class="conta"><RouterLink to="/register">Criar Conta</RouterLink></a></li>
         </ul>
+
       </div>
       <div class="menu">
         <a href="#">MEUS <br>  PEDIDOS</a>
@@ -175,6 +201,37 @@ div.menu a:hover::before {
   border-bottom-left-radius: 3px;
   border-bottom-right-radius: 3px;
   align-items: center;
+}
+
+ul.logado {
+  display: flex;
+}
+ul.logado button {
+  all: unset;
+  cursor: pointer;
+  color: aquamarine;
+}
+
+ul.logado .avatar {
+  width: 35px;
+  height: 35px;
+  background-color: #d3d3d3;
+  border-radius: 50%;
+  margin: 0 15px 0 0;
+}
+
+ul.logado button span {
+  margin: 10px 0 0 5px;
+}
+
+ul.logado span.usuario {
+  color: #000;
+  font-family: Poppins, sans-serif;
+  font-size: 15px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  margin: 10px 0 0 0;
 }
 </style>
 

@@ -1,11 +1,14 @@
 <script setup>
-import { reactive, ref } from 'vue'
+import { user as globalUser } from '@/stores/user.js'
+import { reactive, ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import api from '@/services/api'
+import { gapi } from 'gapi-script';
 
 const router = useRouter()
 
-const user = reactive({
+
+const loginForm = reactive({
   email: '',
   password: ''
 })
@@ -14,19 +17,57 @@ const user = reactive({
 const loading = ref(false)
 const errorMessage = ref('')
 
+// Inicializa o SDK do Google quando o componente monta
+onMounted(() => {
+  gapi.load('auth2', () => {
+    gapi.auth2.init({
+      client_id: '307764432125-sj64153ja75622bdbssdj7o471skrlds.apps.googleusercontent.com',
+    })
+  })
+})
+
+// Função de login com Google
+function handleGoogleLogin() {
+  const auth2 = gapi.auth2.getAuthInstance()
+  auth2.signIn().then(googleUser => {
+    const access_token = googleUser.getAuthResponse().access_token
+
+    // Envia token para o backend
+    fetch('http://localhost:8000/auth/social/google/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ access_token }),
+    })
+      .then(res => res.json())
+      .then(data => {
+        localStorage.setItem('access_token', data.access_token)
+        router.push('/') // redireciona para home
+      })
+      .catch(err => {
+        console.error('Erro login Google:', err)
+        errorMessage.value = 'Erro ao logar com Google'
+      })
+  })
+}
+
 async function login() {
   loading.value = true
   errorMessage.value = ''
 
   try {
     const response = await api.post('token/', {
-      email: user.email,
-      password: user.password,
+      email: loginForm.email,
+      password: loginForm.password,
     })
 
     // salva tokens
     localStorage.setItem('access_token', response.data.access)
     localStorage.setItem('refresh_token', response.data.refresh)
+
+    globalUser.value = {
+      email: loginForm.email,
+      avatar: 'caminho/para/foto.jpg'
+    }
 
     console.log('Login OK:', response.data)
 
@@ -56,8 +97,8 @@ console.log('Mensagem de erro que vai aparecer:', errorMessage.value)
 
         <div class="campos">
           <p class="sub">Por favor, preencha os seguintes campos para logar</p>
-          <input class="email" type="text" v-model="user.email" placeholder="Insira o seu email...">
-          <input class="senha" type="password" v-model="user.password" placeholder="Insira a sua senha...">
+          <input class="email" type="text" v-model="loginForm.email" placeholder="Insira o seu email...">
+          <input class="senha" type="password" v-model="loginForm.password" placeholder="Insira a sua senha...">
           <p class="esq"><a class="esq" href="">Esqueceu sua senha?</a></p>
           <button class="bum" @click="login">
             <p>Entrar</p>
@@ -75,10 +116,10 @@ console.log('Mensagem de erro que vai aparecer:', errorMessage.value)
           <hr>
         </div>
 
-        <a class="gog" href="http://localhost:8000/accounts/google/login/">
-          <img src="/public/imgs/Google__G__logo.svg.png" alt="Google" />
-          <p>Continuar com o Google</p>
-        </a>
+      <button @click="handleGoogleLogin" class="gog">
+      <img src="/public/imgs/Google__G__logo.svg.png" alt="Google" />
+      Continuar com o Google
+      </button>
 
         <p class="nt">
           Não tem uma conta ainda?

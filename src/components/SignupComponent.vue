@@ -1,6 +1,10 @@
 <script setup>
-import { reactive } from "vue";
-import axios from "axios";
+import { user as globalUser } from '@/stores/user.js'
+import { reactive } from 'vue'
+import { useRouter } from 'vue-router'
+import axios from 'axios'
+
+const router = useRouter()
 
 // estado do formulário
 const form = reactive({
@@ -27,9 +31,16 @@ async function registerUser() {
     });
 
     console.log("Usuário criado:", response.data);
-    alert("Conta criada com sucesso!");
-    // exemplo: redirecionar para login depois
-    // router.push("/login")
+
+
+    // Atualiza o estado global do usuário
+    globalUser.value = {
+      email: form.email,
+      avatar: "caminho/para/foto.jpg" // ou pegue do backend se retornar
+    }
+
+    router.push('/')
+
   } catch (error) {
     console.error("Erro ao cadastrar:", error.response?.data || error.message);
     if (error.response) {
