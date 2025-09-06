@@ -1,10 +1,12 @@
 <script setup>
+import AvaliacaoComponent from './components/AvaliacaoComponent.vue';
 </script>
 
 <template>
-  <RouterView />
-  <h1></h1>
+  <!-- <RouterView /> -->
+  <AvaliacaoComponent />
 </template>
+
 
 <style scoped>
 </style>
