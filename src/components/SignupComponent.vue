@@ -76,7 +76,7 @@ async function registerUser() {
           <hr>
         </div>
 
-        <a class="gog" href="http://localhost:8000/accounts/google/register/">
+        <a class="gog" href="http://localhost:8000/accounts/google/login/">
           <img src="/public/imgs/Google__G__logo.svg.png" alt="Google" />
           <p>Continuar com o Google</p>
         </a>
