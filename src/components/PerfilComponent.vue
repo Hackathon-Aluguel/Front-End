@@ -82,7 +82,7 @@ const dragExterno = ref(true)
           <li>
             <h1>Nome</h1>
             <p><span class="mdi mdi-map-marker"></span> Cidade - estado</p>
-            <button>Mandar mensagem <span class="mdi mdi-send-circle"></span></button>
+            <button>Mandar mensagem <span class="mdi mdi-send"></span></button>
           </li>
         </ul>
       </div>
@@ -92,7 +92,7 @@ const dragExterno = ref(true)
           <!-- Número Avaliações -->
           <p>avaliações</p>
         </div>
-        <div>
+        <div class="meio">
           <p class="num">5,0 <span class="mdi mdi-star"></span></p>
           <!-- Total de estrelas -->
           <p>estrelas</p>
@@ -204,7 +204,7 @@ const dragExterno = ref(true)
     height: 330px;
     width: 30%;
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
-    border-radius: 6px;
+    border-radius: 20px;
 
     & .superior {
       & ul {
@@ -217,24 +217,24 @@ const dragExterno = ref(true)
           width: 220px;
           background-color: #1D2D51;
           border-radius: 120px;
-          margin-right: 20px;
+          margin-right: 1vw;
         }
 
         & li:last-of-type {
-          width: 210px;
+          
         }
 
         & h1 {
-          margin-top: 30px;
+          margin-top: 1.5vw;
+          margin-bottom: 0vw;
           font-weight: bold;
           font-size: 30px;
-          height: 45px;
           color: black;
         }
 
         & p {
+          margin: 0.2vw 0 1.5vw 0;
           color: #CDCDCD;
-          margin-bottom: 25px;
         }
 
         & button {
@@ -261,24 +261,30 @@ const dragExterno = ref(true)
 
     & .inferior {
       display: flex;
-      gap: 65px;
+      gap: 2vw;
       justify-content: center;
-      padding-top: 20px;
 
       & .num {
         font-size: 30px;
         font-weight: bold;
-        height: 37px;
       }
 
       & div:first-of-type {
         margin-left: 2vw;
       }
-
+      & div.meio {
+        display: block;
+        border-left: 1px solid #CDCDCD;
+        border-right: 1px solid #CDCDCD;
+      }
+      & div.meio p {
+        margin-left: 1.5vw;
+        margin-right: 1.5vw;
+      }
       & p {
         color: black;
+        margin: 0;
       }
-
     }
   }
 
