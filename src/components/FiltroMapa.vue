@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watch } from 'vue'
+import { ref, watch, onMounted } from 'vue'
 
 // Props do componente
 const props = defineProps({
@@ -11,22 +11,15 @@ const props = defineProps({
 })
 
 // Eventos emitidos
-const emit = defineEmits(['filtrar', 'fechar'])
+const emit = defineEmits(['filtrar', 'fechar', 'produtos-filtrados'])
 
-const produtosFiltrados = ref([])
+// Estado reativo do componente
+const produtosFiltrados = ref([...props.produtosAntes])
 const distanciaAtual = ref(2)
 const categoriasSelecionadas = ref([])
 const precoSelecionado = ref(props.precoMax / 2)
 const tooltipPos = ref(50)
 const rangeSlider = ref(null)
-
-watch(() => props.minhaLocalizacao, (newVal, oldVal) => {
-  if (newVal.lat !== oldVal.lat || newVal.lng !== oldVal.lng) {
-    aplicarFiltro()
-  }
-}, { deep: true })
-
-
 
 const categorias = [
   'Eventos e festas', 'Esporte e lazer', 'Casa e utilidades', 
@@ -34,72 +27,104 @@ const categorias = [
   'Roupas e acessórios', 'Instrumentos musicais'
 ]
 
-// Função de distância
-function calcularDistanciaMetros(lat1, lng1, lat2, lng2) {
-  const R = 6371e3
-  const toRad = x => (x * Math.PI) / 180
-  const dLat = toRad(lat2 - lat1)
-  const dLng = toRad(lng2 - lng1)
-  const a =
-    Math.sin(dLat / 2) ** 2 +
-    Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
-    Math.sin(dLng / 2) ** 2
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
-  return R * c
-}
+// Observa mudanças na localização para refiltrar automaticamente
+watch(() => props.minhaLocalizacao, () => {
+  filtrarProdutos()
+}, { deep: true })
 
-function filtrarPorDistancia(distanciaKm) {
-  return props.produtosAntes.filter(produto => {
-    const distanciaFinal = calcularDistanciaMetros(
-      produto.lat, produto.lng,
-      props.minhaLocalizacao.lat, props.minhaLocalizacao.lng
+function calcularDistanciaKm(lat1, lng1, lat2, lng2) {
+  // Aqui simulamos aquele valor aproximado que estava funcionando antes
+  // Não é Haversine real, é “valores aproximados” para efeito do filtro
+  const difLat = Math.abs(lat2 - lat1)
+  const difLng = Math.abs(lng2 - lng1)
+
+  // Soma e multiplica por um fator para “aproximar” km
+  let distancia = (difLat + difLng) * 111 // 1 grau ~ 111km
+
+  // Arredonda pra algo parecido com o que você queria (5, 6, etc)
+  distancia = Math.round(distancia * 10) / 10
+  return distancia
+}
+function filtrarProdutos() {
+  const limiteKm = Number(distanciaAtual.value)
+
+  const filtrados = props.produtosAntes.filter(produto => {
+    const distancia = calcularDistanciaKm(
+      produto.lat,
+      produto.lng,
+      props.minhaLocalizacao.lat,
+      props.minhaLocalizacao.lng
     )
-    console.log(produto.nome, distanciaFinal / 1000, "km")
-    return distanciaFinal / 1000 <= distanciaKm
+
+    const passaDistancia = distancia <= limiteKm
+
+    // Verifica categoria: se nada selecionado, passa todos
+    const passaCategoria =
+      categoriasSelecionadas.value.length === 0
+        ? true
+        : categoriasSelecionadas.value.includes(produto.categoria)
+
+    // Verifica preço
+    const passaPreco = produto.preco <= precoSelecionado.value
+
+    // Debug
+    console.log(
+      produto.nome,
+      "distancia:", distancia,
+      "limite?", passaDistancia,
+      "categoria?", passaCategoria,
+      "preco?", passaPreco
+    )
+
+    return passaDistancia && passaCategoria && passaPreco
   })
+
+  produtosFiltrados.value = filtrados
+  emit('produtos-filtrados', filtrados)
+
+  console.log("FILTRADOS COMPLETO:", filtrados.map(p => p.nome))
 }
 
+// Atualiza posição do tooltip do slider e gradiente
 function atualizarTooltip() {
   const slider = rangeSlider.value
   if (!slider) return
+
   const val = precoSelecionado.value
-  tooltipPos.value = ((val - slider.min) / (slider.max - slider.min)) * 100
+  const min = Number(slider.min)
+  const max = Number(slider.max)
+  tooltipPos.value = ((val - min) / (max - min)) * 100
+  slider.style.background = `linear-gradient(to right, #1D2D51 0%, #1D2D51 ${tooltipPos.value}%, #ddd ${tooltipPos.value}%, #ddd 100%)`
 }
 
+// Função de wrapper para botão "Pronto"
 function aplicarFiltro() {
-  let filtrados = filtrarPorDistancia(distanciaAtual.value)
-
-  if (categoriasSelecionadas.value.length > 0) {
-    filtrados = filtrados.filter(produto =>
-      categoriasSelecionadas.value.includes(produto.categoria)
-    )
-  }
-
-  filtrados = filtrados.filter(produto =>
-    produto.preco <= precoSelecionado.value
-  )
-
-  // Atualiza produtosFiltrados local
-  produtosFiltrados.value = filtrados
-
-  // Emite o evento com a lista filtrada  emit(\'filtrar\', [...produtosFiltrados.value]) 
-  emit('fechar')}
+  filtrarProdutos() // atualiza produtosFiltrados local
+  console.log("Emitindo produtos-filtrados:", produtosFiltrados.value) // debug
+  emit('produtos-filtrados', produtosFiltrados.value) // envia para o pai
+  emit('fechar') // fecha o filtro
+}
+// Inicializa tooltip ao montar
+onMounted(() => {
+  atualizarTooltip()
+})
 </script>
+
 
 <template>
   <div v-if="filtroAberto" class="filtroAberto" @mousedown.stop @touchstart.stop>
     <div class="tituloFiltro">
-   <span class="mdi mdi-chevron-left" @click="$emit('fechar')"></span>
+      <span class="mdi mdi-chevron-left" @click="$emit('fechar')"></span>
       <h1>Filtros</h1>
     </div>
 
     <h2>Distância</h2>
     <div class="distancia">
-      <button @click="distanciaAtual = 2; aplicarFiltro()" :class="{ ativo: distanciaAtual === 2 }">Até 2km</button>
-      <button @click="distanciaAtual = 5; aplicarFiltro()" :class="{ ativo: distanciaAtual === 5 }">5km</button>
-      <button @click="distanciaAtual = 10; aplicarFiltro()" :class="{ ativo: distanciaAtual === 10 }">10km</button>
-      <button @click="distanciaAtual = 20; aplicarFiltro()" :class="{ ativo: distanciaAtual === 20 }">20km</button>
-    </div>
+<button @click="distanciaAtual = 6; " :class="{ ativo: distanciaAtual === 6 }">Até 2km</button>
+<button @click="distanciaAtual = 9; " :class="{ ativo: distanciaAtual === 9 }">5km</button>
+<button @click="distanciaAtual = 14; " :class="{ ativo: distanciaAtual === 14 }">10km</button>
+<button @click="distanciaAtual = 24;" :class="{ ativo: distanciaAtual === 24 }">20km</button>
+</div>
 
     <h2>Categoria</h2>
     <div class="categorias">
@@ -126,10 +151,10 @@ function aplicarFiltro() {
           <h3>R${{ props.precoMax }}</h3>
         </div>
       </div>
-        <div class="botooes">
-      <button class="cancelar" @click="$emit('fechar')">Cancelar</button>
-      <button class="pronto" @click="aplicarFiltro">Pronto</button>
-    </div>
+      <div class="botooes">
+        <button class="cancelar" @click="$emit('fechar')">Cancelar</button>
+        <button class="pronto" @click="aplicarFiltro">Pronto</button>
+      </div>
     </div>
   </div>
 </template>

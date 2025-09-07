@@ -1,7 +1,9 @@
 <script setup>
 import { reactive, ref } from 'vue'
 import MapaScriptComponent from './MapaScriptComponent.vue'
+import FiltroMapa from './FiltroMapa.vue'
 
+// Lista inicial de produtos
 const produtos = reactive([
   { id: 1, nome: 'Pantufas extremamente macias', preco: 30, estrelas: 4, cidade: 'Joinville', estado: 'SC', likes: 20, liked: false, imagem: 'https://picsum.photos/400/300?random=100', categoria: 'Roupas e acessorios' },
   { id: 2, nome: 'Saco de dormir', preco: 25, estrelas: 5, cidade: 'Joinville', estado: 'SC', likes: 4, liked: false, imagem: 'https://picsum.photos/400/300?random=101', categoria: 'Esporte e lazer' },
@@ -10,8 +12,17 @@ const produtos = reactive([
   { id: 5, nome: 'Mochila', preco: 50, estrelas: 5, cidade: 'Joinville', estado: 'SC', likes: 10, liked: false, imagem: 'https://picsum.photos/400/300?random=104', categoria: 'Roupas e acessorios' },
 ])
 
-const hoverId = ref(-1)
+// Lista que será usada no template (pode ser filtrada)
+const produtosFiltrados = ref([...produtos])
 
+const hoverId = ref(-1)
+const filtroAberto = ref(false)
+
+function receberFiltrados(filtrados) {
+  produtosFiltrados.value = filtrados
+  console.log('Produtos atualizados:', produtosFiltrados.value)
+}
+// Funções de hover e like
 function toggleLike(produto) {
   produto.liked = !produto.liked
   produto.likes += produto.liked ? 1 : -1
@@ -24,6 +35,21 @@ function marcarHover(id) {
 function removerHover() {
   hoverId.value = -1
 }
+
+// Receber lista filtrada do componente de filtro
+
+
+function toggleFiltro() {
+  filtroAberto.value = !filtroAberto.value
+}
+
+function fecharFiltro() {
+  filtroAberto.value = false
+}
+
+function onFiltrar(filtrados) {
+  produtosFiltrados.value = [...filtrados]
+}
 </script>
 
 <template>
@@ -31,7 +57,7 @@ function removerHover() {
     <div class="produtosTodo">
       <div class="rolagem">
         <ul>
-          <li v-for="produto in produtos" :key="produto.id" class="produto"
+          <li v-for="produto in produtosFiltrados" :key="produto.id" class="produto"
               @mouseover="marcarHover(produto.id)"
               @mouseleave="removerHover()">
             <div class="info">
@@ -51,11 +77,15 @@ function removerHover() {
         </ul>
       </div>
     </div>
+
     <div class="mapa">
-      <MapaScriptComponent :hoverId="hoverId" />
+      <MapaScriptComponent :hoverId="hoverId" 
+      :produtos="produtosFiltrados" 
+  @produtos-filtrados="onFiltrar"/>
     </div>
   </section>
 </template>
+
 
 <style scoped>
 p,h1,h2,button {

@@ -1,28 +1,30 @@
 <script setup>
-import { ref, reactive, onMounted } from "vue";
+import { ref, reactive, onMounted, watch } from "vue";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import FiltroMapa from "./FiltroMapa.vue";
 import { Carousel, Slide, Navigation } from 'vue3-carousel';
 import 'vue3-carousel/dist/carousel.css';
 
+const props = defineProps({
+  produtos: Array,      // lista de produtos filtrados
+  hoverId: Number       // id do produto que está sendo hover
+});
 const filtroAberto = ref(false);
 
 function toggleFiltro() { filtroAberto.value = !filtroAberto.value }
 function fecharFiltro() { filtroAberto.value = false }
 
 const produtosAntes = reactive([
-  { id: 1, nome: 'Pantufas', preco: 30, lat: -26.3044, lng: -48.8463, categoria: 'Roupas e acessórios' },
-  { id: 2, nome: 'Saco de dormir', preco: 25, lat: -26.3052, lng: -48.8439, categoria: 'Esporte e lazer' },
-  { id: 3, nome: 'Lanterna', preco: 10, lat: -26.3035, lng: -48.8470, categoria: 'Casa e utilidades' },
-  { id: 4, nome: 'Fogareiro', preco: 40, lat: -26.3060, lng: -48.8445, categoria: 'Esporte e lazer' },
-  { id: 5, nome: 'Mochila', preco: 50, lat: -26.3048, lng: -48.8452, categoria: 'Roupas e acessórios' },
-
-  // PRODUTOS MAIS DISTANTES
-  { id: 6, nome: 'Barraca', preco: 100, lat: -26.3280, lng: -48.8600, categoria: 'Esporte e lazer' }, // ~3km
-  { id: 7, nome: 'Câmera', preco: 200, lat: -26.3660, lng: -48.8900, categoria: 'Tecnologia e Eletrônicos' }, // ~7km
-  { id: 8, nome: 'Kit Ferramentas', preco: 150, lat: -26.4200, lng: -48.9500, categoria: 'Construção e Reforma' }, // ~12km
-  { id: 9, nome: 'Caixa de som', preco: 80, lat: -26.4800, lng: -49.0000, categoria: 'Instrumentos musicais' }, // ~18km
+  { id: 1, nome: 'Pantufas', preco: 30, lat: -26.3044, lng: -48.8463, categoria: 'Roupas e acessórios', estrelas: 4, likes: 12, liked: false, cidade: 'Joinville', estado: 'SC' },
+  { id: 2, nome: 'Saco de dormir', preco: 25, lat: -26.3052, lng: -48.8439, categoria: 'Esporte e lazer', estrelas: 5, likes: 8, liked: false, cidade: 'Joinville', estado: 'SC' },
+  { id: 3, nome: 'Lanterna', preco: 10, lat: -26.3035, lng: -48.8470, categoria: 'Casa e utilidades', estrelas: 4, likes: 15, liked: false, cidade: 'Joinville', estado: 'SC' },
+  { id: 4, nome: 'Fogareiro', preco: 40, lat: -26.3060, lng: -48.8445, categoria: 'Esporte e lazer', estrelas: 3, likes: 10, liked: false, cidade: 'Joinville', estado: 'SC' },
+  { id: 5, nome: 'Mochila', preco: 50, lat: -26.3048, lng: -48.8452, categoria: 'Roupas e acessórios', estrelas: 5, likes: 20, liked: false, cidade: 'Joinville', estado: 'SC' },
+  { id: 6, nome: 'Barraca', preco: 100, lat: -26.3280, lng: -48.8600, categoria: 'Esporte e lazer', estrelas: 4, likes: 7, liked: false, cidade: 'Joinville', estado: 'SC' },
+  { id: 7, nome: 'Câmera', preco: 200, lat: -26.3660, lng: -48.8900, categoria: 'Tecnologia e Eletrônicos', estrelas: 5, likes: 25, liked: false, cidade: 'Joinville', estado: 'SC' },
+  { id: 8, nome: 'Kit Ferramentas', preco: 150, lat: -26.4200, lng: -48.9500, categoria: 'Construção e Reforma', estrelas: 4, likes: 18, liked: false, cidade: 'Joinville', estado: 'SC' },
+  { id: 9, nome: 'Caixa de som', preco: 80, lat: -26.4800, lng: -49.0000, categoria: 'Instrumentos musicais', estrelas: 5, likes: 22, liked: false, cidade: 'Joinville', estado: 'SC' },
 ])
 const produtosFiltrados = ref([...produtosAntes])
 const minhaLocalizacao = reactive({ lat: -26.3045, lng: -48.8460 })
@@ -34,15 +36,28 @@ const produtoMarkers = []
 let userMarker = null
 let firstLocation = true
 
-function packageIcon(background = '#244e84', color = 'white') {
+function packageIcon(color = '#ffffff', iconColor = '#244e84') {
   return L.divIcon({
-    html: `<span class="mdi mdi-package-variant-closed" style="font-size: 20px; color: ${color}; background-color: ${background}; border-radius: 50%; padding: 6px;"></span>`,
+    html: `
+      <div style="
+        background:${color};
+        border-radius:50%;
+        width:32px;
+        height:32px;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        border:2px solid ${iconColor};
+      ">
+        <span class="mdi mdi-package-variant-closed" style="font-size:20px; color:${iconColor};"></span>
+      </div>
+    `,
     className: 'custom-mdi-icon',
     iconSize: [32, 32],
-    iconAnchor: [16, 16]
+    iconAnchor: [16, 32],
+    popupAnchor: [0, -32],
   });
 }
-
 function updateCardPosition(marker) {
   if (!marker) return;
   const latlng = marker.getLatLng();
@@ -58,16 +73,32 @@ function abrirCarrossel(produto, marker) {
 }
 
 function updateMarkers(lista) {
-  produtoMarkers.forEach(m => window.map.removeLayer(m))
-  produtoMarkers.length = 0
+  produtoMarkers.forEach(m => window.map.removeLayer(m));
+  produtoMarkers.length = 0;
+
   lista.forEach(produto => {
-    const marker = L.marker([produto.lat, produto.lng], { icon: packageIcon() }).addTo(window.map)
-    marker.produtoId = produto.id
-    marker.on("click", () => abrirCarrossel(produto, marker))
-    produtoMarkers.push(marker)
-  })
+    const isHovered = props.hoverId === produto.id;
+    const marker = L.marker([produto.lat, produto.lng], { 
+      icon: isHovered 
+        ? packageIcon('#ffffff', '#244e84') // hover (fundo branco, ícone azul)
+        : packageIcon('#244e84', '#ffffff') // normal (fundo azul, ícone branco)
+    }).addTo(window.map);
+
+    marker.produtoId = produto.id;
+    marker.on("click", () => abrirCarrossel(produto, marker));
+    produtoMarkers.push(marker);
+  });
 }
 
+watch(() => props.hoverId, (id) => {
+  produtoMarkers.forEach(marker => {
+    if(marker.produtoId === id) {
+      marker.setIcon(packageIcon('#ffffff', '#244e84')); // hover
+    } else {
+      marker.setIcon(packageIcon('#244e84', '#ffffff')); // normal
+    }
+  });
+});
 onMounted(() => {
   window.map = L.map("map", { zoomControl: false }).setView([-26.3044, -48.8463], 14)
   L.control.zoom({ position: "topright" }).addTo(window.map)
@@ -99,11 +130,17 @@ onMounted(() => {
   })
 })
 
+const emit = defineEmits(['produtos-filtrados'])
+
 function onFiltrar(filtrados) {
-  produtosFiltrados.value = filtrados
-  updateMarkers(filtrados)
+  // quando o filtro atualizar os produtos
+  emit('produtos-filtrados', filtrados) // envia para o pai
   fecharFiltro()
 }
+
+watch(() => props.produtos, (novaLista) => {
+  updateMarkers(novaLista)
+}, { deep: true })
 </script>
 
 <template>
@@ -111,16 +148,16 @@ function onFiltrar(filtrados) {
     <button class="btn-filtro" @click="toggleFiltro">Filtrar & organizar</button>
 
     <!-- Filtro -->
-    <FiltroMapa
-      v-if="filtroAberto"
-      :produtosAntes="produtosAntes"
-      :precoMin="0"
-      :precoMax="150"
-      :filtroAberto="filtroAberto"
-      :minhaLocalizacao="minhaLocalizacao"
-      @fechar="fecharFiltro"
-      @filtrar="onFiltrar"
-    />
+<FiltroMapa
+  v-if="filtroAberto"
+  :produtosAntes="produtosAntes"
+  :precoMin="0"
+  :precoMax="150"
+  :filtroAberto="filtroAberto"
+  :minhaLocalizacao="minhaLocalizacao"
+  @produtos-filtrados="onFiltrar"
+  @fechar="fecharFiltro"
+/>
 
     <!-- Carrossel -->
     <div v-if="showCarrossel && produtoSelecionado" class="carrossel-container" :style="{ top: cardTop + 'px', left: cardLeft + 'px' }" @click.stop>
