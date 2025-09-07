@@ -55,7 +55,7 @@ function filtrarProdutos() {
       props.minhaLocalizacao.lat,
       props.minhaLocalizacao.lng
     )
-
+    
     const passaDistancia = distancia <= limiteKm
 
     // Verifica categoria: se nada selecionado, passa todos
