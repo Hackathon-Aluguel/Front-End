@@ -43,7 +43,7 @@ const imagesSingle1 = Array.from({ length: 10 }, (_, index) => ({
 }))
 
 const configMulti1 = {
-  itemsToShow: 4, 
+  itemsToShow: 4,
   snapAlign: 'start',
   breakpointMode: 'carousel',
   breakpoints: {
@@ -67,6 +67,11 @@ function toggleLike(produto) {
 }
 
 const dragExterno = ref(true)
+
+const mostrarDenuncia = ref(false)
+function abrirDenuncia() {
+  mostrarDenuncia.value = true
+}
 </script>
 
 <template>
@@ -184,8 +189,65 @@ const dragExterno = ref(true)
     </div>
   </section>
   <section class="denuncia">
-    <button><span class="mdi mdi-flag"></span>Denunciar "Nome da Pessoa"</button>
+    <button @click="abrirDenuncia">
+      <span class="mdi mdi-flag"></span>
+      Denunciar "Nome da Pessoa"
+    </button>
   </section>
+  <div v-if="mostrarDenuncia" class="modal">
+    <h1>Denunciar Perfil do Usuário</h1>
+    <p class="h1">Denuncias nos ajudam a manter o Alugaê seguro - o usuário não será notificado de que você o denunciou.</p>
+
+    <h2>Qual a sua denúncia?</h2>
+    <p class="h2">Selecione os elementos que você quer denunciar no perfil deste usuário.</p>
+    <ul class="denuncia">
+      <li>
+        <div>
+          <input type="checkbox" id="foto" name="foto">
+        </div>
+        <div>
+          <label for="foto">Foto de perfil inapropriada</label>
+          <p>detalhes</p>
+        </div>
+      </li>
+      <li>
+        <div>
+          <input type="checkbox" id="foto" name="foto">
+        </div>
+        <div>
+          <label for="foto">Foto de perfil inapropriada</label>
+          <p>detalhes</p>
+        </div>
+      </li>
+      <li>
+        <div>
+          <input type="checkbox" id="foto" name="foto">
+        </div>
+        <div>
+          <label for="foto">Foto de perfil inapropriada</label>
+          <p>detalhes</p>
+        </div>
+      </li>
+      <li>
+        <div>
+          <input type="checkbox" id="foto" name="foto">
+        </div>
+        <div>
+          <label for="foto">Foto de perfil inapropriada</label>
+          <p>detalhes</p>
+        </div>
+      </li>
+      <li>
+        <div>
+          <input type="checkbox" id="foto" name="foto">
+        </div>
+        <div>
+          <label for="foto">Foto de perfil inapropriada</label>
+          <p>detalhes</p>
+        </div>
+      </li>
+    </ul>
+  </div>
 </template>
 
 <style lang="scss">
@@ -220,9 +282,7 @@ const dragExterno = ref(true)
           margin-right: 1vw;
         }
 
-        & li:last-of-type {
-          
-        }
+        & li:last-of-type {}
 
         & h1 {
           margin-top: 1.5vw;
@@ -272,15 +332,18 @@ const dragExterno = ref(true)
       & div:first-of-type {
         margin-left: 2vw;
       }
+
       & div.meio {
         display: block;
         border-left: 1px solid #CDCDCD;
         border-right: 1px solid #CDCDCD;
       }
+
       & div.meio p {
         margin-left: 1.5vw;
         margin-right: 1.5vw;
       }
+
       & p {
         color: black;
         margin: 0;
@@ -643,5 +706,48 @@ section.carro4 div.esquerda img {
     margin-right: 3px;
     font-size: 22px;
   }
+}
+.modal{
+  position: absolute;
+  background-color: #1D2D51;
+  color: white;
+  width: 30%;
+  padding: 20px;
+  border-radius: 20px;
+  & h1{
+    font-size: 33px;  
+    margin: 0;
+  }
+  & p.h1{
+    margin: 10px 0 30px 0;
+  }
+  & p.h2{
+    margin: 10px 0 30px 0;
+  }
+
+  & h2{
+    font-size: 25px;
+    margin-bottom: 10px;
+    margin: 0;
+  }
+  & ul{
+    & li{
+      display: flex;
+      margin-bottom: 30px;
+      align-items: center;
+      & input{
+        transform: scale(2);
+        margin-right: 20px;
+      }
+      & label{
+        font-size: 20px;
+      }
+      & p{
+        margin: 0;
+        font-size: 16px;
+      }
+      
+  }
+}
 }
 </style>

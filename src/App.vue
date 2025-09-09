@@ -1,9 +1,10 @@
 <script setup>
-
+import PerfilComponent from './components/PerfilComponent.vue';
 </script>
 
 <template>
-  <RouterView />
+  <!--<RouterView />-->
+  <PerfilComponent/>
   <h1></h1>
 </template>
 
