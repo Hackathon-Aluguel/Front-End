@@ -286,6 +286,10 @@ div.listaFavoritos {
   border-radius: 20px;
 }
 
+.search-box span {
+  font-size: 20px;
+}
+
 .search-box input::placeholder {
   color: #aaa;
 
@@ -295,8 +299,8 @@ div.listaFavoritos {
   background: #1e3a8a;
   border: none;
   border-radius: 50%;
-  width: 28px;
-  height: 28px;
+  width: 35px;
+  height: 35px;
   display: flex;
   align-items: center;
   justify-content: center;
