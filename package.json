@@ -25,6 +25,7 @@
   "dependencies": {
     "@mdi/font": "^7.4.47",
     "axios": "^1.11.0",
+    "geolib": "^3.3.4",
     "leaflet": "^1.9.4",
     "nominatim-client": "^3.2.1",
     "oh-vue-icons": "^1.0.0-rc3",

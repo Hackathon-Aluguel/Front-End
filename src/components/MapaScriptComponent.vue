@@ -26,7 +26,6 @@ const produtosAntes = reactive([
   { id: 8, nome: 'Kit Ferramentas', preco: 150, lat: -26.4200, lng: -48.9500, categoria: 'Construção e Reforma', estrelas: 4, likes: 18, liked: false, cidade: 'Joinville', estado: 'SC' },
   { id: 9, nome: 'Caixa de som', preco: 80, lat: -26.4800, lng: -49.0000, categoria: 'Instrumentos musicais', estrelas: 5, likes: 22, liked: false, cidade: 'Joinville', estado: 'SC' },
 ])
-const produtosFiltrados = ref([...produtosAntes])
 const minhaLocalizacao = reactive({ lat: -26.3045, lng: -48.8460 })
 const showCarrossel = ref(false)
 const produtoSelecionado = ref(null)
@@ -118,7 +117,7 @@ onMounted(() => {
     }
     minhaLocalizacao.lat = e.latlng.lat
     minhaLocalizacao.lng = e.latlng.lng
-    updateMarkers(produtosFiltrados.value)
+    updateMarkers(props.produtos)
   })
 
   window.map.on("click", () => { showCarrossel.value = false })

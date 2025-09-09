@@ -1,5 +1,6 @@
 <script setup>
 import { ref, watch, onMounted } from 'vue'
+import { getDistance } from 'geolib'
 
 // Props do componente
 const props = defineProps({
@@ -15,7 +16,7 @@ const emit = defineEmits(['filtrar', 'fechar', 'produtos-filtrados'])
 
 // Estado reativo do componente
 const produtosFiltrados = ref([...props.produtosAntes])
-const distanciaAtual = ref(2)
+const distanciaAtual = ref(15)
 const categoriasSelecionadas = ref([])
 const precoSelecionado = ref(props.precoMax / 2)
 const tooltipPos = ref(50)
@@ -33,29 +34,27 @@ watch(() => props.minhaLocalizacao, () => {
 }, { deep: true })
 
 function calcularDistanciaKm(lat1, lng1, lat2, lng2) {
-  // Aqui simulamos aquele valor aproximado que estava funcionando antes
-  // Não é Haversine real, é “valores aproximados” para efeito do filtro
-  const difLat = Math.abs(lat2 - lat1)
-  const difLng = Math.abs(lng2 - lng1)
-
-  // Soma e multiplica por um fator para “aproximar” km
-  let distancia = (difLat + difLng) * 111 // 1 grau ~ 111km
-
-  // Arredonda pra algo parecido com o que você queria (5, 6, etc)
-  distancia = Math.round(distancia * 10) / 10
-  return distancia
+  const R = 6371; // raio da Terra em km
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLng = (lng2 - lng1) * Math.PI / 180;
+  const a =
+    Math.sin(dLat/2) * Math.sin(dLat/2) +
+    Math.cos(lat1 * Math.PI/180) * Math.cos(lat2 * Math.PI/180) *
+    Math.sin(dLng/2) * Math.sin(dLng/2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  return R * c; // distância em km
 }
 function filtrarProdutos() {
   const limiteKm = Number(distanciaAtual.value)
 
   const filtrados = props.produtosAntes.filter(produto => {
-    const distancia = calcularDistanciaKm(
-      produto.lat,
-      produto.lng,
-      props.minhaLocalizacao.lat,
-      props.minhaLocalizacao.lng
-    )
-    
+    // Calcula distância real em km
+    const distancia = getDistance(
+      { latitude: produto.lat, longitude: produto.lng },
+      { latitude: props.minhaLocalizacao.lat, longitude: props.minhaLocalizacao.lng }
+    ) / 1000 // metros para km
+
+    // Verifica se está dentro da distância
     const passaDistancia = distancia <= limiteKm
 
     // Verifica categoria: se nada selecionado, passa todos
@@ -70,8 +69,8 @@ function filtrarProdutos() {
     // Debug
     console.log(
       produto.nome,
-      "distancia:", distancia,
-      "limite?", passaDistancia,
+      "distancia calculada:", distancia.toFixed(2),
+      "passa?", passaDistancia,
       "categoria?", passaCategoria,
       "preco?", passaPreco
     )
