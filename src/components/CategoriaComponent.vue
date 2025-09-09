@@ -10,6 +10,8 @@
     { id: 4, nome: 'fogareiro', preco: 40, estrelas: 3, likes: 12, liked: false, status: 'fora', categoria: 'camping', recente: 'novo' },
     { id: 5, nome: 'mochila', preco: 50, estrelas: 5, likes: 10, liked: false, status: 'fora', categoria: 'trilha', recente: 'antigo' },
     { id: 6, nome: 'mochila', preco: 50, estrelas: 5, likes: 10, liked: false, status: 'estoque', categoria: 'camping', recente: 'novo' },
+    { id: 7, nome: 'mochila', preco: 50, estrelas: 5, likes: 10, liked: false, status: 'estoque', categoria: 'camping', recente: 'novo' },
+    { id: 8, nome: 'mochila', preco: 50, estrelas: 5, likes: 10, liked: false, status: 'estoque', categoria: 'camping', recente: 'novo' },
 
 
   ])
@@ -175,6 +177,7 @@
   display: flex;
 }
 
+
 .itens {
   border: 1px solid #000;
   width: 400px;
@@ -241,11 +244,13 @@
 
 
 .favoritos {
-  margin: 0vw 0 0 3vw;
+  margin: 3vw 0 0 2vw;
   border-radius: 8px;
   width: 100%;
   max-width: 1144px;
-  height: 812px;
+  height: 710px;
+  border: 1px solid #000;
+  overflow-x: auto;
   padding: 10px;
   box-sizing: border-box;
 
@@ -267,8 +272,8 @@ div.listaFavoritos {
   background: #FFF;
   border-radius: 20px;
   padding: 5px 10px;
-  width: 250px;
-  height: 30px;
+  width: 300px;
+  height: 40px;
 
 }
 
@@ -301,7 +306,7 @@ div.listaFavoritos {
 }
 
 .cima {
-  margin: 1.4vw 0 2.5vw 4.5vw;
+  margin: 0vw 0 2.5vw 4.5vw;
   display: flex;
 }
 
