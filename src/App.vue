@@ -1,9 +1,9 @@
 <script setup>
-import CategoriaComponent from './components/CategoriaComponent.vue';
 </script>
 
 <template>
-   <CategoriaComponent />
+  <RouterView />
+  <h1></h1>
 </template>
 
 <style scoped>
