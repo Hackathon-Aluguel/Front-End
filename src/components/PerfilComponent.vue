@@ -4,14 +4,48 @@ import { Carousel, Slide, Navigation } from 'vue3-carousel'
 import { ref, reactive } from 'vue'
 
 const avaliacoes = [
-  { id: 1, nome: 'Pietro', texto: 'Não sabia sobre esse site, depois que conheci ele consegui fazer minhas coisas sem precisar gastar muito' },
-  { id: 2, nome: 'Mariana', texto: 'Consegui alugar o que eu precisava de forma rápida e prática, super recomendo!' },
-  { id: 3, nome: 'Lucas', texto: 'Achei muito útil, economizei dinheiro e ainda conheci um serviço confiável.' },
-  { id: 4, nome: 'Beatriz', texto: 'Experiência excelente, o atendimento foi ótimo e o processo bem simples.' },
-  { id: 5, nome: 'Rafael', texto: 'Já usei várias vezes e sempre deu tudo certo, muito melhor do que comprar algo que vou usar pouco.' },
-  { id: 6, nome: 'Carolina', texto: 'Adorei a ideia, é sustentável e ajuda bastante no dia a dia.' },
-  { id: 7, nome: 'Fernanda', texto: 'Me surpreendi com a qualidade do serviço, certamente vou usar de novo.' },
-  { id: 8, nome: 'João', texto: 'Muito prático, facilitou bastante minha vida em um momento que eu precisava.' },
+  {
+    id: 1,
+    nome: 'Pietro',
+    texto:
+      'Não sabia sobre esse site, depois que conheci ele consegui fazer minhas coisas sem precisar gastar muito',
+  },
+  {
+    id: 2,
+    nome: 'Mariana',
+    texto: 'Consegui alugar o que eu precisava de forma rápida e prática, super recomendo!',
+  },
+  {
+    id: 3,
+    nome: 'Lucas',
+    texto: 'Achei muito útil, economizei dinheiro e ainda conheci um serviço confiável.',
+  },
+  {
+    id: 4,
+    nome: 'Beatriz',
+    texto: 'Experiência excelente, o atendimento foi ótimo e o processo bem simples.',
+  },
+  {
+    id: 5,
+    nome: 'Rafael',
+    texto:
+      'Já usei várias vezes e sempre deu tudo certo, muito melhor do que comprar algo que vou usar pouco.',
+  },
+  {
+    id: 6,
+    nome: 'Carolina',
+    texto: 'Adorei a ideia, é sustentável e ajuda bastante no dia a dia.',
+  },
+  {
+    id: 7,
+    nome: 'Fernanda',
+    texto: 'Me surpreendi com a qualidade do serviço, certamente vou usar de novo.',
+  },
+  {
+    id: 8,
+    nome: 'João',
+    texto: 'Muito prático, facilitou bastante minha vida em um momento que eu precisava.',
+  },
 ]
 
 // Carousel configuration
@@ -72,6 +106,12 @@ const mostrarDenuncia = ref(false)
 function abrirDenuncia() {
   mostrarDenuncia.value = true
 }
+
+function enviarDenuncia() {
+  mostrarDenuncia.value = false;
+  denunciado.value = true;
+  console.log(denunciado.value); 
+}
 </script>
 
 <template>
@@ -82,7 +122,8 @@ function abrirDenuncia() {
           <li>
             <img
               src="https://s2.glbimg.com/CZ7vt10tkQki58E3X37KbSrW8PA=/620x430/e.glbimg.com/og/ed/f/original/2022/04/11/dall_e_ia.png"
-              alt="Foto de Perfil">
+              alt="Foto de Perfil"
+            />
           </li>
           <li>
             <h1>Nome</h1>
@@ -111,13 +152,16 @@ function abrirDenuncia() {
     </div>
     <div class="p2">
       <h2>Sobre "Nome da pessoa"</h2>
-      <p><span class="mdi mdi-notebook"></span>Onde estudei: Escola Municipal Dr Sadalla Amin Ghanem</p>
+      <p>
+        <span class="mdi mdi-notebook"></span>Onde estudei: Escola Municipal Dr Sadalla Amin Ghanem
+      </p>
       <p><span class="mdi mdi-briefcase-account-outline"></span>Trabalho: Garoto de programa</p>
       <p class="off"><span class="mdi mdi-heart"></span>Curto muito: pintar boobie goods</p>
-      <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Sed hic iste id recusandae! Eveniet,
-        repudiandae aliquid earum fugiat adipisci cupiditate placeat enim ex doloremque culpa incidunt optio
-        molestiae quaerat accusantium!</p>
-
+      <p>
+        Lorem ipsum dolor sit, amet consectetur adipisicing elit. Sed hic iste id recusandae!
+        Eveniet, repudiandae aliquid earum fugiat adipisci cupiditate placeat enim ex doloremque
+        culpa incidunt optio molestiae quaerat accusantium!
+      </p>
     </div>
   </section>
 
@@ -128,19 +172,24 @@ function abrirDenuncia() {
       <Carousel v-bind="config">
         <Slide v-for="avaliacao in avaliacoes" :key="avaliacao.id">
           <ul>
-            <li><img
+            <li>
+              <img
                 src="https://s2.glbimg.com/CZ7vt10tkQki58E3X37KbSrW8PA=/620x430/e.glbimg.com/og/ed/f/original/2022/04/11/dall_e_ia.png"
-                alt="Foto de Perfil" style="height: 50px; width: 50px; border-radius: 30px;"></li>
+                alt="Foto de Perfil"
+                style="height: 50px; width: 50px; border-radius: 30px"
+              />
+            </li>
             <li>
               <h2>Nome pessoa</h2>
             </li>
           </ul>
           <div class="textos_Inferiores">
             <p>Estrelinhas Obs: Ver depois!</p>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Asperiores facilis officia
-              iusto.
-              Quod animi voluptates rerum? Exercitationem ut dolores ipsum modi at possimus adipisci
-              officia rerum cupiditate rem, aliquam molestiae. </p>
+            <p>
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Asperiores facilis officia
+              iusto. Quod animi voluptates rerum? Exercitationem ut dolores ipsum modi at possimus
+              adipisci officia rerum cupiditate rem, aliquam molestiae.
+            </p>
           </div>
         </Slide>
 
@@ -195,58 +244,68 @@ function abrirDenuncia() {
     </button>
   </section>
   <div v-if="mostrarDenuncia" class="modal">
-    <h1>Denunciar Perfil do Usuário</h1>
-    <p class="h1">Denuncias nos ajudam a manter o Alugaê seguro - o usuário não será notificado de que você o denunciou.</p>
+    <div>
+      <button @click="mostrarDenuncia = false" class="x">X</button>
+      <h1>Denunciar Perfil do Usuário</h1>
+      <p class="h1">
+        Denuncias nos ajudam a manter o Alugaê seguro - o usuário não será notificado de que você o
+        denunciou.
+      </p>
 
-    <h2>Qual a sua denúncia?</h2>
-    <p class="h2">Selecione os elementos que você quer denunciar no perfil deste usuário.</p>
-    <ul class="denuncia">
-      <li>
-        <div>
-          <input type="checkbox" id="foto" name="foto">
-        </div>
-        <div>
-          <label for="foto">Foto de perfil inapropriada</label>
-          <p>detalhes</p>
-        </div>
-      </li>
-      <li>
-        <div>
-          <input type="checkbox" id="foto" name="foto">
-        </div>
-        <div>
-          <label for="foto">Foto de perfil inapropriada</label>
-          <p>detalhes</p>
-        </div>
-      </li>
-      <li>
-        <div>
-          <input type="checkbox" id="foto" name="foto">
-        </div>
-        <div>
-          <label for="foto">Foto de perfil inapropriada</label>
-          <p>detalhes</p>
-        </div>
-      </li>
-      <li>
-        <div>
-          <input type="checkbox" id="foto" name="foto">
-        </div>
-        <div>
-          <label for="foto">Foto de perfil inapropriada</label>
-          <p>detalhes</p>
-        </div>
-      </li>
-      <li>
-        <div>
-          <input type="checkbox" id="foto" name="foto">
-        </div>
-        <div>
-          <label for="foto">Foto de perfil inapropriada</label>
-          <p>detalhes</p>
-        </div>
-      </li>
-    </ul>
+      <h2>Qual a sua denúncia?</h2>
+      <p class="h2">Selecione os elementos que você quer denunciar no perfil deste usuário.</p>
+      <ul class="denuncia">
+        <li>
+          <div>
+            <input type="checkbox" id="foto" name="foto" />
+          </div>
+          <div>
+            <label for="foto">Foto de perfil inapropriada</label>
+            <p>detalhes</p>
+          </div>
+        </li>
+        <li>
+          <div>
+            <input type="checkbox" id="foto" name="foto" />
+          </div>
+          <div>
+            <label for="foto">Foto de perfil inapropriada</label>
+            <p>detalhes</p>
+          </div>
+        </li>
+        <li>
+          <div>
+            <input type="checkbox" id="foto" name="foto" />
+          </div>
+          <div>
+            <label for="foto">Foto de perfil inapropriada</label>
+            <p>detalhes</p>
+          </div>
+        </li>
+        <li>
+          <div>
+            <input type="checkbox" id="foto" name="foto" />
+          </div>
+          <div>
+            <label for="foto">Foto de perfil inapropriada</label>
+            <p>detalhes</p>
+          </div>
+        </li>
+        <li>
+          <div>
+            <input type="checkbox" id="foto" name="foto" />
+          </div>
+          <div>
+            <label for="foto">Foto de perfil inapropriada</label>
+            <p>detalhes</p>
+          </div>
+        </li>
+      </ul>
+      <div class="enviar">
+        <button @click="enviarDenuncia">Enviar denúncia</button>
+        <!--Ver isso depois-->
+      </div>
+    </div>
   </div>
 </template>
 
@@ -263,8 +322,8 @@ function abrirDenuncia() {
     display: flex;
     flex-direction: column;
     align-items: center;
-    height: 330px;
-    width: 30%;
+    height: 340px;
+    width: 35%;
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
     border-radius: 20px;
 
@@ -277,12 +336,13 @@ function abrirDenuncia() {
         & img {
           height: 215px;
           width: 220px;
-          background-color: #1D2D51;
+          background-color: #1d2d51;
           border-radius: 120px;
           margin-right: 1vw;
         }
 
-        & li:last-of-type {}
+        & li:last-of-type {
+        }
 
         & h1 {
           margin-top: 1.5vw;
@@ -294,14 +354,14 @@ function abrirDenuncia() {
 
         & p {
           margin: 0.2vw 0 1.5vw 0;
-          color: #CDCDCD;
+          color: #cdcdcd;
         }
 
         & button {
           padding: 16px 15px 12px 15px;
           font-size: 15px;
-          background-color: #1D2D51;
-          color: #FFFFFF;
+          background-color: #1d2d51;
+          color: #ffffff;
           border: none;
           border-radius: 8px;
           display: block;
@@ -309,14 +369,11 @@ function abrirDenuncia() {
           display: flex;
           gap: 8px;
 
-
           & span {
             font-size: 20px;
           }
         }
       }
-
-
     }
 
     & .inferior {
@@ -335,8 +392,8 @@ function abrirDenuncia() {
 
       & div.meio {
         display: block;
-        border-left: 1px solid #CDCDCD;
-        border-right: 1px solid #CDCDCD;
+        border-left: 1px solid #cdcdcd;
+        border-right: 1px solid #cdcdcd;
       }
 
       & div.meio p {
@@ -379,7 +436,6 @@ function abrirDenuncia() {
       margin: 0 8px;
       font-size: 18px;
     }
-
   }
 }
 
@@ -395,13 +451,11 @@ function abrirDenuncia() {
     margin-bottom: 20px;
   }
 
-
   & .carousel__wrapper {
     padding: 20px;
     width: 100%;
     height: 330px;
     display: block;
-
 
     & ul {
       display: flex;
@@ -419,7 +473,6 @@ function abrirDenuncia() {
     }
 
     & .textos_Inferiores {
-
       & p:first-of-type {
         margin-bottom: 10px;
       }
@@ -427,10 +480,8 @@ function abrirDenuncia() {
       & p:last-of-type {
         overflow: auto;
         max-height: 100px;
-
       }
     }
-
   }
 
   & .carousel__slide {
@@ -444,9 +495,8 @@ function abrirDenuncia() {
   }
 
   .carousel__slide:last-of-type {
-    padding-left: 40px
+    padding-left: 40px;
   }
-
 }
 
 .produto_Usuario {
@@ -461,7 +511,6 @@ function abrirDenuncia() {
   }
 }
 
-
 .carro3 h2.secundaria {
   display: block;
   /* garante que o width funcione */
@@ -472,8 +521,6 @@ function abrirDenuncia() {
   font-size: 20px;
   width: 30%;
 }
-
-
 
 div.produto {
   max-width: 18vw;
@@ -654,8 +701,8 @@ section.carro4 div.produto .like-btn2 {
   transition: opacity 0.3s ease;
 }
 
-.carousel2:hover>.carousel>.carousel__next,
-.carousel2:hover>.carousel>.carousel__prev,
+.carousel2:hover > .carousel > .carousel__next,
+.carousel2:hover > .carousel > .carousel__prev,
 .carousel__wrapper .carousel__next,
 .carousel__wrapper .carousel__prev {
   opacity: 1;
@@ -671,10 +718,6 @@ div.produto .imagem:hover .carousel__prev,
   pointer-events: auto;
 }
 
-
-
-
-
 .carousel4 {
   resize: horizontal;
   border: 2px dashed gray;
@@ -689,14 +732,12 @@ section.carro4 div.esquerda img {
   height: 90%;
 }
 
-
-
 .denuncia {
   & button {
     padding: 15px 10px;
     font-size: 18px;
-    background-color: #1D2D51;
-    color: #FFFFFF;
+    background-color: #1d2d51;
+    color: #ffffff;
     border: none;
     border-radius: 6px;
     margin: 2vw 5vw 5vw 5vw;
@@ -707,47 +748,98 @@ section.carro4 div.esquerda img {
     font-size: 22px;
   }
 }
-.modal{
-  position: absolute;
-  background-color: #1D2D51;
+
+.modal {
+  background-color: #1d2d51;
   color: white;
-  width: 30%;
   padding: 20px;
-  border-radius: 20px;
-  & h1{
-    font-size: 33px;  
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+
+  & button.x {
+    font-size: 20px;
+    position: absolute;
+    border: none;
+    background-color: #1d2d51;
+    color: white;
+    cursor: pointer;
+    right: 33.4%;
+    top: 10.7%;
+  }
+
+  & h1 {
+    font-size: 33px;
     margin: 0;
   }
-  & p.h1{
-    margin: 10px 0 30px 0;
-  }
-  & p.h2{
+
+  & p.h1 {
     margin: 10px 0 30px 0;
   }
 
-  & h2{
+  & p.h2 {
+    margin: 10px 0 30px 0;
+  }
+
+  & h2 {
     font-size: 25px;
     margin-bottom: 10px;
     margin: 0;
   }
-  & ul{
-    & li{
+
+  & ul {
+    & li {
       display: flex;
       margin-bottom: 30px;
       align-items: center;
-      & input{
+
+      & input {
         transform: scale(2);
         margin-right: 20px;
       }
-      & label{
+
+      & label {
         font-size: 20px;
       }
-      & p{
+
+      & p {
         margin: 0;
         font-size: 16px;
       }
-      
+    }
   }
 }
+
+.modal > div {
+  background: #1d2d51;
+  padding: 24px;
+  padding-top: 40px;
+  border-radius: 12px;
+  max-width: 500px;
+  width: 90%;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+}
+
+.enviar {
+  & button {
+    padding: 16px 15px 12px 15px;
+    font-size: 17px;
+    background-color: #244e84;
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    display: block;
+    margin: 0 auto;
+    display: flex;
+    gap: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  }
 }
 </style>
