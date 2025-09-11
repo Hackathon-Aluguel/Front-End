@@ -1,4 +1,20 @@
 <script setup>
+import { user } from '@/stores/user.js'
+import { computed } from 'vue'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+
+// Computed para verificar se está logado
+const isLoggedIn = computed(() => !!user.value)
+
+// Logout
+function logout() {
+  localStorage.removeItem('access_token')
+  localStorage.removeItem('refresh_token')
+  user.value = null
+  router.push('/')
+}
 </script>
 
 <template>
@@ -11,7 +27,11 @@
 
         <div class="container">
           <form action="" class="search-bar">
-            <input type="text" placeholder="Precisa de algo só por uns dias? Encontre aqui" name="q">
+            <input
+              type="text"
+              placeholder="Precisa de algo só por uns dias? Encontre aqui"
+              name="q"
+            />
             <button type="submit"><span class="mdi mdi-magnify"></span></button>
           </form>
         </div>
@@ -21,18 +41,33 @@
           <li><span class="mdi mdi-heart-outline"></span></li>
         </ul>
 
-        <ul class="login">
-          <li><a class="log"><RouterLink to="/login">Log in</RouterLink></a></li>
-          <li><a class="conta"><RouterLink to="/register">Criar Conta</RouterLink></a></li>
+        <ul class="login" v-if="isLoggedIn">
+          <li>
+            <img :src="user.value?.avatar" alt="Avatar" class="avatar" />
+            <span class="usuario">{{ user.value?.email }}</span>
+            <button><span class="mdi mdi-chevron-down"></span></button>
+          </li>
+          <li><button @click="logout">Sair</button></li>
+        </ul>
+
+        <ul class="login" v-else>
+          <li>
+            <a class="log"><RouterLink to="/login">Log in</RouterLink></a>
+          </li>
+          <li>
+            <a class="conta"><RouterLink to="/register">Criar Conta</RouterLink></a>
+          </li>
         </ul>
       </div>
       <div class="menu">
-        <a href="#">MEUS <br>  PEDIDOS</a>
+        <a href="#"
+          >MEUS <br />
+          PEDIDOS</a
+        >
         <a href="#">OFERTAS</a>
         <a href="#">ATENDIMENTO</a>
         <a href="#">TERMOS</a>
       </div>
-
     </nav>
   </header>
 </template>
@@ -55,7 +90,7 @@ header div.topo-header h1 {
 }
 
 div.topo-header span.alugae {
-  color: #244E8A;
+  color: #244e8a;
 }
 
 .container {
@@ -74,7 +109,7 @@ div.topo-header span.alugae {
 }
 
 .search-bar input {
-   background-color: transparent;
+  background-color: transparent;
   flex: 1;
   border: 0;
   outline: none;
@@ -84,7 +119,7 @@ div.topo-header span.alugae {
 }
 
 .search-bar button {
-  background-color: #244E8A; /* azul */
+  background-color: #244e8a; /* azul */
   border: none;
   width: 32px;
   height: 32px;
@@ -93,13 +128,12 @@ div.topo-header span.alugae {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-    }
+}
 
 .search-bar button span {
   color: white;
   font-size: 18px;
 }
-
 
 div.topo-header ul.icons {
   display: flex;
@@ -126,13 +160,13 @@ div.topo-header ul.login li {
 }
 
 div.topo-header ul.login li a.log {
-  color: #244E8A;
+  color: #244e8a;
   font-size: 1.1vw;
 }
 
 div.topo-header ul.login li a.conta {
   border-radius: 8px;
-  background-color: #244E8A;
+  background-color: #244e8a;
   color: #f1f1f1;
   padding: 6px 12px 6px 12px;
   font-size: 1.1vw;
@@ -142,7 +176,7 @@ div.menu {
   display: flex;
   margin: 15px 0 0 0;
   justify-content: center;
-  border-top: 1px solid #244E8A;
+  border-top: 1px solid #244e8a;
 }
 
 div.menu a {
@@ -160,21 +194,51 @@ div.menu a {
 }
 
 div.menu a:hover {
-  color: #244E8A;
+  color: #244e8a;
 }
 
 div.menu a:hover::before {
-  content: "";
+  content: '';
   position: absolute;
   top: -24px;
   left: 50%;
   transform: translateX(-50%);
   width: 80px;
   height: 5px;
-  background-color: #244E8A;
+  background-color: #244e8a;
   border-bottom-left-radius: 3px;
   border-bottom-right-radius: 3px;
   align-items: center;
 }
-</style>
 
+ul.logado {
+  display: flex;
+}
+ul.logado button {
+  all: unset;
+  cursor: pointer;
+  color: aquamarine;
+}
+
+ul.logado .avatar {
+  width: 35px;
+  height: 35px;
+  background-color: #d3d3d3;
+  border-radius: 50%;
+  margin: 0 15px 0 0;
+}
+
+ul.logado button span {
+  margin: 10px 0 0 5px;
+}
+
+ul.logado span.usuario {
+  color: #000;
+  font-family: Poppins, sans-serif;
+  font-size: 15px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  margin: 10px 0 0 0;
+}
+</style>
