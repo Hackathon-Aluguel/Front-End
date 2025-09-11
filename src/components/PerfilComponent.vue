@@ -1,7 +1,7 @@
 <script setup>
 import 'vue3-carousel/carousel.css'
 import { Carousel, Slide, Navigation } from 'vue3-carousel'
-import { ref, reactive } from 'vue'
+import { ref, reactive, computed } from 'vue'
 
 const avaliacoes = [
   {
@@ -107,11 +107,28 @@ function abrirDenuncia() {
   mostrarDenuncia.value = true
 }
 
+const denuncia1 = ref(false)
+const denuncia2 = ref(false)
+const denuncia3 = ref(false)
+const denuncia4 = ref(false)
+const denuncia5 = ref(false)
+
+const podeEnviar = computed(() =>
+  denuncia1.value || denuncia2.value || denuncia3.value || denuncia4.value || denuncia5.value
+)
+
 function enviarDenuncia() {
-  mostrarDenuncia.value = false;
-  denunciado.value = true;
-  console.log(denunciado.value); 
+  if (podeEnviar.value) {
+    alert('Denúncia enviada com sucesso!')
+    denuncia1.value = false
+    denuncia2.value = false
+    denuncia3.value = false
+    denuncia4.value = false
+    denuncia5.value = false
+    mostrarDenuncia.value = false
+  }
 }
+
 </script>
 
 <template>
@@ -122,8 +139,7 @@ function enviarDenuncia() {
           <li>
             <img
               src="https://s2.glbimg.com/CZ7vt10tkQki58E3X37KbSrW8PA=/620x430/e.glbimg.com/og/ed/f/original/2022/04/11/dall_e_ia.png"
-              alt="Foto de Perfil"
-            />
+              alt="Foto de Perfil" />
           </li>
           <li>
             <h1>Nome</h1>
@@ -175,9 +191,7 @@ function enviarDenuncia() {
             <li>
               <img
                 src="https://s2.glbimg.com/CZ7vt10tkQki58E3X37KbSrW8PA=/620x430/e.glbimg.com/og/ed/f/original/2022/04/11/dall_e_ia.png"
-                alt="Foto de Perfil"
-                style="height: 50px; width: 50px; border-radius: 30px"
-              />
+                alt="Foto de Perfil" style="height: 50px; width: 50px; border-radius: 30px" />
             </li>
             <li>
               <h2>Nome pessoa</h2>
@@ -254,55 +268,55 @@ function enviarDenuncia() {
 
       <h2>Qual a sua denúncia?</h2>
       <p class="h2">Selecione os elementos que você quer denunciar no perfil deste usuário.</p>
-      <ul class="denuncia">
+      <ul class="opcoesDenuncia">
         <li>
           <div>
-            <input type="checkbox" id="foto" name="foto" />
+            <input type="checkbox" id="foto" name="foto" v-model="denuncia1" />
           </div>
           <div>
             <label for="foto">Foto de perfil inapropriada</label>
-            <p>detalhes</p>
+            <label  for="foto">Nudez, violência ou conteúdo ofensivo</label>
           </div>
         </li>
         <li>
           <div>
-            <input type="checkbox" id="foto" name="foto" />
+            <input type="checkbox" id="fotoProd" name="fotoProd" v-model="denuncia2" />
           </div>
           <div>
-            <label for="foto">Foto de perfil inapropriada</label>
-            <p>detalhes</p>
-          </div>
-        </li>
-        <li>
-          <div>
-            <input type="checkbox" id="foto" name="foto" />
-          </div>
-          <div>
-            <label for="foto">Foto de perfil inapropriada</label>
-            <p>detalhes</p>
+            <label for="fotoProd">Foto do produto enganosa</label>
+            <label>Imagem não condiz com o item anunciado</label>
           </div>
         </li>
         <li>
           <div>
-            <input type="checkbox" id="foto" name="foto" />
+            <input type="checkbox" id="infoFalsa" name="infoFalsa" v-model="denuncia3" />
           </div>
           <div>
-            <label for="foto">Foto de perfil inapropriada</label>
-            <p>detalhes</p>
+            <label for="infoFalsa">Informações falsas no perfil</label>
+            <label>Nome, idade ou localização incorretos</label>
           </div>
         </li>
         <li>
           <div>
-            <input type="checkbox" id="foto" name="foto" />
+            <input type="checkbox" id="descritores" name="descritores" v-model="denuncia4" />
           </div>
           <div>
-            <label for="foto">Foto de perfil inapropriada</label>
-            <p>detalhes</p>
+            <label for="descritores">Descrição do produto ou perfil imprópria</label>
+            <label>Texto com palavrões, ódio ou discriminação</label>
+          </div>
+        </li>
+        <li>
+          <div>
+            <input type="checkbox" id="outro" name="outro" v-model="denuncia5" />
+          </div>
+          <div>
+            <label for="outro">Outro comportamento inadequado</label>
+            <label>Assédio, golpe ou spam</label>
           </div>
         </li>
       </ul>
       <div class="enviar">
-        <button @click="enviarDenuncia">Enviar denúncia</button>
+        <button :disabled="!podeEnviar" :class="{ ativo: podeEnviar }" @click="enviarDenuncia">Enviar denúncia</button>
         <!--Ver isso depois-->
       </div>
     </div>
@@ -341,8 +355,7 @@ function enviarDenuncia() {
           margin-right: 1vw;
         }
 
-        & li:last-of-type {
-        }
+
 
         & h1 {
           margin-top: 1.5vw;
@@ -701,8 +714,8 @@ section.carro4 div.produto .like-btn2 {
   transition: opacity 0.3s ease;
 }
 
-.carousel2:hover > .carousel > .carousel__next,
-.carousel2:hover > .carousel > .carousel__prev,
+.carousel2:hover>.carousel>.carousel__next,
+.carousel2:hover>.carousel>.carousel__prev,
 .carousel__wrapper .carousel__next,
 .carousel__wrapper .carousel__prev {
   opacity: 1;
@@ -733,6 +746,9 @@ section.carro4 div.esquerda img {
 }
 
 .denuncia {
+  margin: 0;
+  padding: 0;
+
   & button {
     padding: 15px 10px;
     font-size: 18px;
@@ -741,6 +757,7 @@ section.carro4 div.esquerda img {
     border: none;
     border-radius: 6px;
     margin: 2vw 5vw 5vw 5vw;
+
   }
 
   & span {
@@ -771,8 +788,8 @@ section.carro4 div.esquerda img {
     background-color: #1d2d51;
     color: white;
     cursor: pointer;
-    right: 33.4%;
-    top: 10.7%;
+    right: 69.8vh;
+    top: 17.6vh;
   }
 
   & h1 {
@@ -794,7 +811,8 @@ section.carro4 div.esquerda img {
     margin: 0;
   }
 
-  & ul {
+  & .opcoesDenuncia {
+    padding: 0;
     & li {
       display: flex;
       margin-bottom: 30px;
@@ -805,22 +823,42 @@ section.carro4 div.esquerda img {
         margin-right: 20px;
       }
 
-      & label {
-        font-size: 20px;
+      & input[type="checkbox"] {
+        -webkit-appearance: none;
+        background-color: #1d2d51;
+        margin-top: 1vh;
+        width: 15px;
+        height: 15px;
+        border-radius: 3px;
+        border: 1px solid rgb(110, 108, 108);
       }
 
-      & p {
-        margin: 0;
-        font-size: 16px;
+      & input[type="checkbox"]:checked {
+        background-color: #386CBE;
+      }
+
+      & input[type="checkbox"]:checked::after {
+        content: "✔";
+        color: white;
+        position: absolute;
+        left: 0.1vh;
+        top: -0.2vh;
+        font-size: 14px;
+      }
+
+      & label:first-child {
+        font-size: 20px;
+        display: flex;
       }
     }
   }
 }
 
-.modal > div {
+.modal>div {
   background: #1d2d51;
-  padding: 24px;
-  padding-top: 40px;
+  border: #244e84 solid 0.1px;
+  padding: 30px;
+  padding-top: 50px;
   border-radius: 12px;
   max-width: 500px;
   width: 90%;
@@ -831,7 +869,7 @@ section.carro4 div.esquerda img {
   & button {
     padding: 16px 15px 12px 15px;
     font-size: 17px;
-    background-color: #244e84;
+    background-color: #1d2d51;
     color: #ffffff;
     border: none;
     border-radius: 8px;
@@ -841,5 +879,13 @@ section.carro4 div.esquerda img {
     gap: 8px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
   }
+
+  & button.ativo {
+    background-color: #386CBE;
+    /* azul mais vivo */
+    cursor: pointer;
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.3);
+  }
+
 }
 </style>
