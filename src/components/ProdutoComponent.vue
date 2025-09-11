@@ -227,6 +227,7 @@ div.dono {
   align-items: center;
   margin: 2vw 0 10px 0;
 }
+
 div.dono h2 {
   font-size: 16px;
   color: #000;

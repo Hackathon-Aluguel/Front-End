@@ -3,6 +3,8 @@ import 'vue3-carousel/carousel.css'
 import { Carousel, Slide, Navigation } from 'vue3-carousel'
 import { ref, reactive } from 'vue'
 
+
+
 const avaliacoes = [
   { id: 1, nome: 'Pietro', texto: 'Não sabia sobre esse site, depois que conheci ele consegui fazer minhas coisas sem precisar gastar muito' },
   { id: 2, nome: 'Mariana', texto: 'Consegui alugar o que eu precisava de forma rápida e prática, super recomendo!' },
@@ -43,7 +45,7 @@ const imagesSingle1 = Array.from({ length: 10 }, (_, index) => ({
 }))
 
 const configMulti1 = {
-  itemsToShow: 4, 
+  itemsToShow: 4,
   snapAlign: 'start',
   breakpointMode: 'carousel',
   breakpoints: {
