@@ -121,7 +121,7 @@ const cadastrarProduto = async () => {
         <div class="img-produto">
           <label for="inputFotos" style="cursor:pointer">
             <div
-              style="width:80%; height:58%; border-radius:20px; background-color:#E8F1F2; display:flex; justify-content:center; align-items:center; font-size:50px; overflow:hidden;">
+              style="max-width:30vw; max-height:35vh ; width:80%; height:58%; border-radius:20px; background-color:#E8F1F2; display:flex; justify-content:center; align-items:center; font-size:50px; overflow:hidden;">
               <span v-if="fotosPreview.length === 0" class="mdi mdi-download"></span>
               <img v-else :src="fotosPreview[0]" alt="Pré-visualização"
                 style="width:100%; height:100%; object-fit:cover; border-radius:20px;">
@@ -134,7 +134,7 @@ const cadastrarProduto = async () => {
           <div v-if="fotosPreview.length > 1"
                style="display:flex; gap:10px; margin-top:10px; flex-wrap:wrap; max-width:80%;">
             <div v-for="(foto, index) in fotosPreview" :key="index"
-                 style="width:100px; height:100px; border-radius:10px; overflow:hidden; border:2px solid #ddd; cursor:pointer;">
+                 style="width:5.3vw; height:10vh; border-radius:10px; overflow:hidden; border:2px solid #ddd; cursor:pointer;">
               <img :src="foto" alt="Miniatura"
                    style="width:100%; height:100%; object-fit:cover;" />
             </div>
