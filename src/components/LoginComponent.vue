@@ -16,7 +16,6 @@ const loginForm = reactive({
 const loading = ref(false)
 const errorMessage = ref('')
 
-// tokens vindos do backend após Google login
 const access = route.query.access
 const refresh = route.query.refresh
 
@@ -31,7 +30,7 @@ onMounted(() => {
   gapi.load('auth2', () => {
     gapi.auth2.init({
       client_id: '307764432125-sj64153ja75622bdbssdj7o471skrlds.apps.googleusercontent.com',
-      ux_mode: 'popup',
+      ux_mode: 'popup', // evita redirect
     })
   })
 })
@@ -39,6 +38,32 @@ onMounted(() => {
 function loginWithGoogle() {
   // redireciona para o endpoint Django que inicia o OAuth
   window.location.href = 'http://localhost:8000/accounts/google/login/?process=login'
+}
+
+function handleGoogleLogin() {
+  const auth2 = gapi.auth2.getAuthInstance()
+  auth2.signIn().then(googleUser => {
+    const id_token = googleUser.getAuthResponse().id_token
+
+    fetch('http://localhost:8000/auth/social/google/', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ id_token }), // 👈 id_token em vez de access_token
+    })
+      .then(async res => {
+        if (!res.ok) throw new Error('Falha no backend')
+        return await res.json()
+      })
+      .then(data => {
+        console.log('Resposta backend:', data)
+        localStorage.setItem('access_token', data.access_token)
+        router.push('/') // 🔥 redireciona para home
+      })
+      .catch(err => {
+        console.error('Erro login Google:', err)
+        errorMessage.value = 'Erro ao logar com Google'
+      })
+  })
 }
 
 async function login() {
@@ -51,16 +76,17 @@ async function login() {
       password: loginForm.password,
     })
 
+
     localStorage.setItem('access_token', response.data.access)
     localStorage.setItem('refresh_token', response.data.refresh)
 
-    // atualiza usuário global
     globalUser.value = {
       email: loginForm.email,
       avatar: 'caminho/para/foto.jpg'
     }
 
     console.log('Login OK:', response.data)
+
     router.push('/')
   } catch (error) {
     console.error('Erro no login:', error.response?.data || error.message)
@@ -70,10 +96,11 @@ async function login() {
     } else {
       errorMessage.value = 'Erro ao conectar com o servidor.'
     }
-  } finally {
-    loading.value = false
   }
 }
+
+console.log('Mensagem de erro que vai aparecer:', errorMessage.value)
+
 </script>
 
 <template>
@@ -94,6 +121,7 @@ async function login() {
           <div class="error-container">
             <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
           </div>
+
         </div>
 
         <div class="hr">
@@ -102,10 +130,10 @@ async function login() {
           <hr>
         </div>
 
-        <button @click="loginWithGoogle" class="gog">
-          <img src="/public/imgs/Google__G__logo.svg.png" alt="Google" />
-          Continuar com o Google
-        </button>
+      <button @click="loginWithGoogle" class="gog">
+      <img src="/public/imgs/Google__G__logo.svg.png" alt="Google" />
+      Continuar com o Google
+      </button>
 
         <p class="nt">
           Não tem uma conta ainda?
@@ -120,6 +148,7 @@ async function login() {
     </div>
   </section>
 </template>
+
 
 <style scoped>
 span {

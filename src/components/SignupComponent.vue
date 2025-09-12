@@ -32,15 +32,15 @@ async function registerUser() {
 
     console.log("Usuário criado:", response.data);
 
+
     // Atualiza o estado global do usuário
     globalUser.value = {
       email: form.email,
       avatar: "caminho/para/foto.jpg" // ou pegue do backend se retornar
     }
 
-    // redireciona direto para home
     router.push('/')
-    
+
   } catch (error) {
     console.error("Erro ao cadastrar:", error.response?.data || error.message);
     if (error.response) {
@@ -54,6 +54,54 @@ async function registerUser() {
 }
 </script>
 
+<template>
+  <section>
+    <div class="square">
+      <div class="um">
+        <h1>Criar cont<span>a</span></h1>
+
+        <div class="campos">
+          <p class="sub">
+            Já possui uma conta? <RouterLink to="/login">Log in</RouterLink>
+          </p>
+          <div class="peq">
+            <input v-model="form.username" class="usu" type="text" placeholder="Nome de usuário" />
+            <input v-model="form.phone" class="num" type="tel" placeholder="Número de telefone" />
+          </div>
+          <input v-model="form.email" class="email" type="email" placeholder="Insira o seu email..." />
+          <input v-model="form.password" type="password" class="senha" placeholder="Insira a sua senha..." />
+
+          <p class="esq">
+            <input v-model="form.agree" class="che" type="checkbox" /> Concordo
+            com os
+            <a class="con" href="">Termos & condições</a>
+          </p>
+
+          <button class="bum" @click="registerUser">
+            <p>Criar Conta</p>
+          </button>
+        </div>
+        <div class="hr">
+          <hr>
+          <p>ou</p>
+          <hr>
+        </div>
+
+        <a class="gog" href="http://localhost:8000/accounts/google/login/">
+          <img src="/public/imgs/Google__G__logo.svg.png" alt="Google" />
+          <p>Continuar com o Google</p>
+        </a>
+
+      </div>
+      <div class="dois">
+        <h1>Alugaê</h1>
+        <img src="/public/imgs/Design sem nome 1.png" alt="">
+
+      </div>
+
+    </div>
+  </section>
+</template>
 
 
 <style scoped>
