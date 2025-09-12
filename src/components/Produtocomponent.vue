@@ -12,8 +12,6 @@ const produtos = reactive([
   { id: 5, nome: 'mochila', preco: 50, estrelas: 5, likes: 10, liked: false },
 ]);
 
-
-
 // Imagens do carrossel interno
 const imagesSingle1 = Array.from({ length: 5 }, (_, index) => ({
   id: index + 1,
