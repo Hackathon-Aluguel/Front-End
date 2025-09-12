@@ -9,8 +9,7 @@ const api = axios.create({
   //withCredentials: true,
 })
 
-// adiciona o token em toda requisição automaticamente
-api.interceptors.request.use(config => {
+api.interceptors.request.use((config) => {
   const token = localStorage.getItem('access_token')
   if (token) {
     config.headers.Authorization = `Bearer ${token}`

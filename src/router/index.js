@@ -74,7 +74,13 @@ const routes = [
     name: 'not-found',
     component: NotFound,
   },
-]
+  {
+    path: '/social/callback',
+    name: 'SocialCallback',
+    component: () => import('@/views/SocialCallback.vue'),
+  }
+
+  ]
 
 const router = createRouter({
   history: createWebHistory(),
