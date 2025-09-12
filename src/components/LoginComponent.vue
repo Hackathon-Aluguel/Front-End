@@ -1,18 +1,45 @@
 <script setup>
-import { reactive, ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { user as globalUser } from '@/stores/user.js'
+import { reactive, ref, onMounted } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import api from '@/services/api'
+import { gapi } from 'gapi-script';
 
+const route = useRoute()
 const router = useRouter()
 
-const user = reactive({
+const loginForm = reactive({
   email: '',
   password: ''
 })
 
-// feedback visual (pode usar no template se quiser)
 const loading = ref(false)
 const errorMessage = ref('')
+
+// tokens vindos do backend após Google login
+const access = route.query.access
+const refresh = route.query.refresh
+
+if (access && refresh) {
+  localStorage.setItem('access_token', access)
+  localStorage.setItem('refresh_token', refresh)
+  router.replace('/')  // 🔥 redireciona pra home
+}
+
+// Inicializa o SDK do Google quando o componente monta
+onMounted(() => {
+  gapi.load('auth2', () => {
+    gapi.auth2.init({
+      client_id: '307764432125-sj64153ja75622bdbssdj7o471skrlds.apps.googleusercontent.com',
+      ux_mode: 'popup',
+    })
+  })
+})
+
+function loginWithGoogle() {
+  // redireciona para o endpoint Django que inicia o OAuth
+  window.location.href = 'http://localhost:8000/accounts/google/login/?process=login'
+}
 
 async function login() {
   loading.value = true
@@ -20,32 +47,33 @@ async function login() {
 
   try {
     const response = await api.post('token/', {
-      email: user.email,
-      password: user.password,
+      email: loginForm.email,
+      password: loginForm.password,
     })
 
-    // salva tokens
     localStorage.setItem('access_token', response.data.access)
     localStorage.setItem('refresh_token', response.data.refresh)
 
-    console.log('Login OK:', response.data)
+    // atualiza usuário global
+    globalUser.value = {
+      email: loginForm.email,
+      avatar: 'caminho/para/foto.jpg'
+    }
 
-    // redireciona para home (ou dashboard, ajuste se quiser)
+    console.log('Login OK:', response.data)
     router.push('/')
   } catch (error) {
     console.error('Erro no login:', error.response?.data || error.message)
 
     if (error.response?.data?.detail) {
-      // pega a mensagem de erro enviada pelo backend
       errorMessage.value = error.response.data.detail
     } else {
       errorMessage.value = 'Erro ao conectar com o servidor.'
     }
+  } finally {
+    loading.value = false
   }
 }
-
-console.log('Mensagem de erro que vai aparecer:', errorMessage.value)
-
 </script>
 
 <template>
@@ -56,8 +84,8 @@ console.log('Mensagem de erro que vai aparecer:', errorMessage.value)
 
         <div class="campos">
           <p class="sub">Por favor, preencha os seguintes campos para logar</p>
-          <input class="email" type="text" v-model="user.email" placeholder="Insira o seu email...">
-          <input class="senha" type="password" v-model="user.password" placeholder="Insira a sua senha...">
+          <input class="email" type="text" v-model="loginForm.email" placeholder="Insira o seu email...">
+          <input class="senha" type="password" v-model="loginForm.password" placeholder="Insira a sua senha...">
           <p class="esq"><a class="esq" href="">Esqueceu sua senha?</a></p>
           <button class="bum" @click="login">
             <p>Entrar</p>
@@ -66,7 +94,6 @@ console.log('Mensagem de erro que vai aparecer:', errorMessage.value)
           <div class="error-container">
             <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
           </div>
-
         </div>
 
         <div class="hr">
@@ -75,10 +102,10 @@ console.log('Mensagem de erro que vai aparecer:', errorMessage.value)
           <hr>
         </div>
 
-        <a class="gog" href="http://localhost:8000/accounts/google/login/">
+        <button @click="loginWithGoogle" class="gog">
           <img src="/public/imgs/Google__G__logo.svg.png" alt="Google" />
-          <p>Continuar com o Google</p>
-        </a>
+          Continuar com o Google
+        </button>
 
         <p class="nt">
           Não tem uma conta ainda?
@@ -93,7 +120,6 @@ console.log('Mensagem de erro que vai aparecer:', errorMessage.value)
     </div>
   </section>
 </template>
-
 
 <style scoped>
 span {
