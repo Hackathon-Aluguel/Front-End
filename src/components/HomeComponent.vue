@@ -443,11 +443,10 @@ img {
 
 /* PRIMEIRO SECTIONNNN */
 section.primeira .primeiro {
-  background: linear-gradient(to top, #1d2d51, #244e84);
+  background-color: white;
   background-size: cover;
-  background-position: center;
   background-repeat: no-repeat;
-  height: 87vh;
+  height: 60vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -457,7 +456,7 @@ section.primeira .primeiro {
 .primeiro h1 {
   font-size: 2.5rem;
   text-align: center;
-  color: white;
+  color: black;
   line-height: 1.2;
   margin: 0 0 1vw 0;
   font-weight: bold;

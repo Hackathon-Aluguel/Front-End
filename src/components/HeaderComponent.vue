@@ -52,24 +52,34 @@ function logout() {
         </ul>
 
       </div>
-      <div class="menu">
+
+
+    </nav>
+  </header>
+  <div class="menu">
         <a href="#">MEUS <br>  PEDIDOS</a>
         <a href="#">OFERTAS</a>
         <a href="#">ATENDIMENTO</a>
         <a href="#">TERMOS</a>
       </div>
-
-    </nav>
-  </header>
 </template>
 <style scoped>
+
 header nav div.topo-header {
+  position: fixed;
+  top: 0; /* garante que fique colado no topo */
+  left: 0; /* garante alinhamento à esquerda */
+  z-index: 1000;
+  width: 100%;
+  background-color: white;
   display: flex;
+  height: 10vh;
   justify-content: center;
   align-items: center;
   padding: 14px 0 0 0;
+  margin: 0; /* remove margens que podem empurrar */
+   box-shadow: 0 4px 6px -2px rgba(0, 0, 0, 0.1); /* sombra só embaixo */
 }
-
 header div.topo-header h1 {
   color: #000;
   font-family: Poppins, sans-serif;
@@ -110,7 +120,7 @@ div.topo-header span.alugae {
 }
 
 .search-bar button {
-  background-color: #244E8A; /* azul */
+  background-color:  ; /* azul */
   border: none;
   width: 32px;
   height: 32px;
@@ -135,7 +145,7 @@ div.topo-header ul.icons {
 div.topo-header ul.icons li {
   list-style: none;
   margin: 0 1.8vw 0 0;
-  font-size: 1.8vw;
+  font-size: 1.5vw;
 }
 
 div.topo-header ul.icons li:last-child {
@@ -166,14 +176,17 @@ div.topo-header ul.login li a.conta {
 
 div.menu {
   display: flex;
-  margin: 15px 0 0 0;
   justify-content: center;
   border-top: 1px solid #244E8A;
+  background-color: white;
+  margin-top: 11vh; /* empurra o menu para baixo do header */
+  position: relative;
+  z-index: 500; /* abaixo do header */
 }
 
 div.menu a {
   text-decoration: none;
-  color: #000;
+  color: black;
   text-align: center;
   font-family: Poppin, sans-serif;
   font-size: 15px;
