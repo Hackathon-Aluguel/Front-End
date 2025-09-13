@@ -1,6 +1,7 @@
 <script setup>
 import 'vue3-carousel/carousel.css'
 import { ref, reactive } from 'vue'
+
 import { Carousel, Slide, Navigation } from 'vue3-carousel'
 
 import HeaderComponent from "./HeaderComponent.vue";
@@ -8,17 +9,9 @@ import FooterComponent from './FooterComponent.vue';
 
 const liked = ref(false)
 const likes = ref(0)
-
 const showNav = ref(false)
 // Carrossel de 1 imagem
-const imagesSingle = Array.from({ length: 10 }, (_, index) => ({
-  id: index + 1,
-  url: `https://picsum.photos/400/300?random=${index + 100}`,
-}))
-const imagesSingle1 = Array.from({ length: 10 }, (_, index) => ({
-  id: index + 1,
-  url: `https://picsum.photos/400/300?random=${index + 100}`,
-}))
+
 // Carrossel multi-imagem
 const categorias = [
   { id: 1, nome: 'fantasias', imagem: './public/images/categoria/categoriaFantasias.jpg' },
@@ -55,51 +48,43 @@ const avaliacoesAnunciante = [
   { id: 7, nome: 'Mateus', texto: 'Achei incrível, consegui transformar minhas coisas guardadas em fonte de renda.' },
   { id: 8, nome: 'Larissa', texto: 'A visibilidade que meus produtos tiveram aqui foi muito maior do que eu esperava.' },
 ];
-// Carousel configuration
-// Configuração carrossel 1 imagem
-const configSingle = {
-  height: 510,
-  itemsToShow: 1,
-  gap: 5,
-  snapAlign: 'center',
-  breakpointMode: 'carousel',
-}
-const configDuo = {
-  height: 510,
-  itemsToShow: 2,
-  snapAlign: 'start',
-  breakpoints: {
-    600: { itemsToShow: 1 },
-    900: { itemsToShow: 2 },
-    1200: { itemsToShow: 2 },
-  },
-}
+
+/* CARROSSEL DE PRODUTOOOSSSSS */
+const imagesSingle1 = Array.from({ length: 10 }, (_, index) => ({
+  id: index + 1,
+  url: `https://picsum.photos/seed/${Math.random()}/800/600`,
+}))
 const configMulti = {
   height: 400,
   itemsToShow: 3,
   snapAlign: 'center',
   breakpointMode: 'carousel',
-
-  gap: 10,
+  gap: 0,
 }
-const configMulti1 = {
-  itemsToShow: 4, // mantém 4 produtos por slide
-  snapAlign: 'start',
+const config = {
+  height: 500,
+  itemsToShow: 5,
+  gap: 0,
+  snapAlign: 'center',
   breakpointMode: 'carousel',
   breakpoints: {
-    300: { itemsToShow: 1 },
-    600: { itemsToShow: 2 },
-    900: { itemsToShow: 3 },
-    1200: { itemsToShow: 4 },
+    300: { itemsToShow: 3 },  // só reduzir se for muito estreito
+    500: { itemsToShow: 4 },
+    800: { itemsToShow: 5 }
   },
 }
 
 const produtos = reactive([
-  { id: 1, nome: 'barraca', preco: 30, estrelas: 4, likes: 20, liked: false },
+  { id: 1, nome: 'barraca', preco: 30, estrelas: 3, likes: 20, liked: false },
   { id: 2, nome: 'saco de dormir', preco: 25, estrelas: 5, likes: 4, liked: false },
   { id: 3, nome: 'lanterna', preco: 10, estrelas: 4, likes: 14, liked: false },
   { id: 4, nome: 'fogareiro', preco: 40, estrelas: 3, likes: 12, liked: false },
   { id: 5, nome: 'mochila', preco: 50, estrelas: 5, likes: 10, liked: false },
+  { id: 6, nome: 'bota de trilha', preco: 80, estrelas: 4, likes: 18, liked: false },
+  { id: 7, nome: 'cantil', preco: 15, estrelas: 3, likes: 6, liked: false },
+  { id: 8, nome: 'corda de escalada', preco: 60, estrelas: 5, likes: 9, liked: false },
+  { id: 9, nome: 'jaqueta corta-vento', preco: 120, estrelas: 4, likes: 15, liked: false },
+  { id: 10, nome: 'kit primeiros socorros', preco: 35, estrelas: 5, likes: 25, liked: false },
 ])
 function toggleLike(produto) {
   produto.liked = !produto.liked
@@ -108,7 +93,7 @@ function toggleLike(produto) {
 </script>
 
 <template>
-  <HeaderComponent/>
+  <HeaderComponent />
   <section class="primeira">
     <div class="primeiro">
       <h1>
@@ -211,84 +196,42 @@ function toggleLike(produto) {
     <h1 class="principal">Mais do que apenas alugueis</h1>
     <h2 class="secundaria">Desfrute de uma variedade de produtos de alegria, sempre únicos, sempre seus</h2>
     <h1 class="titulo">Mais v<span>e</span>ndidos</h1>
-    <div class="meio">
-      <div class="carousel2">
-        <Carousel v-bind="configMulti1">
-          <Slide v-for="produto in produtos" v-bind:key="produto.id">
+    <div class="produtosFundos">
+      <div class="carousel__wrapper">
+        <Carousel v-bind="config">
+          <Slide v-for="produto in produtos" :key="produto.id">
             <div class="produto">
-              <button class="like-btn" @click="toggleLike(produto)">
-                <span :class="produto.liked ? 'mdi mdi-heart' : 'mdi mdi-heart-outline'"></span>
-                {{ produto.likes }}
-              </button>
-
-              <div class="imagem" @mouseover="showNav = true" @mouseleave="showNav = false">
-                <Carousel v-bind="configSingle1" class="carroProduto">
-                  <Slide v-for="image in imagesSingle1" :key="image.id">
-                    <img :src="image.url" alt="image" />
-                  </Slide>
-                  <template #addons>
-                    <Navigation />
-                  </template>
-                </Carousel>
+              <div class="imagem">
+                <img
+                  src="https://casadosoldador.com.br/files/products_images/9307/0053586-serra-marmore-4polegadas-4100nh3z-seco-110v-makita.jpg?1651750862"
+                  alt="">
               </div>
-
-              <h1>{{ produto.nome }}</h1>
 
               <div class="info">
-                <strong>R${{ produto.preco }}/dia</strong>
-                <p>{{ produto.estrelas }} <span class="mdi mdi-star"></span></p>
+                <h1>{{ produto.nome }}</h1>
+                <p class="estrelasProduto">
+                  <span v-for="n in 5" :key="n" :class="[
+                    'mdi mdi-star',
+                    n <= produto.estrelas ? 'estrela-cheia' : 'estrela-vazia'
+                  ]"></span>
+                </p>
+                <strong>R${{ produto.preco.toFixed(2).replace('.', ',') }}/Dia</strong>
+                <p class="vezes">Em até 10 vezes {{ (produto.preco / 10).toFixed(2) }} </p>
+
               </div>
-              <button class="alugar">Alugar</button>
             </div>
           </Slide>
+
           <template #addons>
             <Navigation />
           </template>
         </Carousel>
       </div>
     </div>
+
     <button class="perto">
       Descubra produtos perto de você
     </button>
-  </section>
-  <section class="carro4">
-    <div class="esquerda">
-      <img src="https://picsum.photos/400/300" alt="" />
-    </div>
-    <div class="carouselDuo">
-      <Carousel v-bind="configDuo">
-        <Slide v-for="produto in produtos" v-bind:key="produto.id">
-          <div class="produto">
-            <div class="imagem" @mouseover="showNav = true" @mouseleave="showNav = false">
-              <button class="like-btn2" @click="toggleLike(produto)">
-                <span :class="produto.liked ? 'mdi mdi-heart' : 'mdi mdi-heart-outline'"></span>
-                {{ produto.likes }}
-              </button>
-              <Carousel v-bind="configSingle1" class="carroProduto">
-                <Slide v-for="image in imagesSingle1" :key="image.id">
-                  <img :src="image.url" alt="image" />
-                </Slide>
-                <template #addons>
-                  <Navigation />
-                </template>
-              </Carousel>
-            </div>
-
-            <h1>{{ produto.nome }}</h1>
-
-            <div class="info">
-              <strong>R${{ produto.preco }}/dia</strong>
-              <p>{{ produto.estrelas }} <span class="mdi mdi-star"></span></p>
-            </div>
-            <button class="alugar">Alugar</button>
-          </div>
-        </Slide>
-
-        <template #addons>
-          <Navigation />
-        </template>
-      </Carousel>
-    </div>
   </section>
   <section class="passoApasso">
     <h1>Aqui está o seu guia para alugar corretamente.</h1>
@@ -327,7 +270,8 @@ function toggleLike(produto) {
         <div class="esquerda">
           <button><span class="mdi mdi-magnify"></span></button>
           <h1>Passo 3: aproveite o seu produto.</h1>
-          <h2>Seu produto chegou! Agora é hora de curtir, usar com cuidado e aproveitar ao máximo cada momento que ele oferece. </h2>
+          <h2>Seu produto chegou! Agora é hora de curtir, usar com cuidado e aproveitar ao máximo cada momento que ele
+            oferece. </h2>
         </div>
         <div class="direita">
           <img src="/public/images/passos/aproveitando.png" alt="">
@@ -407,17 +351,33 @@ function toggleLike(produto) {
   </section>
 
 
-<FooterComponent/>
+  <FooterComponent />
 </template>
 
 <style>
+:root {
+  background-color: #242424;
+}
 
-.meio {
-  display: flex;
-  justify-content: center;
-  /* centro horizontal */
-  align-items: center;
-  /* centro vertical se quiser */
+.carousel {
+  --vc-nav-background: rgba(255, 255, 255, 0.7);
+  --vc-nav-border-radius: 100%;
+}
+
+img {
+  border-radius: 8px;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.carousel__wrapper {
+  resize: horizontal;
+  overflow: auto;
+  max-width: 100%;
+  
+  width: 100vw;
+  padding: 2px;
 }
 
 .carousel {
@@ -576,6 +536,11 @@ section.juntar div.botoes button {
   margin: 0 0.5vw;
 }
 
+div.meio {
+  display: flex;
+  justify-content: center;
+}
+
 .carousel1 div.avaliacoes {
   background-color: white;
   width: 36vw;
@@ -611,6 +576,7 @@ section.juntar div.botoes button {
   transform: scale(1.08);
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
 }
+
 .carousel1 .carousel {
   --vc-nav-background: #244e84;
   --vc-nav-color: white;
@@ -727,31 +693,96 @@ section.categorias ul li button h2 {
   font-size: 1.81rem;
 }
 
+div.listaFavoritos {
+  display: flex;
+  gap: 15px;
+  overflow-x: auto;
+  padding: 10px;
+}
+
+.listaFavoritos ul {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+  list-style: none;
+  padding: 0;
+}
+
+/* Card do produto */
+div.produtosFundos {
+  display: flex;
+  justify-content: center;
+}
+
 div.produto {
   max-width: 18vw;
-  /* largura de cada produto */
-  font-size: 1.1rem;
-  /* tamanho maior do texto */
+  height: 55vh;
+  width: 18vw;
   background: #fff;
   border-radius: 10px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-  box-sizing: border-box;
-  border: 1px solid #244e84;
+  border: 1px solid #cecece;
   text-align: center;
-}
-
-.carousel2 {
-  margin: 0 4vw 0 4vw;
-}
-
-div.produto img {
-  width: 100%;
   position: relative;
-  /* necessário para o botão ficar relativo à imagem */
-  border-radius: 8px;
-  width: 100%;
-  height: 80%;
+}
+
+/* Imagem */
+div.produto img {
+  width: 70%;
+  height: 180px;
   object-fit: cover;
+  border-radius: 8px;
+  margin: 10px 0 0;
+}
+
+
+/* Nome do produto */
+div.produto h1 {
+  font-size: 28px;
+  font-weight: 600;
+  margin: 10px 0 1vw 0;
+  text-align: left;
+}
+
+/* Info preço e estrelas */
+div.produto .info p,
+div.produto .info strong {
+  margin: 3px 0;
+  /* remove margem padrão */
+  padding: 0;
+  /* remove padding padrão */
+}
+
+div.produto .info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin: 0.5vw 0 0 1vw;
+}
+
+div.produto .info p span {
+  font-size: 23px;
+}
+
+div.produto .info strong {
+  font-size: 28px;
+}
+
+div.produto p.vezes {
+  font-size: 16px;
+  color: #BEBEBE;
+  font-family: poppins, sans-serif;
+}
+
+div.produto span {
+  color: #ffd700;
+}
+
+/* Carrossel interno */
+.carousel2 .carousel.carroProduto {
+  --vc-nav-background: white;
+  --vc-nav-color: #244e84;
+  --vc-nav-size: 30px;
 }
 
 div.produto .like-btn {
@@ -773,45 +804,7 @@ div.produto .like-btn {
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
-section.carro3 div.produto h1 {
-  margin: 0 0 0 14px;
-  color: black;
-  text-align: left;
-}
 
-div.produto div.info {
-  display: flex;
-  justify-content: space-between;
-  margin: 3px 15px 3px 14px;
-}
-
-div.produto button.alugar {
-  width: 90%;
-  height: 40px;
-  background-color: #244e84;
-  color: white;
-  border: none;
-  border-radius: 14px;
-  margin: 10px 0 10px 0;
-  font-size: 1vw;
-}
-
-div.produto p span {
-  color: #ffd700;
-}
-
-.carousel2 .carousel {
-  --vc-nav-background: transparent;
-  --vc-nav-color: black;
-  --vc-nav-size: 40px;
-  --vc-nav-margin: 30px;
-}
-
-.carousel2 .carousel.carroProduto {
-  --vc-nav-background: white;
-  --vc-nav-color: #244e84;
-  --vc-nav-size: 40px;
-}
 
 .carro3 button.perto {
   display: flex;
@@ -914,23 +907,26 @@ section.passoApasso {
   min-height: 100vh;
   /* ocupa a tela inteira */
 }
-section.passoApasso h1{
+
+section.passoApasso h1 {
   color: black;
   font-size: 40px;
   margin: 10vw 0 0 0;
 }
+
 section.passoApasso h2 {
   font-size: 24px;
   color: #555;
 
 }
+
 section.passoApasso ul {
   display: flex;
   flex-direction: column;
   /* cada li embaixo do outro */
   justify-content: center;
   align-items: center;
-   margin: 6vw auto 4vw auto;
+  margin: 6vw auto 4vw auto;
   width: 80%;
 }
 
@@ -995,7 +991,8 @@ section.passoApasso ul li.passo2 {
   width: 80%;
   max-width: 1200px;
   margin: 0 auto;
-  gap: 2vw; /* espaço entre texto e imagem */
+  gap: 2vw;
+  /* espaço entre texto e imagem */
 }
 
 /* cada lado ocupa metade do espaço */
@@ -1040,10 +1037,12 @@ ul li.passo2 .direita h2 {
 
 /* imagem */
 section.passoApasso ul li.passo2 .esquerda img {
-  width: 100%; /* ocupa todo espaço da esquerda */
+  width: 100%;
+  /* ocupa todo espaço da esquerda */
   height: auto;
   display: block;
 }
+
 /* PASSO 3 */
 section.passoApasso ul li.passo3 {
   display: flex;
@@ -1095,6 +1094,7 @@ section.passoApasso ul li.passo3 .direita img {
 section.passoApasso ul li.caminhoEsquerda {
   margin: 0 10vw 0 0;
 }
+
 /* PASSO 4 */
 section.passoApasso ul li.passo4 {
   display: flex;
@@ -1103,7 +1103,8 @@ section.passoApasso ul li.passo4 {
   width: 80%;
   max-width: 1200px;
   margin: 0 auto;
-  gap: 2vw; /* espaço entre texto e imagem */
+  gap: 2vw;
+  /* espaço entre texto e imagem */
 }
 
 /* cada lado ocupa metade do espaço */
@@ -1148,10 +1149,12 @@ ul li.passo4 .direita h2 {
 
 /* imagem */
 section.passoApasso ul li.passo4 .esquerda img {
-  width: 100%; /* ocupa todo espaço da esquerda */
+  width: 100%;
+  /* ocupa todo espaço da esquerda */
   height: auto;
   display: block;
 }
+
 /*  ULTIMA SECTIONNNNNNNNNNNNNNNNNN */
 section.avaliacoes {
   padding: 4vw;
@@ -1228,4 +1231,15 @@ section.avaliacoes ul li p {
   font-size: 1.2rem;
   color: #ffd700;
 }
+
+.estrelasProduto .estrela-cheia {
+  color: gold;        /* cor das estrelas preenchidas */
+  font-size: 28px;
+}
+
+.estrelasProduto .estrela-vazia {
+  color: #cecece;     /* cor das estrelas vazias (cinza, azul, vermelho etc.) */
+  font-size: 28px;
+}
+
 </style>
