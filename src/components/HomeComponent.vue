@@ -1,7 +1,6 @@
 <script setup>
 import 'vue3-carousel/carousel.css'
 import { ref, reactive } from 'vue'
-
 import { Carousel, Slide, Navigation } from 'vue3-carousel'
 
 import HeaderComponent from "./HeaderComponent.vue";
@@ -73,7 +72,15 @@ const config = {
     800: { itemsToShow: 5 }
   },
 }
+const carousel = ref(null);
 
+const prevSlide = () => {
+  carousel.value.prev();
+};
+
+const nextSlide = () => {
+  carousel.value.next();
+};
 const produtos = reactive([
   { id: 1, nome: 'barraca', preco: 30, estrelas: 3, likes: 20, liked: false },
   { id: 2, nome: 'saco de dormir', preco: 25, estrelas: 5, likes: 4, liked: false },
@@ -198,9 +205,13 @@ function toggleLike(produto) {
     <h1 class="titulo">Mais v<span>e</span>ndidos</h1>
     <div class="produtosFundos">
       <div class="carousel__wrapper">
-        <Carousel v-bind="config">
+        <Carousel ref="carousel" v-bind="config" :navigationEnabled="false">
           <Slide v-for="produto in produtos" :key="produto.id">
             <div class="produto">
+              <button class="like-btn" @click="toggleLike(produto)">
+                <span :class="produto.liked ? 'mdi mdi-heart' : 'mdi mdi-heart-outline'"></span>
+                {{ produto.likes }}
+              </button>
               <div class="imagem">
                 <img
                   src="https://casadosoldador.com.br/files/products_images/9307/0053586-serra-marmore-4polegadas-4100nh3z-seco-110v-makita.jpg?1651750862"
@@ -223,7 +234,14 @@ function toggleLike(produto) {
           </Slide>
 
           <template #addons>
-            <Navigation />
+            <div class="custom-nav">
+              <button class="custom-prev" @click="prevSlide">
+                <span class="mdi mdi-chevron-left"></span>
+              </button>
+              <button class="custom-next" @click="nextSlide">
+                <span class="mdi mdi-chevron-right"></span>
+              </button>
+            </div>
           </template>
         </Carousel>
       </div>
@@ -375,13 +393,50 @@ img {
   resize: horizontal;
   overflow: auto;
   max-width: 100%;
-  
   width: 100vw;
   padding: 2px;
 }
 
+/* Dentro do seu <style scoped> */
+.custom-nav {
+  position: absolute;
+  top: 50%;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.custom-prev,
+.custom-next {
+  pointer-events: auto;
+  background: white;
+  border: 2px solid #244e84;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #244e84;
+  font-size: 35px;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+.custom-prev span,
+.custom-next span {
+  display: flex;       /* garante que o span também use flex */
+  align-items: center; /* centraliza verticalmente */
+  justify-content: center; /* centraliza horizontalmente */
+  width: 100%;         /* preenche o botão */
+  height: 100%;        /* preenche o botão */
+  line-height: 0;      /* evita espaçamento extra do ícone */
+}
+
+
 .carousel {
-  --vc-nav-background: rgba(255, 255, 255, 0.7);
+  --vc-nav-background: rgba(255, 0, 0, 0.7);
   --vc-nav-border-radius: 100%;
   margin: 0 0.78vw 0 0.78vw;
 }
@@ -682,15 +737,17 @@ section.categorias ul li button h2 {
 
 .carro3 h1.titulo {
   margin: 4vw 0 2vw 2vw;
+  display: flex;
+  justify-content: left;
   font-weight: bold;
   color: black;
-  font-size: 1.81rem;
+  font-size: 1.8rem;
 }
 
 .carro3 h1.titulo span {
   font-weight: bold;
   color: #244e84;
-  font-size: 1.81rem;
+  font-size: 1.8rem;
 }
 
 div.listaFavoritos {
@@ -716,7 +773,7 @@ div.produtosFundos {
 
 div.produto {
   max-width: 18vw;
-  height: 55vh;
+  height: 50vh;
   width: 18vw;
   background: #fff;
   border-radius: 10px;
@@ -732,7 +789,7 @@ div.produto img {
   height: 180px;
   object-fit: cover;
   border-radius: 8px;
-  margin: 10px 0 0;
+  margin: 3vh 0 0;
 }
 
 
@@ -757,7 +814,7 @@ div.produto .info {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  margin: 0.5vw 0 0 1vw;
+  margin: 1vw 0 0 1vw;
 }
 
 div.produto .info p span {
@@ -765,10 +822,12 @@ div.produto .info p span {
 }
 
 div.produto .info strong {
-  font-size: 28px;
+  font-size: 22px;
+  margin: 0.5vw 0;
 }
 
 div.produto p.vezes {
+  margin: 0.3vw 0;
   font-size: 16px;
   color: #BEBEBE;
   font-family: poppins, sans-serif;
@@ -787,16 +846,17 @@ div.produto span {
 
 div.produto .like-btn {
   position: absolute;
-  top: 1.8vw;
-  right: 3.5vw;
+  top: 1.3vw;
+  right: 1vw;
   z-index: 10;
   /* garante que fique acima do carousel/imagem */
   background: #244e84;
   color: white;
+  height: 3.5vh;
   border: none;
-  border-radius: 20px;
+  border-radius: 6px;
   padding: 5px 10px;
-  font-size: 0.9rem;
+  font-size: 1.1rem;
   display: flex;
   align-items: center;
   gap: 4px;
@@ -804,6 +864,9 @@ div.produto .like-btn {
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
+div.produto .like-btn span {
+  color: white;
+}
 
 
 .carro3 button.perto {
@@ -862,14 +925,14 @@ div.carouselDuo .produto .imagem {
   box-shadow: 0 0.2vw 0.5vw rgba(0, 0, 0, 0.2);
 }
 
-section.carro4 div.produto .like-btn2 {
+section.carro4 div.produto .like-btn {
   position: absolute;
   top: 1.8vw;
   right: 1.3vw;
   z-index: 10;
   /* garante que fique acima do carousel/imagem */
   background: #244e84;
-  color: white;
+  color: red;
   border: none;
   border-radius: 20px;
   padding: 5px 10px;
@@ -1233,13 +1296,14 @@ section.avaliacoes ul li p {
 }
 
 .estrelasProduto .estrela-cheia {
-  color: gold;        /* cor das estrelas preenchidas */
+  color: gold;
+  /* cor das estrelas preenchidas */
   font-size: 28px;
 }
 
 .estrelasProduto .estrela-vazia {
-  color: #cecece;     /* cor das estrelas vazias (cinza, azul, vermelho etc.) */
+  color: #cecece;
+  /* cor das estrelas vazias (cinza, azul, vermelho etc.) */
   font-size: 28px;
 }
-
 </style>
