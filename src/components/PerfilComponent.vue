@@ -102,9 +102,85 @@ function toggleLike(produto) {
 
 const dragExterno = ref(true)
 
+
+const denunciaFinal = ref([])
+
+function salvarDenuncia() {
+  denunciaFinal.value = [...listaFinal.value]
+  console.log('Denúncia salva:', denunciaFinal.value)
+  op.value = false
+  mostrarDenuncia3.value = false
+  mostrarDenuncia2.value = false
+  mostrarDenuncia.value = false
+  denuncia1.value = false
+  denuncia2.value = false
+  denuncia3.value = false
+  denuncia4.value = false
+  denuncia5.value = false
+  spam.value = false
+  abAs.value = false
+  odioViolencia.value = false
+  rouboGolpeFraude.value = false
+  autoMutilacao.value = false
+  cartoesRoubados.value = false
+  produtosIlegais.value = false
+  linksIlegais.value = false
+  dadosPrivados.value = false
+  outraCoisa.value = false
+  encorajando_Automultilacao.value = false
+  autoMutilacaoDenuncia.value = false
+  info1.value = false
+  info2.value = false
+  info3.value = false
+  info4.value = false
+  info5.value = false
+}
+
+const proximoP3 = computed(() => {
+  return denuncia1.value || denuncia2.value || denuncia3.value || denuncia4.value || denuncia5.value ||
+    spam.value || abAs.value || odioViolencia.value || rouboGolpeFraude.value || autoMutilacao.value ||
+    cartoesRoubados.value || produtosIlegais.value || linksIlegais.value || dadosPrivados.value ||
+    outraCoisa.value || encorajando_Automultilacao.value || autoMutilacaoDenuncia.value
+})
+
 const mostrarDenuncia = ref(false)
 function abrirDenuncia() {
   mostrarDenuncia.value = true
+}
+
+const mostrarDenuncia2 = ref(false)
+function abrirDenuncia2() {
+  mostrarDenuncia2.value = true
+  mostrarDenuncia.value = false
+}
+
+const mostrarDenuncia3 = ref(false)
+function abrirDenuncia3() {
+  mostrarDenuncia3.value = true
+  mostrarDenuncia2.value = false
+}
+
+const mostrarOutros = ref(false)
+function abrirOutros() {
+  mostrarOutros.value = true
+  mostrarDenuncia3.value = false
+
+}
+const mostrarSuiciAutoulti = ref(false)
+function abrirSuiciAutoMulti() {
+  mostrarSuiciAutoulti.value = true
+  mostrarOutros.value = false
+}
+const mostrarInfoPrivada = ref(false)
+function abrirInfoPrivada() {
+  mostrarInfoPrivada.value = true
+  mostrarOutros.value = false
+}
+function abrirResumo() {
+  salvarDenuncia() 
+  op.value = true    
+  mostrarInfoPrivada.value = false
+  telaAnterior.value = 'infoPrivada'
 }
 
 const denuncia1 = ref(false)
@@ -112,22 +188,171 @@ const denuncia2 = ref(false)
 const denuncia3 = ref(false)
 const denuncia4 = ref(false)
 const denuncia5 = ref(false)
+const spam = ref(false)
+const abAs = ref(false)
+const odioViolencia = ref(false)
+const rouboGolpeFraude = ref(false)
+const autoMutilacao = ref(false)
+const cartoesRoubados = ref(false)
+const produtosIlegais = ref(false)
+const linksIlegais = ref(false)
+const dadosPrivados = ref(false)
+const outraCoisa = ref(false)
+const encorajando_Automultilacao = ref(false)
+const autoMutilacaoDenuncia = ref(false)
+const info1 = ref(false)
+const info2 = ref(false)
+const info3 = ref(false)
+const info4 = ref(false)
+const info5 = ref(false)
 
-const podeEnviar = computed(() =>
-  denuncia1.value || denuncia2.value || denuncia3.value || denuncia4.value || denuncia5.value
-)
 
-function enviarDenuncia() {
-  if (podeEnviar.value) {
-    alert('Denúncia enviada com sucesso!')
-    denuncia1.value = false
-    denuncia2.value = false
-    denuncia3.value = false
-    denuncia4.value = false
-    denuncia5.value = false
-    mostrarDenuncia.value = false
-  }
+function voltarPag() {
+  mostrarDenuncia2.value = false
+  mostrarDenuncia.value = true
 }
+function voltarPag2() {
+  mostrarDenuncia3.value = false
+  mostrarDenuncia2.value = true
+}
+function voltarPagSpam() {
+  op.value = false
+  mostrarDenuncia3.value = true
+}
+function voltarPagOutros() {
+  mostrarOutros.value = false
+  mostrarDenuncia3.value = true
+}
+function voltarPagSuiciAutoMulti() {
+  mostrarSuiciAutoulti.value = false
+  mostrarOutros.value = true
+}
+function voltarPagInfoPrivada() {
+  mostrarInfoPrivada.value = false
+  mostrarOutros.value = true
+}
+const envioRelatorio = ref(false)
+function opcao(tipo) {
+  // Cria a aba padrao de enviar relatorio
+  spam.value = false
+  abAs.value = false
+  odioViolencia.value = false
+  rouboGolpeFraude.value = false
+  autoMutilacao.value = false
+  cartoesRoubados.value = false
+  produtosIlegais.value = false
+  linksIlegais.value = false
+  encorajando_Automultilacao.value = false
+  autoMutilacaoDenuncia.value = false
+  envioRelatorio.value = false
+
+telaAnterior.value = 'outros'
+  if (tipo === 'spam') spam.value = true
+  if (tipo === 'abAs') abAs.value = true
+  if (tipo === 'odioViolencia') odioViolencia.value = true
+  if (tipo === 'rouboGolpeFraude') rouboGolpeFraude.value = true
+  if (tipo === 'autoMutilacao') autoMutilacao.value = true
+  if (tipo === 'cartoesRoubados') cartoesRoubados.value = true
+  if (tipo === 'produtosIlegais') produtosIlegais.value = true
+  if (tipo === 'linksIlegais') linksIlegais.value = true
+  if (tipo === 'encorajando_Automultilacao') encorajando_Automultilacao.value = true
+  if (tipo === 'autoMutilacaoDenuncia') autoMutilacaoDenuncia.value = true
+  if (tipo === 'envioRelatorio') envioRelatorio.value = true
+
+
+  // abre resumo
+  op.value = true
+  telaAnterior.value = mostrarDenuncia3.value ? 'denuncia3' :
+    mostrarOutros.value ? 'outros' :
+      mostrarSuiciAutoulti.value ? 'suiciAuto' : '';
+  mostrarDenuncia3.value = false
+  mostrarOutros.value = false
+  mostrarSuiciAutoulti.value = false
+}
+
+const op = ref(false)
+
+const opcoesSelecionadas = computed(() => {
+  //Add todas as opções selecionadas em uma lista ao finaol do relatorio
+  const lista = []
+  if (denuncia1.value) lista.push('Foto de perfil inapropriada')
+  if (denuncia2.value) lista.push('Foto do produto enganosa')
+  if (denuncia3.value) lista.push('Informações falsas no perfil')
+  if (denuncia4.value) lista.push('Descrição do produto ou perfil imprópria')
+  if (denuncia5.value) lista.push('Outro comportamento inadequado')
+  if (spam.value) lista.push('Spam')
+  if (abAs.value) lista.push('Abuso ou assédio')
+  if (outraCoisa.value) lista.push('Outra coisa')
+  if (odioViolencia.value) lista.push('Discurso de ódio ou glorificação da violência')
+  if (rouboGolpeFraude.value) lista.push('Roubo de identidade, golpe ou fraude')
+  if (autoMutilacao.value) lista.push('Automutilação ou suicídio')
+  if (cartoesRoubados.value) lista.push('Venda ou distribuição de contas/cartões de crédito roubados')
+  if (produtosIlegais.value) lista.push('Venda de drogas ou produtos ilegais')
+  if (linksIlegais.value) lista.push('Compartilhamento de links maliciosos ou atividades ilegais digitais')
+  if (dadosPrivados.value) lista.push('O perfil expõe informações de identidade privada')
+  if (encorajando_Automultilacao.value) lista.push('Encorajando automutilação ou suicídio')
+  if (autoMutilacaoDenuncia.value) lista.push('Automutilação ou suicídio')
+
+
+  return lista
+})
+
+
+
+const opcoesSelecionadas2 = computed(() => {
+  const lista2 = []
+  if (info1.value) lista2.push('Foto do rosto')
+  if (info2.value) lista2.push('Foto íntima, particular')
+  if (info3.value) lista2.push('Endereço IP')
+  if (info4.value) lista2.push('Nome legal')
+  if (info5.value) lista2.push('Informações do cartão de crédito')
+  return lista2
+})
+const listaFinal = computed(() => {
+  return [...opcoesSelecionadas.value, ...opcoesSelecionadas2.value]
+})
+function fecharModal() {
+  op.value = false
+  mostrarDenuncia3.value = false
+  mostrarDenuncia2.value = false
+  mostrarDenuncia.value = false
+  denuncia1.value = false
+  denuncia2.value = false
+  denuncia3.value = false
+  denuncia4.value = false
+  denuncia5.value = false
+  spam.value = false
+  abAs.value = false
+  odioViolencia.value = false
+  rouboGolpeFraude.value = false
+  autoMutilacao.value = false
+  cartoesRoubados.value = false
+  produtosIlegais.value = false
+  linksIlegais.value = false
+  dadosPrivados.value = false
+  outraCoisa.value = false
+  encorajando_Automultilacao.value = false
+  autoMutilacaoDenuncia.value = false
+  info1.value = false
+  info2.value = false
+  info3.value = false
+  info4.value = false
+  info5.value = false
+}
+
+
+
+const telaAnterior = ref(''); // Pode ser: 'denuncia3', 'outros', 'suiciAuto'
+function voltarResumo() {
+  op.value = false;
+
+  if (telaAnterior.value === 'denuncia3') mostrarDenuncia3.value = true;
+  else if (telaAnterior.value === 'outros') mostrarOutros.value = true;
+  else if (telaAnterior.value === 'suiciAuto') mostrarSuiciAutoulti.value = true;
+  else if (telaAnterior.value === 'infoPrivada') mostrarInfoPrivada.value = true;
+}
+
+
 
 </script>
 
@@ -259,13 +484,28 @@ function enviarDenuncia() {
   </section>
   <div v-if="mostrarDenuncia" class="modal">
     <div>
-      <button @click="mostrarDenuncia = false" class="x">X</button>
+      <button @click="fecharModal" class="x">X</button>
       <h1>Denunciar Perfil do Usuário</h1>
       <p class="h1">
         Denuncias nos ajudam a manter o Alugaê seguro - o usuário não será notificado de que você o
         denunciou.
       </p>
+      <p class="select">Usuário Selecionado</p>
+      <div class="userDenuncia">
+        <img
+          src="https://s2.glbimg.com/CZ7vt10tkQki58E3X37KbSrW8PA=/620x430/e.glbimg.com/og/ed/f/original/2022/04/11/dall_e_ia.png"
+          alt="Imagem de perfil do usuário" />
+        <h1>Nome da pessoa</h1>
+      </div>
+      <div class="proximaP">
+        <button @click="abrirDenuncia2">Próximo</button>
+      </div>
+    </div>
+  </div>
 
+  <div v-if="mostrarDenuncia2" class="modal">
+    <div>
+      <button @click="fecharModal" class="x">X</button>
       <h2>Qual a sua denúncia?</h2>
       <p class="h2">Selecione os elementos que você quer denunciar no perfil deste usuário.</p>
       <ul class="opcoesDenuncia">
@@ -275,7 +515,7 @@ function enviarDenuncia() {
           </div>
           <div>
             <label for="foto">Foto de perfil inapropriada</label>
-            <label  for="foto">Nudez, violência ou conteúdo ofensivo</label>
+            <label for="foto">Nudez, violência ou conteúdo ofensivo</label>
           </div>
         </li>
         <li>
@@ -284,7 +524,7 @@ function enviarDenuncia() {
           </div>
           <div>
             <label for="fotoProd">Foto do produto enganosa</label>
-            <label>Imagem não condiz com o item anunciado</label>
+            <label for="fotoProd">Imagem não condiz com o item anunciado</label>
           </div>
         </li>
         <li>
@@ -293,7 +533,7 @@ function enviarDenuncia() {
           </div>
           <div>
             <label for="infoFalsa">Informações falsas no perfil</label>
-            <label>Nome, idade ou localização incorretos</label>
+            <label for="infoFalsa">Nome, idade ou localização incorretos</label>
           </div>
         </li>
         <li>
@@ -302,7 +542,7 @@ function enviarDenuncia() {
           </div>
           <div>
             <label for="descritores">Descrição do produto ou perfil imprópria</label>
-            <label>Texto com palavrões, ódio ou discriminação</label>
+            <label for="descritores">Texto com palavrões, ódio ou discriminação</label>
           </div>
         </li>
         <li>
@@ -310,17 +550,225 @@ function enviarDenuncia() {
             <input type="checkbox" id="outro" name="outro" v-model="denuncia5" />
           </div>
           <div>
-            <label for="outro">Outro comportamento inadequado</label>
-            <label>Assédio, golpe ou spam</label>
+            <label for="outro">Outros problemas no perfil</label>
+            <label for="outro">Assédio, golpe ou spam</label>
           </div>
         </li>
       </ul>
       <div class="enviar">
-        <button :disabled="!podeEnviar" :class="{ ativo: podeEnviar }" @click="enviarDenuncia">Enviar denúncia</button>
-        <!--Ver isso depois-->
+        <button @click="voltarPag">Voltar</button>
+        <button @click="abrirDenuncia3" v-if="proximoP3">Próximo</button>
       </div>
     </div>
   </div>
+
+  <div v-if="mostrarDenuncia3" class="modal">
+    <div>
+      <button @click="fecharModal" class="x">X</button>
+      <h2>O que está acontecendo?</h2>
+      <p class="h3">Selecione a opção que melhor descreve o problema</p>
+
+      <ul class="parteDenuncia3">
+        <li>
+          <button @click="opcao('spam')">Spam</button><span class="mdi mdi-arrow-right"></span>
+        </li>
+        <li>
+          <button @click="opcao('abAs')">Abuso ou assédio</button><span class="mdi mdi-arrow-right"></span>
+        </li>
+        <li>
+          <button @click="opcao('odioViolencia')">
+            Discurso de ódio ou glorificação da violência</button><span class="mdi mdi-arrow-right"></span>
+        </li>
+        <li>
+          <button @click="opcao('rouboGolpeFraude')">Golpe, fraude ou roubo de identidade</button><span
+            class="mdi mdi-arrow-right"></span>
+        </li>
+        <li>
+          <button @click="abrirOutros(); outraCoisa = true;">Outra coisa</button><span
+            class="mdi mdi-arrow-right"></span>
+        </li>
+      </ul>
+      <div class="enviar">
+        <button @click="voltarPag2">Voltar</button>
+      </div>
+    </div>
+  </div>
+
+  <!--Opções da Denuncia3-->
+  <div class="modal" v-if="op">
+    <div>
+      <button @click="fecharModal" class="x">X</button>
+      <h2>Resumo da denúncia</h2>
+      <p>Revise sua denúncia antes de enviar</p>
+      <p>
+        Ao enviar esta denúncia, você confirma que ela é verdadeira e feira de boa fé. Pedimos que
+        siga nossas diretrizes da comunidade e não faã denúncias falsas ou repetidas.
+      </p>
+      <h3>Denunciar categoria</h3>
+      <ul class="parteDenuncia4">
+        <li v-for="(opcao, index) in opcoesSelecionadas" :key="index">{{ opcao }}</li>
+      </ul>
+      <div class="enviar">
+        <button @click="voltarResumo">Voltar</button>
+        <button @click="salvarDenuncia" class="envioFinal">Enviar denúncia</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" v-if="outros">
+    <div>
+      <button @click="fecharModal" class="x">X</button>
+      <h2>Resumo da denúncia</h2>
+      <p>Revise sua denúncia antes de enviar</p>
+      <p>
+        Ao enviar esta denúncia, você confirma que ela é verdadeira e feira de boa fé. Pedimos que
+        siga nossas diretrizes da comunidade e não faã denúncias falsas ou repetidas.
+      </p>
+      <h3>Denunciar categoria</h3>
+      <ul class="parteDenuncia4">
+        <li v-for="(opcao, index) in opcoesSelecionadas" :key="index">{{ opcao }}</li>
+      </ul>
+      <div class="enviar">
+        <button @click="voltarPagSpam">Voltar</button>
+        <button @click="salvarDenuncia" class="envioFinal">Enviar denúncia</button>
+      </div>
+    </div>
+  </div>
+
+
+  <!--Opções de Outros-->
+  <div class="modal" v-if="mostrarOutros">
+    <div>
+      <button @click="fecharModal" class="x">X</button>
+      <h2>Outros problemas</h2>
+
+      <ul class="parteDenuncia3">
+        <li>
+          <button @click="abrirSuiciAutoMulti">
+            O perfil menciona automutilação ou suicídio
+          </button>
+          <span class="mdi mdi-arrow-right"></span>
+        </li>
+        <li>
+          <button @click="opcao('cartoesRoubados')">
+            Venda ou distribuição de contas/cartões de crédito roubados
+          </button>
+          <span class="mdi mdi-arrow-right"></span>
+        </li>
+        <li>
+          <button @click="opcao('produtosIlegais')">
+            Venda de drogas ou produtos ilegais
+          </button>
+          <span class="mdi mdi-arrow-right"></span>
+        </li>
+        <li>
+          <button @click="opcao('linksIlegais')">
+            Compartilhamento de links maliciosos ou atividades ilegais digitais
+          </button>
+          <span class="mdi mdi-arrow-right"></span>
+        </li>
+        <li>
+          <button @click="abrirInfoPrivada(); dadosPrivados = true">
+            O perfil expõe informações de identidade privada
+          </button>
+          <span class="mdi mdi-arrow-right"></span>
+        </li>
+      </ul>
+
+      <div class="enviar">
+        <button @click="voltarPagOutros">Voltar</button>
+      </div>
+    </div>
+  </div>
+
+  <!--Opcoes da opção suícidio-->
+  <div class="modal" v-if="mostrarSuiciAutoulti">
+    <div>
+      <button @click="fecharModal" class="x">X</button>
+      <h2>Como esta pessoa está falando sobre automutilação?</h2>
+      <div class="atencao">
+      <p><span class="mdi mdi-exclamation"></span></p>
+      <p >
+        Se hover perigo imediato, chame os serviços de emergência assim que
+        possível.
+      </p>
+      </div>
+
+      <ul class="parteDenuncia3">
+        <li>
+          <button @click="opcao('autoMutilacao')">
+            Me preocupo que a pessoa esteja tentando se automutilar ou suicidar
+          </button>
+          <span class="mdi mdi-arrow-right"></span>
+        </li>
+        <li>
+          <button @click="opcao('encorajando_Automultilacao')">
+            Essa pessoa está encorajando outros a se automutilarem ou suicidarem
+          </button>
+          <span class="mdi mdi-arrow-right"></span>
+        </li>
+      </ul>
+
+      <div class="enviar">
+        <button @click="voltarPagSuiciAutoMulti">Voltar</button>
+      </div>
+    </div>
+  </div>
+  <!--Informações de identidade privada Página-->
+  <div v-if="mostrarInfoPrivada" class="modal">
+    <div>
+      <button @click="fecharModal" class="x">X</button>
+      <h2>Info privada</h2>
+      <p class="h2">Selecione os elementos que você quer denunciar no perfil deste usuário.</p>
+      <ul class="opcoesDenuncia">
+        <li>
+          <div>
+            <input type="checkbox" id="fotoRosto" name="fotoRosto" v-model="info1" />
+          </div>
+          <div>
+            <label for="fotoRosto">Foto do rosto</label>
+          </div>
+        </li>
+        <li>
+          <div>
+            <input type="checkbox" id="fotoIntima" name="fotoIntima" v-model="info2" />
+          </div>
+          <div>
+            <label for="fotoIntima">Foto íntima, particular</label>
+          </div>
+        </li>
+        <li>
+          <div>
+            <input type="checkbox" id="enderecoIP" name="enderecoIP" v-model="info3" />
+          </div>
+          <div>
+            <label for="enderecoIP">Endereço IP</label>
+          </div>
+        </li>
+        <li>
+          <div>
+            <input type="checkbox" id="nomeLegal" name="nomeLegal" v-model="info4" />
+          </div>
+          <div>
+            <label for="nomeLegal">Nome legal</label>
+          </div>
+        </li>
+        <li>
+          <div>
+            <input type="checkbox" id="infoCartaoCredito" name="infoCartaoCredito" v-model="info5" />
+          </div>
+          <div>
+            <label for="infoCartaoCredito">Informações do cartão de crédito</label>
+          </div>
+        </li>
+      </ul>
+      <div class="enviar">
+        <button @click="voltarPagInfoPrivada">Voltar</button>
+        <button @click="abrirResumo" v-if="proximoP3">Próximo</button>
+      </div>
+    </div>
+  </div>
+
 </template>
 
 <style lang="scss">
@@ -842,7 +1290,7 @@ section.carro4 div.esquerda img {
         color: white;
         position: absolute;
         left: 0.1vh;
-        top: -0.2vh;
+        top: -0.1vh;
         font-size: 14px;
       }
 
@@ -887,5 +1335,276 @@ section.carro4 div.esquerda img {
     box-shadow: 0 6px 8px rgba(0, 0, 0, 0.3);
   }
 
+}
+//Botão de abrir denúncia
+.denuncia {
+  margin: 0;
+  padding: 0;
+
+  & button {
+    padding: 15px 10px;
+    font-size: 18px;
+    background-color: #1d2d51;
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    margin: 2vw 5vw 5vw 5vw;
+  }
+
+  & span {
+    margin-right: 3px;
+    font-size: 22px;
+  }
+}
+
+.modal {
+  background-color: #1d2d51;
+  color: white;
+  padding: 20px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+
+  & button.x {
+    font-size: 20px;
+    position: absolute;
+    border: none;
+    background-color: #1d2d51;
+    color: white;
+    cursor: pointer;
+    right: 2vh;
+    top: 2vh;
+  }
+
+  & h1 {
+    font-size: 33px;
+    margin: Envia 0;
+  }
+
+  & p.h1 {
+    margin: 10px 0 80px 0;
+  }
+
+  & p.select {
+    margin: 0;
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+
+  & .userDenuncia {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 30px;
+    border: 1px solid #244e84;
+    padding: 10px;
+    border-radius: 10px;
+    margin-bottom: 3vw;
+
+    & img {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    & h1 {
+      font-size: 22px;
+      margin: 0;
+    }
+  }
+
+  & p.h2 {
+    margin: 10px 0 30px 0;
+  }
+
+  & p.h3 {
+    margin: 10px 0 40px 0;
+  }
+
+  & h2 {
+    font-size: 25px;
+    margin-bottom: 10px;
+    margin: 0;
+  }
+
+  & .opcoesDenuncia {
+    padding: 0;
+
+    & li {
+      display: flex;
+      margin-bottom: 30px;
+      align-items: center;
+
+      & input {
+        transform: scale(2);
+        margin-right: 20px;
+      }
+
+      & input[type='checkbox'] {
+        -webkit-appearance: none;
+        background-color: #1d2d51;
+        position: relative;
+        margin-top: 1vh;
+        width: 15px;
+        height: 15px;
+        border-radius: 3px;
+        border: 1px solid rgb(110, 108, 108);
+      }
+
+      & input[type='checkbox']:checked {
+        background-color: #386cbe;
+      }
+
+      & input[type='checkbox']:checked::after {
+        content: '✔';
+        color: white;
+        position: absolute;
+        left: 0.1vh;
+        top: -0.387vh;
+        font-size: 14px;
+
+      }
+
+      & label:first-child {
+        font-size: 20px;
+        display: flex;
+      }
+    }
+  }
+
+  & .atencao {
+    border: #386cbe solid 0.1px;
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+    & span{
+      border: 1px solid #386cbe;
+      color: #386cbe;
+      border-radius: 50%;
+      margin-right: 8px;
+    }
+    & p:not(:first-child) {
+      margin: 0;
+      padding: 10px 10px 10px 8px;
+    }
+    & p:first-child {
+      padding-left: 10px;
+    }
+  }
+
+  & .parteDenuncia3 {
+    padding: 0;
+
+    & li {
+      display: flex;
+      align-items: center;
+      border: 1px solid #244e84;
+      padding: 20px 15px;
+      font-size: 18px;
+      display: flex;
+      justify-content: space-between;
+
+      & button {
+        background: none;
+        border: none;
+        color: white;
+        font-size: 18px;
+        cursor: pointer;
+        flex-grow: 1;
+        text-align: left;
+      }
+
+      & span {
+        font-size: 24px;
+      }
+    }
+
+    & li:last-child {
+      border-bottom-left-radius: 10px;
+      border-bottom-right-radius: 10px;
+    }
+
+    & li:first-child {
+      border-top-left-radius: 10px;
+      border-top-right-radius: 10px;
+    }
+
+    & li:hover {
+      background-color: #244e84;
+    }
+  }
+
+  .parteDenuncia4 {
+    & li:not(:last-child) {
+      margin-bottom: 10px;
+    }
+
+    & li {
+      list-style: disc;
+      margin-bottom: 2vw;
+    }
+
+    & li::marker {
+      color: #386cbe;
+    }
+  }
+
+  & .enviar {
+    display: flex;
+    justify-content: space-between;
+    border-top: #244e84 solid 0.1px;
+    padding-top: 2vw;
+
+    & button {
+      padding: 16px 15px 12px 15px;
+      font-size: 17px;
+      background-color: #386cbe;
+      color: #ffffff;
+      border: none;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+      width: 48%;
+    }
+
+    & .envioFinal {
+      background-color: rgb(250, 46, 46);
+    }
+  }
+}
+
+.modal>div {
+  background: #1d2d51;
+  border: #244e84 solid 0.1px;
+  padding: 30px;
+  padding-top: 50px;
+  border-radius: 12px;
+  max-width: 500px;
+  width: 90%;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+  position: relative;
+}
+
+.proximaP {
+  & button {
+    padding: 16px 15px 12px 15px;
+    font-size: 17px;
+    background-color: #386cbe;
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    display: block;
+    margin: 0 auto;
+    display: flex;
+    gap: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  }
 }
 </style>
