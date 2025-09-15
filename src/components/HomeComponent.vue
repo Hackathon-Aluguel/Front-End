@@ -1,11 +1,39 @@
 <script setup>
 import 'vue3-carousel/carousel.css'
-import { ref, reactive } from 'vue'
+import { ref, reactive, computed, onMounted } from 'vue'
+import { RouterLink } from 'vue-router'
+import axios from 'axios'
 import { Carousel, Slide, Navigation } from 'vue3-carousel'
-
 import HeaderComponent from "./HeaderComponent.vue";
 import FooterComponent from './FooterComponent.vue';
 
+
+
+/* BACKENDDDDDDDDDDDDDDDDDDDDDDDDDDDDD */
+const produtosBackend = ref([])
+
+// Checa se o usuário está logado
+const isLogged = computed(() => !!localStorage.getItem('access_token'))
+
+// Função para carregar produtos
+const carregarProdutos = async () => {
+  try {
+    const response = await axios.get('http://127.0.0.1:8000/api/itens/')
+    produtosBackend.value = response.data
+    console.log('Produtos carregados:', response.data)
+  } catch (error) {
+    console.error(error.response?.data || error.message)
+    alert('Erro ao carregar produtos')
+  }
+}
+
+// Carrega produtos assim que o componente monta
+onMounted(() => {
+  carregarProdutos()
+})
+
+
+/* FINALLLLLLLLLLLLLL DO BACKENDDDDD */
 const liked = ref(false)
 const likes = ref(0)
 const showNav = ref(false)
@@ -246,6 +274,42 @@ function toggleLike(produto) {
         </Carousel>
       </div>
     </div>
+    <h1 class="titulo">Mais v<span>e</span>ndidos</h1>
+    <div class="produtosFundos">
+  <div class="carousel__wrapper">
+    <Carousel ref="carousel" v-bind="config" :navigationEnabled="false">
+      
+      <Slide v-for="produto in produtosBackend" :key="produto.id">
+        <div class="produto">
+          
+          <div class="imagem" v-for="foto in produto.midias" :key="foto.id">
+            <img :src="foto.file" alt="">
+          </div>
+
+          <div class="info">
+            <h1>{{ produto.nome }}</h1>
+            <strong>R${{ produto.preco }}/DIA</strong>
+            <p class="vezes"> oi</p>
+          </div>
+
+        </div>
+      </Slide>
+
+      <!-- addons precisa ficar dentro do Carousel -->
+      <template #addons>
+        <div class="custom-nav">
+          <button class="custom-prev" @click="prevSlide">
+            <span class="mdi mdi-chevron-left"></span>
+          </button>
+          <button class="custom-next" @click="nextSlide">
+            <span class="mdi mdi-chevron-right"></span>
+          </button>
+        </div>
+      </template>
+
+    </Carousel>
+  </div>
+</div>
 
     <button class="perto">
       Descubra produtos perto de você
@@ -424,14 +488,21 @@ img {
   cursor: pointer;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 }
+
 .custom-prev span,
 .custom-next span {
-  display: flex;       /* garante que o span também use flex */
-  align-items: center; /* centraliza verticalmente */
-  justify-content: center; /* centraliza horizontalmente */
-  width: 100%;         /* preenche o botão */
-  height: 100%;        /* preenche o botão */
-  line-height: 0;      /* evita espaçamento extra do ícone */
+  display: flex;
+  /* garante que o span também use flex */
+  align-items: center;
+  /* centraliza verticalmente */
+  justify-content: center;
+  /* centraliza horizontalmente */
+  width: 100%;
+  /* preenche o botão */
+  height: 100%;
+  /* preenche o botão */
+  line-height: 0;
+  /* evita espaçamento extra do ícone */
 }
 
 
