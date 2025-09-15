@@ -1,47 +1,63 @@
 <script setup>
 import { user as globalUser } from '@/stores/user.js'
 import { reactive, ref, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import api from '@/services/api'
 import { gapi } from 'gapi-script';
 
+const route = useRoute()
 const router = useRouter()
-
 
 const loginForm = reactive({
   email: '',
   password: ''
 })
 
-// feedback visual (pode usar no template se quiser)
 const loading = ref(false)
 const errorMessage = ref('')
+
+const access = route.query.access
+const refresh = route.query.refresh
+
+if (access && refresh) {
+  localStorage.setItem('access_token', access)
+  localStorage.setItem('refresh_token', refresh)
+  router.replace('/')  // 🔥 redireciona pra home
+}
 
 // Inicializa o SDK do Google quando o componente monta
 onMounted(() => {
   gapi.load('auth2', () => {
     gapi.auth2.init({
       client_id: '307764432125-sj64153ja75622bdbssdj7o471skrlds.apps.googleusercontent.com',
+      ux_mode: 'popup', // evita redirect
     })
   })
 })
 
-// Função de login com Google
+function loginWithGoogle() {
+  // redireciona para o endpoint Django que inicia o OAuth
+  window.location.href = 'http://localhost:8000/accounts/google/login/?process=login'
+}
+
 function handleGoogleLogin() {
   const auth2 = gapi.auth2.getAuthInstance()
   auth2.signIn().then(googleUser => {
-    const access_token = googleUser.getAuthResponse().access_token
+    const id_token = googleUser.getAuthResponse().id_token
 
-    // Envia token para o backend
     fetch('http://localhost:8000/auth/social/google/', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ access_token }),
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ id_token }), // 👈 id_token em vez de access_token
     })
-      .then(res => res.json())
+      .then(async res => {
+        if (!res.ok) throw new Error('Falha no backend')
+        return await res.json()
+      })
       .then(data => {
+        console.log('Resposta backend:', data)
         localStorage.setItem('access_token', data.access_token)
-        router.push('/') // redireciona para home
+        router.push('/') // 🔥 redireciona para home
       })
       .catch(err => {
         console.error('Erro login Google:', err)
@@ -60,7 +76,7 @@ async function login() {
       password: loginForm.password,
     })
 
-    // salva tokens
+
     localStorage.setItem('access_token', response.data.access)
     localStorage.setItem('refresh_token', response.data.refresh)
 
@@ -71,13 +87,11 @@ async function login() {
 
     console.log('Login OK:', response.data)
 
-    // redireciona para home (ou dashboard, ajuste se quiser)
     router.push('/')
   } catch (error) {
     console.error('Erro no login:', error.response?.data || error.message)
 
     if (error.response?.data?.detail) {
-      // pega a mensagem de erro enviada pelo backend
       errorMessage.value = error.response.data.detail
     } else {
       errorMessage.value = 'Erro ao conectar com o servidor.'
@@ -116,7 +130,7 @@ console.log('Mensagem de erro que vai aparecer:', errorMessage.value)
           <hr>
         </div>
 
-      <button @click="handleGoogleLogin" class="gog">
+      <button @click="loginWithGoogle" class="gog">
       <img src="/public/imgs/Google__G__logo.svg.png" alt="Google" />
       Continuar com o Google
       </button>

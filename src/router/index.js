@@ -1,33 +1,90 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
+// Páginas principais
+import Home from '@/components/HomeComponent.vue'
+import Login from '@/components/LoginComponent.vue'
+import Signup from '@/components/SignupComponent.vue'
+
+// Módulo Chat
+import Start from '@/views/Start.vue'
+import Chat from '@/views/Chat.vue'
+
+// Perfil
+import Profile from '@/views/Profile.vue'
+import ProfileEdit from '@/views/ProfileEdit.vue'
+import ProfileSettings from '@/views/ProfileSettings.vue'
+
+// Erros
+import NotFound from '@/views/NotFound.vue'
+
 const routes = [
-    {
-      path: '/',
-      name: 'home',
-      component: () => import('@/components/HomeComponent.vue'),
-    },
-    {
-      path: '/login',
-      name: 'login',
-      component: () => import('@/components/LoginComponent.vue'),
-    },
-    {
-      path: '/register',
-      name: 'register',
-      component: () => import('@/components/SignupComponent.vue'),
-    },
-    {
-      path: '/social/callback',
-      name: 'SocialCallback',
-      component: () => import('@/views/SocialCallback.vue'),
-    }
+  // Home principal do site
+  {
+    path: '/',
+    name: 'home',
+    component: Home,
+  },
+
+  // Autenticação
+  {
+    path: '/login',
+    name: 'login',
+    component: Login,
+  },
+  {
+    path: '/register',
+    name: 'register',
+    component: Signup,
+  },
+
+  // Chat
+  {
+    path: '/chat',
+    name: 'chat-start',
+    component: Start,
+  },
+  {
+    path: '/chat/:chatroomName',
+    name: 'chat-room',
+    component: Chat,
+    props: true,
+  },
+
+  // Perfil e configurações
+  {
+    path: '/profile/:username',
+    name: 'profile',
+    component: Profile,
+    props: true,
+  },
+  {
+    path: '/profile/:username/edit',
+    name: 'profile-edit',
+    component: ProfileEdit,
+  },
+  {
+    path: '/settings',
+    name: 'profile-settings',
+    component: ProfileSettings,
+  },
+
+  // 404
+  {
+    path: '/:pathMatch(.*)*',
+    name: 'not-found',
+    component: NotFound,
+  },
+  {
+    path: '/social/callback',
+    name: 'SocialCallback',
+    component: () => import('@/views/SocialCallback.vue'),
+  }
 
   ]
 
 const router = createRouter({
   history: createWebHistory(),
   routes,
-});
+})
 
-export default router;
-
+export default router
