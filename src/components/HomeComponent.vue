@@ -1,7 +1,6 @@
 <script setup>
 import 'vue3-carousel/carousel.css'
 import { ref, reactive, computed, onMounted } from 'vue'
-import { RouterLink } from 'vue-router'
 import axios from 'axios'
 import { Carousel, Slide, Navigation } from 'vue3-carousel'
 import HeaderComponent from "./HeaderComponent.vue";
@@ -77,10 +76,6 @@ const avaliacoesAnunciante = [
 ];
 
 /* CARROSSEL DE PRODUTOOOSSSSS */
-const imagesSingle1 = Array.from({ length: 10 }, (_, index) => ({
-  id: index + 1,
-  url: `https://picsum.photos/seed/${Math.random()}/800/600`,
-}))
 const configMulti = {
   height: 400,
   itemsToShow: 3,
@@ -276,40 +271,48 @@ function toggleLike(produto) {
     </div>
     <h1 class="titulo">Mais v<span>e</span>ndidos</h1>
     <div class="produtosFundos">
-  <div class="carousel__wrapper">
-    <Carousel ref="carousel" v-bind="config" :navigationEnabled="false">
-      
-      <Slide v-for="produto in produtosBackend" :key="produto.id">
-        <div class="produto">
-          
-          <div class="imagem" v-for="foto in produto.midias" :key="foto.id">
-            <img :src="foto.file" alt="">
-          </div>
+      <div class="carousel__wrapper">
+        <Carousel ref="carousel" v-bind="config" :navigationEnabled="false">
 
-          <div class="info">
-            <h1>{{ produto.nome }}</h1>
-            <strong>R${{ produto.preco }}/DIA</strong>
-            <p class="vezes"> oi</p>
-          </div>
+          <Slide v-for="produto in produtosBackend" :key="produto.id">
+            <div class="produto">
 
-        </div>
-      </Slide>
+              <div class="imagem" v-for="foto in produto.midias" :key="foto.id">
+                <img :src="foto.file" alt="">
+              </div>
+              <h1>{{ produto.nome }}</h1>
+              <div class="info">
+                <p class="estrelasProduto">
+                  <span class="mdi mdi-star"></span>
+                  <span class="mdi mdi-star"></span>
+                  <span class="mdi mdi-star"></span>
+                  <span class="mdi mdi-star"></span>
+                  <span class="mdi mdi-star"></span>
+                </p>
+                <strong>R${{ produto.preco }}/Dia</strong>
+                <p class="vezes">
+                  {{ produto.descricao }}
+                </p>
+              </div>
 
-      <!-- addons precisa ficar dentro do Carousel -->
-      <template #addons>
-        <div class="custom-nav">
-          <button class="custom-prev" @click="prevSlide">
-            <span class="mdi mdi-chevron-left"></span>
-          </button>
-          <button class="custom-next" @click="nextSlide">
-            <span class="mdi mdi-chevron-right"></span>
-          </button>
-        </div>
-      </template>
+            </div>
+          </Slide>
 
-    </Carousel>
-  </div>
-</div>
+          <!-- addons precisa ficar dentro do Carousel -->
+          <template #addons>
+            <div class="custom-nav">
+              <button class="custom-prev" @click="prevSlide">
+                <span class="mdi mdi-chevron-left"></span>
+              </button>
+              <button class="custom-next" @click="nextSlide">
+                <span class="mdi mdi-chevron-right"></span>
+              </button>
+            </div>
+          </template>
+
+        </Carousel>
+      </div>
+    </div>
 
     <button class="perto">
       Descubra produtos perto de você
@@ -843,7 +846,7 @@ div.produtosFundos {
 
 div.produto {
   max-width: 18vw;
-  height: 50vh;
+  height: 60vh;
   width: 18vw;
   background: #fff;
   border-radius: 10px;
@@ -855,7 +858,7 @@ div.produto {
 
 /* Imagem */
 div.produto img {
-  width: 70%;
+  width: 85%;
   height: 180px;
   object-fit: cover;
   border-radius: 8px;
@@ -867,7 +870,7 @@ div.produto img {
 div.produto h1 {
   font-size: 28px;
   font-weight: 600;
-  margin: 10px 0 1vw 0;
+  margin: 10px 0 1vw 1vw;
   text-align: left;
 }
 
@@ -875,9 +878,7 @@ div.produto h1 {
 div.produto .info p,
 div.produto .info strong {
   margin: 3px 0;
-  /* remove margem padrão */
   padding: 0;
-  /* remove padding padrão */
 }
 
 div.produto .info {
