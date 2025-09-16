@@ -1,6 +1,7 @@
 <script setup>
 import { user } from '@/stores/user.js'
 import api from '@/services/api'
+import CadastrarProdutoComponent from './components/CadastrarProdutoComponent.vue'
 
 const token = localStorage.getItem('access_token')
 if (token && !user.value) {
@@ -16,7 +17,6 @@ if (token && !user.value) {
 <template>
   <RouterView />
   <CadastrarProdutoComponent />
-  <ListarProdutoComponent />
 </template>
 
 <style scoped>

@@ -4,6 +4,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Home from '@/components/HomeComponent.vue'
 import Login from '@/components/LoginComponent.vue'
 import Signup from '@/components/SignupComponent.vue'
+import Produto from '@/components/ProdutoComponent.vue'
 
 // Módulo Chat
 import Start from '@/views/Start.vue'
@@ -36,7 +37,12 @@ const routes = [
     name: 'register',
     component: Signup,
   },
-
+  {
+    path: '/produto/:id',
+    name: 'Produto',
+    component: Produto,
+    props: true
+  },
   // Chat
   {
     path: '/chat',
