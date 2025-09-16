@@ -38,12 +38,12 @@ function logout() {
         </ul>
 
         <ul class="login" v-if="user">
-          <li>
+          <li id="botoca">
             <img :src="user.avatar" alt="Avatar" class="avatar" />
             <span class="usuario">{{ user.email }}</span>
-            <button><span class="mdi mdi-chevron-down"></span></button>
+            <button id="seta"><span class="mdi mdi-chevron-down"></span></button>
           </li>
-          <li><button @click="logout">Sair</button></li>
+          <li><button id="sair" @click="logout">Sair</button></li>
         </ul>
 
         <ul class="login" v-else>
@@ -53,14 +53,13 @@ function logout() {
 
       </div>
 
-
     </nav>
   </header>
   <div class="menu">
-        <a href="#">MEUS <br>  PEDIDOS</a>
-        <a href="#">OFERTAS</a>
-        <a href="#">ATENDIMENTO</a>
-        <a href="#">TERMOS</a>
+        <a href="#">CONVERSA</a>
+        <a href="#">PERTO DE MIM</a>
+        <a href="#">CATEGORIAS</a>
+        <a href="#" id="ultimo">TERMOS</a>
       </div>
 </template>
 <style scoped>
@@ -158,7 +157,11 @@ div.topo-header ul.login {
 
 div.topo-header ul.login li {
   list-style: none;
-  margin: 0 1.8vw 0 0;
+  margin: 0 1vw 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
 }
 
 div.topo-header ul.login li a.log {
@@ -196,6 +199,10 @@ div.menu a {
   margin: 1.5vw 3.5vw 0 0;
   transition: all 0.3s ease;
   position: relative;
+}
+
+#ultimo {
+  margin: 1.5vw 0 0 0;
 }
 
 div.menu a:hover {
@@ -244,6 +251,31 @@ ul.logado span.usuario {
   font-style: normal;
   font-weight: 600;
   line-height: normal;
-  margin: 10px 0 0 0;
+  margin: 10px 0 0px 0;
 }
+
+#sair {
+  background-color: #244E8A;
+  border: none;
+  border-radius: 10px;
+  color: white;
+  font-size: 1.0rem;
+  padding: 5px 10px;
+  text-align: center;
+  cursor: pointer;
+}
+
+#seta {
+  border: none;
+  background-color: transparent;
+  color: #244E8A;
+  font-size: 1.5rem;
+  margin: 0 0px 0 0px;
+  cursor: pointer;
+}
+
+#ultimo {
+
+}
+
 </style>

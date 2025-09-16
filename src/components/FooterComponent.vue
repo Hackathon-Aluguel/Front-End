@@ -59,8 +59,15 @@
     height: 50px;
     top: 80px;
 }
+.nav li a:hover {
+    color: #244E8A;
+    transition: 0.5s;
+}
 
-
+.icons li:hover {
+    color: #244E8A;
+    transition: 0.5s;
+}
 
 footer {
     padding: 20px;
@@ -107,12 +114,14 @@ footer ul.icons {
     display: flex;
     justify-content: center;
     align-items: center;
+}
 
+.icons li {
+    cursor: pointer;
 }
 
 footer ul.icons span {
     font-size: 45px;
-
 }
 
 footer .circle {
@@ -122,10 +131,10 @@ footer .circle {
     background-color: black;
 }
 
+
+
 footer h1 span,
-footer p span,
-.nav li:first-child a,
-.icons li:first-child span {
+footer p span {
     color: #244E8A;
 }
 
