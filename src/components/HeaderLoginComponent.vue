@@ -25,7 +25,6 @@
           <h1 class="avatar"></h1>
           <span class="usuario"> Usuario X</span>
           <button><span class="mdi mdi-chevron-down"></span></button>
-
         </ul>
         
       </div>
@@ -131,7 +130,6 @@ ul.logado .avatar {
   border-radius: 50%;
   margin: 0 15px 0 0;
 }
-
 
 ul.logado button span {
   margin: 10px 0 0 5px;
