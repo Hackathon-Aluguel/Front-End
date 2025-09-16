@@ -56,10 +56,10 @@ function logout() {
     </nav>
   </header>
   <div class="menu">
-        <a href="#">MEUS <br>  PEDIDOS</a>
-        <a href="#">OFERTAS</a>
-        <a href="#">ATENDIMENTO</a>
-        <a href="#">TERMOS</a>
+        <a href="#">CONVERSA</a>
+        <a href="#">PERTO DE MIM</a>
+        <a href="#">CATEGORIAS</a>
+        <a href="#" id="ultimo">TERMOS</a>
       </div>
 </template>
 <style scoped>
@@ -201,6 +201,10 @@ div.menu a {
   position: relative;
 }
 
+#ultimo {
+  margin: 1.5vw 0 0 0;
+}
+
 div.menu a:hover {
   color: #244E8A;
 }
@@ -268,6 +272,10 @@ ul.logado span.usuario {
   font-size: 1.5rem;
   margin: 0 0px 0 0px;
   cursor: pointer;
+}
+
+#ultimo {
+
 }
 
 </style>

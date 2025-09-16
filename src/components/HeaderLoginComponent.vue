@@ -29,9 +29,10 @@
         
       </div>
       <div class="menu">
-        <a href="#">MEUS <br> PEDIDOS</a>
+        <a href="#">CONVERSA</a>
         <a href="#">OFERTAS</a>
         <a href="#">ATENDIMENTO</a>
+        <a href="#">TERMOS</a>
         <a href="#">TERMOS</a>
       </div>
 
