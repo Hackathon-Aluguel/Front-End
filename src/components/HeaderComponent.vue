@@ -234,8 +234,6 @@ ul.logado button {
 
 ul.logado .avatar {
   width: 35px;
-  height: 35px;
-  background-color: #d3d3d3;
   border-radius: 50%;
   margin: 0 15px 0 0;
 }

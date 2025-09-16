@@ -25,7 +25,7 @@
                 <li class="circle"></li>
                 <li><span class="mdi mdi-facebook"></span></li>
             </ul>
-            <p>&copy; 2024 Aluga<span>ê</span>. Todos os direitos reservados.</p>
+            <p>&copy; 2025 Aluga<span>ê</span>. Todos os direitos reservados.</p>
         </nav>
     </footer>
 </template>
