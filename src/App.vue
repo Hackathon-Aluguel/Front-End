@@ -17,7 +17,6 @@ if (token && !user.value) {
 
 <template>
   <RouterView />
-  <ListarProdutoComponent />
 </template>
 
 

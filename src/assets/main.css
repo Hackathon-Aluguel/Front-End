@@ -11,6 +11,9 @@ a{
     color: black;
 }
 
+p, h1, h2, h3, h4, h5, h6, a, span, strong, button, span{
+
+
 
 
 html,body {
@@ -19,6 +22,7 @@ html,body {
 
 
 p, h1, h2, h3, h4, h5, h6, a, span, strong{
+
     font-family: poppins, sans-serif;
     text-decoration: none;
 }
@@ -33,7 +37,10 @@ body {
     overflow-x: hidden;
 }
 
-
+body {
+    background-color: white;
+    font-family: 'Poppins', sans-serif;
+}
 .carousel__wrapper .carousel {
   --vc-nav-background: #ffffff;    /* fundo do botão */
   --vc-nav-color: #244e84;         /* cor da seta */
