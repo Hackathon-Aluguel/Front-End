@@ -1,4 +1,5 @@
-<script>
+
+<script setup>
 import { user } from '@/stores/user.js'
 import api from '@/services/api'
 
@@ -15,7 +16,6 @@ if (token && !user.value) {
 
 <template>
   <RouterView />
-  <CadastrarProdutoComponent />
   <ListarProdutoComponent />
 </template>
 
