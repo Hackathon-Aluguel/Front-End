@@ -1,0 +1,374 @@
+<script setup>
+import { ref, watch, onMounted } from 'vue'
+import { getDistance } from 'geolib'
+
+// Props do componente
+const props = defineProps({
+  produtosAntes: Array,
+  precoMin: Number,
+  precoMax: Number,
+  filtroAberto: Boolean,
+  minhaLocalizacao: Object
+})
+
+// Eventos emitidos
+const emit = defineEmits(['filtrar', 'fechar', 'produtos-filtrados'])
+
+// Estado reativo do componente
+const produtosFiltrados = ref([...props.produtosAntes])
+const distanciaAtual = ref(15)
+const categoriasSelecionadas = ref([])
+const precoSelecionado = ref(props.precoMax / 2)
+const tooltipPos = ref(50)
+const rangeSlider = ref(null)
+
+const categorias = [
+  'Eventos e festas', 'Esporte e lazer', 'Casa e utilidades', 
+  'Tecnologia e Eletrônicos', 'Construção e Reforma', 'Infantil', 
+  'Roupas e acessórios', 'Instrumentos musicais'
+]
+
+// Observa mudanças na localização para refiltrar automaticamente
+watch(() => props.minhaLocalizacao, () => {
+  filtrarProdutos()
+}, { deep: true })
+
+function calcularDistanciaKm(lat1, lng1, lat2, lng2) {
+  const R = 6371; // raio da Terra em km
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLng = (lng2 - lng1) * Math.PI / 180;
+  const a =
+    Math.sin(dLat/2) * Math.sin(dLat/2) +
+    Math.cos(lat1 * Math.PI/180) * Math.cos(lat2 * Math.PI/180) *
+    Math.sin(dLng/2) * Math.sin(dLng/2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  return R * c; // distância em km
+}
+function filtrarProdutos() {
+  const limiteKm = Number(distanciaAtual.value)
+
+  const filtrados = props.produtosAntes.filter(produto => {
+    // Calcula distância real em km
+    const distancia = getDistance(
+      { latitude: produto.lat, longitude: produto.lng },
+      { latitude: props.minhaLocalizacao.lat, longitude: props.minhaLocalizacao.lng }
+    ) / 1000 // metros para km
+
+    // Verifica se está dentro da distância
+    const passaDistancia = distancia <= limiteKm
+
+    // Verifica categoria: se nada selecionado, passa todos
+    const passaCategoria =
+      categoriasSelecionadas.value.length === 0
+        ? true
+        : categoriasSelecionadas.value.includes(produto.categoria)
+
+    // Verifica preço
+    const passaPreco = produto.preco <= precoSelecionado.value
+
+    // Debug
+    console.log(
+      produto.nome,
+      "distancia calculada:", distancia.toFixed(2),
+      "passa?", passaDistancia,
+      "categoria?", passaCategoria,
+      "preco?", passaPreco
+    )
+
+    return passaDistancia && passaCategoria && passaPreco
+  })
+
+  produtosFiltrados.value = filtrados
+  emit('produtos-filtrados', filtrados)
+
+  console.log("FILTRADOS COMPLETO:", filtrados.map(p => p.nome))
+}
+
+// Atualiza posição do tooltip do slider e gradiente
+function atualizarTooltip() {
+  const slider = rangeSlider.value
+  if (!slider) return
+
+  const val = precoSelecionado.value
+  const min = Number(slider.min)
+  const max = Number(slider.max)
+  tooltipPos.value = ((val - min) / (max - min)) * 100
+  slider.style.background = `linear-gradient(to right, #1D2D51 0%, #1D2D51 ${tooltipPos.value}%, #ddd ${tooltipPos.value}%, #ddd 100%)`
+}
+
+// Função de wrapper para botão "Pronto"
+function aplicarFiltro() {
+  filtrarProdutos() // atualiza produtosFiltrados local
+  console.log("Emitindo produtos-filtrados:", produtosFiltrados.value) // debug
+  emit('produtos-filtrados', produtosFiltrados.value) // envia para o pai
+  emit('fechar') // fecha o filtro
+}
+// Inicializa tooltip ao montar
+onMounted(() => {
+  atualizarTooltip()
+})
+</script>
+
+
+<template>
+  <div v-if="filtroAberto" class="filtroAberto" @mousedown.stop @touchstart.stop>
+    <div class="tituloFiltro">
+      <span class="mdi mdi-chevron-left" @click="$emit('fechar')"></span>
+      <h1>Filtros</h1>
+    </div>
+
+    <h2>Distância</h2>
+    <div class="distancia">
+<button @click="distanciaAtual = 6; " :class="{ ativo: distanciaAtual === 6 }">Até 2km</button>
+<button @click="distanciaAtual = 9; " :class="{ ativo: distanciaAtual === 9 }">5km</button>
+<button @click="distanciaAtual = 14; " :class="{ ativo: distanciaAtual === 14 }">10km</button>
+<button @click="distanciaAtual = 24;" :class="{ ativo: distanciaAtual === 24 }">20km</button>
+</div>
+
+    <h2>Categoria</h2>
+    <div class="categorias">
+      <div class="checkbox-container" v-for="categoria in categorias" :key="categoria">
+        <label>
+          <input type="checkbox" :value="categoria" v-model="categoriasSelecionadas" />
+          {{ categoria }}
+        </label>
+      </div>
+    </div>
+
+    <h2>Preço do produto por dia</h2>
+    <div class="slider-overlay">
+      <div class="double-slider-box">
+        <div class="price-slider">
+          <h3>R${{ props.precoMin }}</h3>
+          <div class="input-wrapper slider-event-shield">
+            <input type="range" class="range-slider" :min="props.precoMin" :max="props.precoMax"
+              v-model="precoSelecionado" @input="atualizarTooltip" ref="rangeSlider" />
+            <div class="tooltip" :style="{ left: tooltipPos + '%' }">
+              R${{ precoSelecionado }}
+            </div>
+          </div>
+          <h3>R${{ props.precoMax }}</h3>
+        </div>
+      </div>
+      <div class="botooes">
+        <button class="cancelar" @click="$emit('fechar')">Cancelar</button>
+        <button class="pronto" @click="aplicarFiltro">Pronto</button>
+      </div>
+    </div>
+  </div>
+</template>
+
+<style scoped>
+body,
+h1,
+h2,
+h3,
+div,
+label,
+button {
+    font-family: poppins, sans-serif;
+}
+
+.filtroAberto {
+    position: absolute;
+    margin: 1vw;
+    background: white;
+    border-radius: 0.4vw;
+    box-shadow: 0 0.2vw 0.6vw rgba(0, 0, 0, 0.25);
+    height: 75vh;
+    width: 32vw;
+    z-index: 9999;
+    padding: 0.5vw;
+    pointer-events: auto;
+}
+
+.tituloFiltro {
+    font-size: 2vw;
+    display: flex;
+    align-items: center;
+    margin: 1vw 3vw 0 0.7vw;
+}
+
+.tituloFiltro span {
+    cursor: pointer;
+}
+
+.filtroAberto h1 {
+    text-align: center;
+    font-size: 2vw;
+    color: black;
+    width: 100%;
+}
+
+.filtroAberto h2 {
+    color: black;
+    font-size: 1.2vw;
+    margin: 0.7vw 1vw 0.2vw 1vw;
+}
+
+.distancia {
+    display: flex;
+    gap: 0.6vw;
+    margin-left: 1vw;
+}
+
+.distancia button {
+    color: black;
+    background-color: #D9D9D9;
+    border: none;
+    width: 6.5vw;
+    height: 4.5vh;
+    border-radius: 0.4vw;
+    font-size: 1vw;
+}
+
+.distancia button.ativo {
+    background-color: #1D2D51;
+    color: white;
+}
+
+.categorias {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6vw;
+    margin-left: 1vw;
+    max-width: 100%;
+}
+
+.checkbox-container {
+    flex: 1 1 10vw;
+    /* cresce e encolhe, base 10vw */
+    min-width: 8vw;
+}
+
+input[type="checkbox"] {
+    width: 1.3vw;
+    height: 1.3vw;
+    -webkit-appearance: none;
+    appearance: none;
+    border: 0.1vw solid #CDCDCD;
+    border-radius: 0.3vw;
+    position: relative;
+    cursor: pointer;
+}
+
+/* checkmark */
+input[type="checkbox"]:checked::after {
+    content: "";
+    position: absolute;
+    left: 0.5vw;
+    top: 0.2vw;
+    width: 0.4vw;
+    height: 0.8vw;
+    border: solid white;
+    border-width: 0 0.2vw 0.2vw 0;
+    transform: rotate(45deg);
+}
+
+/* opcional: muda fundo quando marcado */
+input[type="checkbox"]:checked {
+    background-color: #1D2D51;
+    border: none;
+}
+
+.checkbox-container {
+    width: 10vw;
+}
+
+.categorias {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5vw;
+    margin: 0 0 0 1vw;
+}
+
+.checkbox-container {
+    width: 10vw;
+}
+
+label {
+    display: flex;
+    align-items: center;
+    gap: 0.5vw;
+    cursor: pointer;
+    color: black;
+    font-size: 1vw;
+    width: 18vw;
+}
+
+.double-slider-box {
+    margin: 4vw 2vw;
+    width: 40vw;
+}
+
+.price-slider {
+    margin: 3vh 0;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.price-slider h3 {
+    font-size: 1.2vw;
+    color: #1D2D51;
+}
+
+.input-wrapper {
+    position: relative;
+    display: flex;
+    margin: 0 1vw;
+    min-width: 15vw;
+}
+
+.range-slider {
+    -webkit-appearance: none;
+    height: 1vh;
+    width: 100%;
+    background: linear-gradient(to right, #1D2D51 50%, #ddd 50%);
+    border-radius: 0.6vw;
+}
+
+.range-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 1.5vw;
+    height: 1.5vw;
+    background-color: #1D2D51;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.tooltip {
+    background-color: #1D2D51;
+    color: white;
+    border-radius: 50vw;
+    position: absolute;
+    transform: translateX(-50%) translateY(-100%);
+    bottom: 0vw;
+    font-weight: 600;
+    padding: 0.3vw 0.8vw;
+    font-size: 0.9vw;
+    pointer-events: none;
+    z-index: 10;
+    transition: left 0.05s ease;
+}
+
+.botooes {
+    display: flex;
+    justify-content: center;
+    gap: 1.4vw;
+}
+
+.cancelar,
+.pronto {
+    width: 7vw;
+    height: 5vh;
+    border-radius: 0.5vw;
+    border: none;
+    font-weight: bold;
+}
+
+.pronto {
+    background-color: #1D2D51;
+    color: white;
+}
+</style>
