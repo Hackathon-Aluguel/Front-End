@@ -11,18 +11,12 @@ a{
     color: black;
 }
 
-p, h1, h2, h3, h4, h5, h6, a, span, strong, button, span{
-
-
-
-
 html,body {
   background-color: white;
 }
 
 
-p, h1, h2, h3, h4, h5, h6, a, span, strong{
-
+p, h1, h2, h3, h4, h5, h6, a, span, strong, ::placeholder, button{
     font-family: poppins, sans-serif;
     text-decoration: none;
 }
