@@ -99,16 +99,14 @@ onMounted(async () => {
       </div>
 
       <button class="favorito"><span class="mdi mdi-heart-outline"></span>Adicionar aos favoritos</button>
-
-      <div class="dono" v-if="dono.value && Object.keys(dono.value).length">
-  <p class="foto">
-    <img :src="dono.value.imagem || fotoPadrao" alt="Foto do dono"
-      style="width: 50px; height: 50px; border-radius: 50%;" />
-  </p>
-  <h2>Dono do produto: <span>{{ dono.value.username || 'Usuário' }}</span></h2>
-</div>
-
-
+      <RouterLink to="/perfil">
+      <div class="dono" v-if="dono && Object.keys(dono).length">
+        <p class="foto">
+          <img :src="dono.imagem || fotoPadrao" alt="Foto do dono" />
+        </p>
+        <h2>Dono do produto: <span>{{ dono.username || 'Usuário' }}</span></h2>
+      </div>
+      </RouterLink>
       <button class="mensagem">Mandar mensagem <span class="mdi mdi-send-variant-outline"></span></button>
     </div>
   </section>
@@ -234,10 +232,13 @@ button.favorito {
   display: flex;
   align-items: center;
   margin: 2vw 0 10px 0;
-}
 
+}
+.dono h2 {
+  font-weight: 100;
+}
 .dono h2 span {
-  font-weight: 600;
+  font-weight: 100;
 }
 
 button.mensagem {
