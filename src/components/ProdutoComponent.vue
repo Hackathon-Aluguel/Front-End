@@ -41,10 +41,28 @@ const imagens = ref([])   // miniaturas
 const trocarFoto = (src) => fotoAtual.value = src
 
 // Carregar produto do backend
+const dono = ref({})
+const fotoPadrao = 'https://via.placeholder.com/150';
+
+// função para carregar os dados do dono
+const carregarDono = async (usuarioId) => {
+  try {
+    const { data } = await axios.get(`http://127.0.0.1:8000/api/user-publico/${usuarioId}/`)
+    dono.value = data
+  } catch (err) {
+    console.error('Erro ao carregar dados do dono:', err)
+    dono.value = {} // fallback caso dê erro
+  }
+}
+// Carregar produto do backend
 onMounted(async () => {
   try {
     const { data } = await axios.get(`http://127.0.0.1:8000/api/itens/${route.params.id}/`)
     produto.value = Array.isArray(data) ? data[0] : data
+
+    if (produto.value.usuario) {
+      carregarDono(produto.value.usuario) // chama o endpoint público
+    }
 
     if (produto.value?.midias?.length) {
       imagens.value = produto.value.midias.map(m => m.file)
@@ -82,10 +100,14 @@ onMounted(async () => {
 
       <button class="favorito"><span class="mdi mdi-heart-outline"></span>Adicionar aos favoritos</button>
 
-      <div class="dono">
-        <p class="foto"></p>
-        <h2>Dono do produto: <span>Renan</span></h2>
-      </div>
+      <div class="dono" v-if="dono.value && Object.keys(dono.value).length">
+  <p class="foto">
+    <img :src="dono.value.imagem || fotoPadrao" alt="Foto do dono"
+      style="width: 50px; height: 50px; border-radius: 50%;" />
+  </p>
+  <h2>Dono do produto: <span>{{ dono.value.username || 'Usuário' }}</span></h2>
+</div>
+
 
       <button class="mensagem">Mandar mensagem <span class="mdi mdi-send-variant-outline"></span></button>
     </div>
@@ -99,8 +121,9 @@ onMounted(async () => {
         <Slide v-for="avaliacao in avaliacoes" :key="avaliacao.id">
           <ul>
             <li>
-              <img src="https://s2.glbimg.com/CZ7vt10tkQki58E3X37KbSrW8PA=/620x430/e.glbimg.com/og/ed/f/original/2022/04/11/dall_e_ia.png"
-                   alt="Foto de Perfil" style="height: 50px; width: 50px; border-radius: 30px;">
+              <img
+                src="https://s2.glbimg.com/CZ7vt10tkQki58E3X37KbSrW8PA=/620x430/e.glbimg.com/og/ed/f/original/2022/04/11/dall_e_ia.png"
+                alt="Foto de Perfil" style="height: 50px; width: 50px; border-radius: 30px;">
             </li>
             <li>
               <h2>{{ avaliacao.nome }}</h2>
@@ -124,129 +147,179 @@ onMounted(async () => {
    Produto
 ====================== */
 section {
-    background-color: white;
+  background-color: white;
 }
-.produto { 
-    display: flex;
-    margin: 2vw 0 0 10vw; 
+
+.produto {
+  display: flex;
+  margin: 2vw 0 0 10vw;
 }
-.info { 
-    margin: 2vw 0 0 4vw; 
+
+.info {
+  margin: 2vw 0 0 4vw;
 }
-.info h1 { 
-    font-size: 30px;
-    font-weight: 600;
-    color: #000;
-    display: flex;
-    justify-content: left;
+
+.info h1 {
+  font-size: 30px;
+  font-weight: 600;
+  color: #000;
+  display: flex;
+  justify-content: left;
 }
+
 .info p {
-    font-size: 20px;
-    color: #000;
+  font-size: 20px;
+  color: #000;
 }
-.info p span.avaliar { 
-    color: #CDCDCD; font-size: 16px; 
+
+.info p span.avaliar {
+  color: #CDCDCD;
+  font-size: 16px;
 }
-.info p span.mdi { 
-    color: #FFD700;
-    font-size: 1.5vw;
+
+.info p span.mdi {
+  color: #FFD700;
+  font-size: 1.5vw;
 }
+
 .info p.preco {
-    font-size: 35px;
-    font-weight: 600;
-    color: #1D2D51;
+  font-size: 35px;
+  font-weight: 600;
+  color: #1D2D51;
 }
+
 .botoes {
-    display: flex; gap: 30px; 
+  display: flex;
+  gap: 30px;
 }
+
 .botoes button {
-    all: unset; 
-    flex-shrink: 0;
-    border-radius: 8px;
-    border: 2px solid #CDCDCD;
-    width: 229px;
-    height: 55px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    color: #CDCDCD; 
+  all: unset;
+  flex-shrink: 0;
+  border-radius: 8px;
+  border: 2px solid #CDCDCD;
+  width: 229px;
+  height: 55px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #CDCDCD;
 }
+
 .botoes button.carrinho {
-    font-size: 0.8vw;
+  font-size: 0.8vw;
 }
-.botoes button.carrinho span{
-    font-size: 1.2vw;
+
+.botoes button.carrinho span {
+  font-size: 1.2vw;
 }
+
 .botoes button.alugar {
-    background-color: #1D2D51; color: #FFF; border: none;
-    font-family: poppins, sans-serif;
-    font-size: 1vw;
+  background-color: #1D2D51;
+  color: #FFF;
+  border: none;
+  font-family: poppins, sans-serif;
+  font-size: 1vw;
 }
+
 button.favorito {
-    all: unset;
-    margin: 20px 0 0 0;
-    color: #1D2D51;
-    font-size: 18px; 
+  all: unset;
+  margin: 20px 0 0 0;
+  color: #1D2D51;
+  font-size: 18px;
 }
+
 .dono {
-    display: flex;
-    align-items: center;
-    margin: 2vw 0 10px 0;
+  display: flex;
+  align-items: center;
+  margin: 2vw 0 10px 0;
 }
+
 .dono h2 span {
-    font-weight: 600;
+  font-weight: 600;
 }
+
 button.mensagem {
-    all: unset;
-    width: 229px;
-    height: 55px;
-    background-color: #1D2D51;
-    color: #FFF;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 18px;
-    margin-top: 20px;
+  all: unset;
+  width: 229px;
+  height: 55px;
+  background-color: #1D2D51;
+  color: #FFF;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  margin-top: 20px;
 }
-button.mensagem span {
-    
-}
+
+button.mensagem span {}
+
 .foto {
-    max-width: 500px;
-    margin-right: 10vw;
+  max-width: 500px;
+  margin-right: 10vw;
 }
+
 .grande img {
-    width: 640px; 
-    height: 540px;
-    border-radius: 10px;
-    border: 2px solid #ccc;
+  width: 640px;
+  height: 540px;
+  border-radius: 10px;
+  border: 2px solid #ccc;
 }
+
 .baixo {
-    display: flex;
-    gap: 10px;
-    margin-top: 10px;
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
 }
-.pequenas img { width: 150px;
-    height: 132px;
-    object-fit: cover;
-    border-radius: 6px;
-    border: 2px solid #ccc;
-    cursor: pointer;
-    transition: border 0.3s;
+
+.pequenas img {
+  width: 150px;
+  height: 132px;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 2px solid #ccc;
+  cursor: pointer;
+  transition: border 0.3s;
 }
-.pequenas img:hover { border: 2px solid #1D2D51; }
+
+.pequenas img:hover {
+  border: 2px solid #1D2D51;
+}
 
 /* ======================
    Avaliações
 ====================== */
 .avaliacao {
-    margin: 0 5vw; margin-top: 5vw; border-bottom: 2px solid #d3d1d1;
+  margin: 0 5vw;
+  margin-top: 5vw;
+  border-bottom: 2px solid #d3d1d1;
 }
-.avaliacao h2 { font-size: 25px; font-weight: bold; margin-bottom: 20px; }
-.carousel__wrapper { padding: 20px; width: 100%; height: 330px; }
-.carousel__slide { display: block; min-width: 530px; }
-.carousel__slide:not(:last-of-type) { padding: 0 40px; border-right: 2px solid #d3d1d1; }
-.carousel__slide:last-of-type { padding-left: 40px; }
+
+.avaliacao h2 {
+  font-size: 25px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.carousel__wrapper {
+  padding: 20px;
+  width: 100%;
+  height: 330px;
+}
+
+.carousel__slide {
+  display: block;
+  min-width: 530px;
+}
+
+.carousel__slide:not(:last-of-type) {
+  padding: 0 40px;
+  border-right: 2px solid #d3d1d1;
+}
+
+.carousel__slide:last-of-type {
+  padding-left: 40px;
+}
 </style>
