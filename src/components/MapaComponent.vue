@@ -2,6 +2,9 @@
 import { reactive, ref } from 'vue'
 import MapaScriptComponent from './MapaScriptComponent.vue'
 import FiltroMapa from './FiltroMapa.vue'
+import HeaderComponent from './HeaderComponent.vue'
+import FooterComponent from './FooterComponent.vue'
+
 
 // Lista inicial de produtos
 const produtos = reactive([
@@ -53,6 +56,7 @@ function onFiltrar(filtrados) {
 </script>
 
 <template>
+  <HeaderComponent />
   <section>
     <div class="produtosTodo">
       <div class="rolagem">
@@ -84,6 +88,7 @@ function onFiltrar(filtrados) {
   @produtos-filtrados="onFiltrar"/>
     </div>
   </section>
+  <FooterComponent />
 </template>
 
 
@@ -94,6 +99,7 @@ p,h1,h2,button {
 section {
   background-color: white;
   display: flex;
+  margin: 0 0 9vw 0;
 }
 section div.produtosTodo {
   margin: 4vw 4vw 0 0vw;

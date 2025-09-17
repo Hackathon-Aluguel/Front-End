@@ -6,6 +6,7 @@ import Login from '@/components/LoginComponent.vue'
 import Signup from '@/components/SignupComponent.vue'
 import Produto from '@/components/ProdutoComponent.vue'
 import Perfil from '@/components/PerfilComponent.vue'
+import Mapa from '@/components/MapaComponent.vue'
 
 // Módulo Chat
 import Start from '@/views/Start.vue'
@@ -48,6 +49,11 @@ const routes = [
     path: '/perfil',
     name: 'perfil',
     component: Perfil,
+  },
+  {
+    path: '/mapa',
+    name: 'mapa',
+    component: Mapa,
   },
   // Chat
   {

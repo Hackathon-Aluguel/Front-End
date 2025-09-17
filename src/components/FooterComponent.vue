@@ -33,6 +33,9 @@
 </template>
 <style scoped>
 .pai {
+  position: relative; /* referência para os filhos absolutos */
+  height: 130px;      /* altura para que as faixas fiquem visíveis */
+  width: 100%;
   overflow: hidden;
 }
 .tom1,
@@ -65,9 +68,8 @@
     top: 80px;
 }
 
-    height: 50px;
-    top: 80px;
-}
+
+
 .nav li a:hover {
     color: #244E8A;
     transition: 0.5s;
