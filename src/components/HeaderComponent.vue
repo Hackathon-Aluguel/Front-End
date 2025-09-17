@@ -1,4 +1,20 @@
 <script setup>
+import { user } from '@/stores/user.js'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+
+function logout() {
+  // Remove os tokens
+  localStorage.removeItem('access_token')
+  localStorage.removeItem('refresh_token')
+
+  // Reseta o estado global do usuário
+  user.value = null
+
+  // Redireciona para a home ou login
+  router.push('/')
+}
 </script>
 
 <template>
@@ -6,7 +22,7 @@
     <nav>
       <div class="topo-header">
         <h1>
-          Aluga<span class="alugae">ê</span>
+          <RouterLink to="/">Aluga<span class="alugae">ê</span></RouterLink>
         </h1>
 
         <div class="container">
@@ -21,35 +37,54 @@
           <li><span class="mdi mdi-heart-outline"></span></li>
         </ul>
 
-        <ul class="login">
-          <li><a class="log">Log in</a></li>
-          <li><a class="conta">Criar Conta</a></li>
+        <ul class="login" v-if="user">
+          <li id="botoca">
+            <img :src="user.avatar" alt="Avatar" class="avatar" />
+            <span class="usuario">{{ user.email }}</span>
+            <button id="seta"><span class="mdi mdi-chevron-down"></span></button>
+          </li>
+          <li><button id="sair" @click="logout">Sair</button></li>
         </ul>
-      </div>
-      <div class="menu">
-        <a href="#">MEUS <br>  PEDIDOS</a>
-        <a href="#">OFERTAS</a>
-        <a href="#">ATENDIMENTO</a>
-        <a href="#">TERMOS</a>
+
+        <ul class="login" v-else>
+          <li><a class="log"><RouterLink to="/login">Log in</RouterLink></a></li>
+          <li><a class="conta"><RouterLink to="/register">Criar Conta</RouterLink></a></li>
+        </ul>
+
       </div>
 
     </nav>
   </header>
+  <div class="menu">
+        <a href="#">CONVERSA</a>
+        <a href="#">PERTO DE MIM</a>
+        <a href="#">CATEGORIAS</a>
+        <a href="#" id="ultimo">TERMOS</a>
+      </div>
 </template>
 <style scoped>
+
 header nav div.topo-header {
+  position: fixed;
+  top: 0; /* garante que fique colado no topo */
+  left: 0; /* garante alinhamento à esquerda */
+  z-index: 1000;
+  width: 100%;
+  background-color: white;
   display: flex;
+  height: 10vh;
   justify-content: center;
   align-items: center;
   padding: 14px 0 0 0;
+  margin: 0; /* remove margens que podem empurrar */
+   box-shadow: 0 4px 6px -2px rgba(0, 0, 0, 0.1); /* sombra só embaixo */
 }
-
 header div.topo-header h1 {
   color: #000;
-  font-family: Poppins;
+  font-family: Poppins, sans-serif;
   font-size: 36px;
   font-style: normal;
-  font-weight: 700;
+  font-weight: 600;
   line-height: normal;
   margin: 0 3vw 0 0;
 }
@@ -84,7 +119,7 @@ div.topo-header span.alugae {
 }
 
 .search-bar button {
-  background-color: #244E8A; /* azul */
+  background-color:  ; /* azul */
   border: none;
   width: 32px;
   height: 32px;
@@ -109,7 +144,7 @@ div.topo-header ul.icons {
 div.topo-header ul.icons li {
   list-style: none;
   margin: 0 1.8vw 0 0;
-  font-size: 1.8vw;
+  font-size: 1.5vw;
 }
 
 div.topo-header ul.icons li:last-child {
@@ -122,7 +157,11 @@ div.topo-header ul.login {
 
 div.topo-header ul.login li {
   list-style: none;
-  margin: 0 1.8vw 0 0;
+  margin: 0 1vw 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
 }
 
 div.topo-header ul.login li a.log {
@@ -140,14 +179,17 @@ div.topo-header ul.login li a.conta {
 
 div.menu {
   display: flex;
-  margin: 15px 0 0 0;
   justify-content: center;
   border-top: 1px solid #244E8A;
+  background-color: white;
+  margin-top: 11vh; /* empurra o menu para baixo do header */
+  position: relative;
+  z-index: 500; /* abaixo do header */
 }
 
 div.menu a {
   text-decoration: none;
-  color: #000;
+  color: black;
   text-align: center;
   font-family: Poppin, sans-serif;
   font-size: 15px;
@@ -157,6 +199,10 @@ div.menu a {
   margin: 1.5vw 3.5vw 0 0;
   transition: all 0.3s ease;
   position: relative;
+}
+
+#ultimo {
+  margin: 1.5vw 0 0 0;
 }
 
 div.menu a:hover {
@@ -176,5 +222,58 @@ div.menu a:hover::before {
   border-bottom-right-radius: 3px;
   align-items: center;
 }
-</style>
 
+ul.logado {
+  display: flex;
+}
+ul.logado button {
+  all: unset;
+  cursor: pointer;
+  color: aquamarine;
+}
+
+ul.logado .avatar {
+  width: 35px;
+  border-radius: 50%;
+  margin: 0 15px 0 0;
+}
+
+ul.logado button span {
+  margin: 10px 0 0 5px;
+}
+
+ul.logado span.usuario {
+  color: #000;
+  font-family: Poppins, sans-serif;
+  font-size: 15px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  margin: 10px 0 0px 0;
+}
+
+#sair {
+  background-color: #244E8A;
+  border: none;
+  border-radius: 10px;
+  color: white;
+  font-size: 1.0rem;
+  padding: 5px 10px;
+  text-align: center;
+  cursor: pointer;
+}
+
+#seta {
+  border: none;
+  background-color: transparent;
+  color: #244E8A;
+  font-size: 1.5rem;
+  margin: 0 0px 0 0px;
+  cursor: pointer;
+}
+
+#ultimo {
+
+}
+
+</style>

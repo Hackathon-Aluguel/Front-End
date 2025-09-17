@@ -8,8 +8,43 @@ ul {
 }
 a{
     text-decoration: none;
+    color: black;
 }
 
+
 html,body {
+  background-color: white;
+}
+
+p, h1, h2, h3, h4, h5, h6, a, span, strong{
+    font-family: poppins, sans-serif;
+    text-decoration: none;
+}
+span {
+    font-weight: 600;
+}
+body {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
     background-color: white;
+    overflow-x: hidden;
+}
+
+
+.carousel__wrapper .carousel {
+  --vc-nav-background: #ffffff;    /* fundo do botão */
+  --vc-nav-color: #244e84;         /* cor da seta */
+  --vc-nav-size: 70px;             /* tamanho do botão */
+  --vc-nav-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  --vc-nav-border: 2px solid #244e84;
+  --vc-nav-hover-background: #244e84;
+  --vc-nav-hover-color: #ffffff;
+}
+
+.carousel__prev .carousel__icon,
+.carousel__next .carousel__icon {
+  width: 50px !important;
+  height: 50px !important;
+
 }

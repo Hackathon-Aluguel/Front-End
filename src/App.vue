@@ -1,19 +1,23 @@
+
 <script setup>
-import HeaderComponent from './components/HeaderComponent.vue';
-import HomeComponent from './components/HomeComponent.vue';
-import FooterComponent from './components/FooterComponent.vue';
-import MapaComponent from './components/MapaComponent.vue';
+import { user } from '@/stores/user.js'
+import api from '@/services/api'
+
+const token = localStorage.getItem('access_token')
+if (token && !user.value) {
+  api.get('/users/me/').then(res => {
+    user.value = res.data
+  }).catch(() => {
+    localStorage.removeItem('access_token')
+    localStorage.removeItem('refresh_token')
+  })
+}
 </script>
 
 <template>
-  <!-- <HeaderComponent/>
-  <FooterComponent/>
-  --><h1></h1> 
-  <MapaComponent />
-
-
+  <RouterView />
+  <ListarProdutoComponent />
 </template>
 
 <style scoped>
-
 </style>
