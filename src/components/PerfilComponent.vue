@@ -3,6 +3,8 @@ import 'vue3-carousel/carousel.css'
 import { Carousel, Slide, Navigation } from 'vue3-carousel'
 import { ref, reactive, computed } from 'vue'
 
+
+
 const avaliacoes = [
   {
     id: 1,

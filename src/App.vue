@@ -12,6 +12,7 @@ if (token && !user.value) {
     localStorage.removeItem('refresh_token')
   })
 }
+
 </script>
 
 <template>
