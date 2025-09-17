@@ -65,9 +65,6 @@
     top: 80px;
 }
 
-    height: 50px;
-    top: 80px;
-}
 .nav li a:hover {
     color: #244E8A;
     transition: 0.5s;
