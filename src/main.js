@@ -8,9 +8,6 @@ import '@mdi/font/css/materialdesignicons.css';
 
 const app = createApp(App);
 
-
-const app = createApp(App)
-
 const pinia = createPinia()
 app.use(pinia)
 
