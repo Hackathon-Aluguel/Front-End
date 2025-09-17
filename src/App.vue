@@ -1,4 +1,4 @@
-<script setup>
+<script>
 import { user } from '@/stores/user.js'
 import api from '@/services/api'
 
