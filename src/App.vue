@@ -1,5 +1,6 @@
 
 <script setup>
+
 import { user } from '@/stores/user.js'
 import api from '@/services/api'
 
@@ -12,7 +13,6 @@ if (token && !user.value) {
     localStorage.removeItem('refresh_token')
   })
 }
-
 </script>
 
 <template>

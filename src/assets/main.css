@@ -12,9 +12,11 @@ a{
 }
 
 
+
 html,body {
   background-color: white;
 }
+
 
 p, h1, h2, h3, h4, h5, h6, a, span, strong{
     font-family: poppins, sans-serif;
