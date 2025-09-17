@@ -35,6 +35,12 @@ const likes = ref(0)
 const showNav = ref(false)
 // Carrossel de 1 imagem
 
+
+const imagesSingle1 = Array.from({ length: 10 }, (_, index) => ({
+  id: index + 1,
+  url: `https://picsum.photos/400/300?random=${index + 100}`,
+}))
+
 // Carrossel multi-imagem
 const categorias = [
   { id: 1, nome: 'fantasias', imagem: './public/images/categoria/categoriaFantasias.jpg' },
@@ -139,7 +145,23 @@ const avaliacoesAnunciante = [
   },
 ]
 
+// Carousel configuration
+// Configuração carrossel 1 imagem
+
+const configDuo = {
+  height: 510,
+  itemsToShow: 2,
+  snapAlign: 'start',
+  breakpoints: {
+    600: { itemsToShow: 1 },
+    900: { itemsToShow: 2 },
+    1200: { itemsToShow: 2 },
+  },
+}
+
+
 /* CARROSSEL DE PRODUTOOOSSSSS */
+
 const configMulti = {
   height: 400,
   itemsToShow: 3,
@@ -460,9 +482,9 @@ function toggleLike(produto) {
     </ul>
   </section>
   <section class="avaliacoes">
-    <h1>SUA OPNIÃO TAMBÉM IMPORTA!</h1>
+    <h1>SUA OPINIÃO TAMBÉM IMPORTA!</h1>
     <h3>
-      Confira os comentarios de quem usa nossa plataforma<br />
+      Confira os comentários de quem usa nossa plataforma<br />
       no dia a dia
     </h3>
     <ul>
@@ -680,15 +702,16 @@ section.primeira .primeiro {
 }
 
 .tom3 .maior {
-  margin: 0.7vw 0 0 0;
+  
   display: flex;
   font-size: 1.2rem;
+  align-items: center;
 }
 
 .estrelas1 {
   display: flex;
   gap: 0;
-  margin: 0.43vw 0.5vw 0 0.5vw;
+  margin: 0vw 0.5vw 0 0.5vw;
   justify-content: center;
 }
 
@@ -731,6 +754,8 @@ section.juntar div.botoes button.ativo {
   border-radius: 6px;
   font-size: 1.2vw;
   margin: 0 0.5vw;
+  cursor: pointer;
+  transition: ease 0.5s;
 }
 
 section.juntar div.botoes button {
@@ -742,6 +767,7 @@ section.juntar div.botoes button {
   height: 7vh;
   border-radius: 6px;
   margin: 0 0.5vw;
+  cursor: pointer;
 }
 
 div.meio {
@@ -760,6 +786,7 @@ div.meio {
   justify-content: center;
   border-radius: 1vw;
   border: none;
+  margin: 0 1vw 0 0;
   transition: all 0.3s ease;
   box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
 }
