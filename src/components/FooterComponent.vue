@@ -25,7 +25,9 @@
                 <li class="circle"></li>
                 <li><span class="mdi mdi-facebook"></span></li>
             </ul>
+
             <p>&copy; 2025 Aluga<span>ê</span>. Todos os direitos reservados.</p>
+
         </nav>
     </footer>
 </template>
@@ -44,18 +46,25 @@
 
 .tom1 {
     background-color: #1D2D51;
+    position: absolute;
     height: 100px;
     top: 0px;
 }
 
 .tom2 {
     background-color: #244E8A;
+    position: absolute;
     height: 50px;
     top: 40px;
 }
 
 .tom3 {
     background-color: #386CBE;
+    position: absolute;
+    height: 50px;
+    top: 80px;
+}
+
     height: 50px;
     top: 80px;
 }
@@ -68,6 +77,7 @@
     color: #244E8A;
     transition: 0.5s;
 }
+
 
 footer {
     padding: 20px;
@@ -115,9 +125,9 @@ footer ul.icons {
     justify-content: center;
     align-items: center;
 }
-
 .icons li {
     cursor: pointer;
+
 }
 
 footer ul.icons span {
@@ -132,9 +142,10 @@ footer .circle {
 }
 
 
-
 footer h1 span,
-footer p span {
+footer p span,
+.nav li:first-child a,
+.icons li:first-child span {
     color: #244E8A;
 }
 

@@ -38,6 +38,12 @@ const likes = ref(0)
 const showNav = ref(false)
 // Carrossel de 1 imagem
 
+
+const imagesSingle1 = Array.from({ length: 10 }, (_, index) => ({
+  id: index + 1,
+  url: `https://picsum.photos/400/300?random=${index + 100}`,
+}))
+
 // Carrossel multi-imagem
 const categorias = [
   { id: 1, nome: 'fantasias', imagem: './public/images/categoria/categoriaFantasias.jpg' },
@@ -75,7 +81,23 @@ const avaliacoesAnunciante = [
   { id: 8, nome: 'Larissa', texto: 'A visibilidade que meus produtos tiveram aqui foi muito maior do que eu esperava.' },
 ];
 
+// Carousel configuration
+// Configuração carrossel 1 imagem
+
+const configDuo = {
+  height: 510,
+  itemsToShow: 2,
+  snapAlign: 'start',
+  breakpoints: {
+    600: { itemsToShow: 1 },
+    900: { itemsToShow: 2 },
+    1200: { itemsToShow: 2 },
+  },
+}
+
+
 /* CARROSSEL DE PRODUTOOOSSSSS */
+
 const configMulti = {
   height: 400,
   itemsToShow: 3,
