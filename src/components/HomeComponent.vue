@@ -44,12 +44,14 @@ const imagesSingle1 = Array.from({ length: 10 }, (_, index) => ({
 
 // Carrossel multi-imagem
 const categorias = [
-  { id: 1, nome: 'fantasias', imagem: './public/images/categoria/categoriaFantasias.jpg' },
-  { id: 2, nome: 'camping', imagem: './public/images/categoria/categoriaCamping.jpg' },
-  { id: 3, nome: 'Brinquedos', imagem: './public/images/categoria/categoriaBrinquedos.jpg' },
-  { id: 4, nome: 'Ferramentas', imagem: './public/images/categoria/categoriaFerramentas.jpg' },
-  { id: 5, nome: 'construção', imagem: './public/images/categoria/categoriaConstrucao.jpg' },
-  { id: 6, nome: 'limpeza', imagem: './public/images/categoria/categoriaLimpeza.jpg' },
+  { id: 1, nome: 'Eventos e festas', cor: '#244E8A', icone: 'mdi mdi-balloon' },
+  { id: 2, nome: 'Esporte e lazer', cor: '#244E8A', icone: 'mdi mdi-soccer' },
+  { id: 3, nome: 'Casa e utilidades', cor: '#244E8A', icone: 'mdi mdi-home' },
+  { id: 4, nome: 'Tecnologia e Eletrônicos', cor: '#244E8A', icone: 'mdi mdi-cellphone' },
+  { id: 5, nome: 'Construção e Reforma', cor: '#244E8A', icone: 'mdi mdi-hammer' },
+  { id: 6, nome: 'Roupas e acessório', cor: '#244E8A', icone: 'mdi mdi-hanger' },
+  { id: 7, nome: 'Infantil', cor: '#244E8A', icone: 'mdi mdi-teddy-bear' },
+  { id: 8, nome: 'Instrumentos musicais', cor: '#244E8A', icone: 'mdi mdi-guitar-electric' }
 ]
 const botaoAnunciante = ref(true)
 function trocarCliente() {
@@ -207,6 +209,19 @@ function toggleLike(produto) {
   produto.liked = !produto.liked
   produto.likes += produto.liked ? 1 : -1
 }
+const config1 = {
+  height: 500,
+  itemsToShow: 2,  // menos itens = mais espaço real para cada slide
+  gap: 0,           // pequeno mas visível
+  snapAlign: 'center',
+  breakpointMode: 'carousel',
+  breakpoints: {
+    300: { itemsToShow: 1, gap: 1 },
+    600: { itemsToShow: 2, gap: 1 },
+    900: { itemsToShow: 3, gap: 1 },
+  },
+}
+
 </script>
 
 <template>
@@ -302,15 +317,27 @@ function toggleLike(produto) {
     </div>
   </section>
 
+
   <section class="categorias">
     <h1 class="principal">O que você deseja no Alugaê?</h1>
-    <ul>
-      <li v-for="categoria in categorias" :key="categoria.id">
-        <button :style="{ backgroundImage: `url(${categoria.imagem})` }">
-          <h2>{{ categoria.nome }}</h2>
-        </button>
-      </li>
-    </ul>
+
+    <div class="catego">
+      <Carousel v-bind="config1">
+        <Slide v-for="categoria in categorias" :key="categoria.id">
+          <div class="cat">
+            <button :style="{ backgroundColor: categoria.cor }">
+              <span :class="categoria.icone" style="margin-right: 8px;"></span>
+              <h2>{{ categoria.nome }}</h2>
+            </button>
+          </div>
+        </Slide>
+
+        <template #addons>
+          <Navigation />
+
+        </template>
+      </Carousel>
+    </div>
   </section>
 
   <section class="carro3">
@@ -831,8 +858,16 @@ div.meio {
 }
 
 /* SECTION CATEGORIASSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS */
+.carousel {
+  --vc-nav-background: rgba(255, 255, 255, 0.7);
+  --vc-nav-border-radius: 100%;
+
+}
+
+
 section.categoria {
   display: flex;
+
   flex-direction: column;
   justify-content: center;
   align-items: center;
@@ -850,49 +885,67 @@ section.categorias h1.principal {
   font-weight: bold;
 }
 
-section.categorias ul {
+section.categorias div.cat {
   display: flex;
-  flex-wrap: wrap;
-  /* permite quebrar em várias linhas */
-  gap: 1vw;
-  /* espaço entre os itens */
-  width: 70%;
+  width: auto;          /* tira o 70% que deixava folga */
+  margin-bottom: 2vw;   /* diminui o espaço embaixo */
+  gap: 0;
   justify-content: center;
   margin: 0 auto;
   margin-bottom: 8vw;
 }
 
-section.categorias ul li button {
+section.categorias div.cat button {
+  margin: 6vw 0 0 0;
+  align-items: center;
   position: relative;
-  width: 21vw;
+  width: 390px;
+  height: 260px;
   border: none;
-  height: 25vh;
   background-size: cover;
-  /* cobre toda a div */
-  background-position: center;
-  /* centraliza a imagem */
   border-radius: 10px;
   color: white;
   display: flex;
-  align-items: flex-end;
-  /* coloca o título embaixo */
   padding: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
 }
 
-section.categorias ul li button h2 {
+section.categorias div.cat button h2 {
   position: absolute;
   bottom: 0;
   left: 0;
   width: 100%;
-  /* cobre toda a largura do card */
-  background: rgba(36, 78, 138, 0.7);
-  margin: 0;
+  font-size: 25px;
+  margin: 0 0 15px 0;
   padding: 5px 0;
   border-radius: 0 0 10px 10px;
   /* arredonda só a parte de baixo */
 }
+
+.categorias button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.categorias div.cat button span {
+  font-size: 120px;
+  margin: 0 0 10px 0;
+}
+
+section.categorias div.cat button:hover {
+  transform: scale(1.10);
+  /* aumenta levemente */
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+  /* sombra mais forte */
+  filter: brightness(1.10);
+  /* dá uma clareada */
+}
+
+
+
 
 /* TERCEIRO CARROSELLLLLLLLLLLL */
 .carro3 h1.principal {
