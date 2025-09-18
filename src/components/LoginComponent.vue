@@ -1,106 +1,71 @@
 <script setup>
-import { user as globalUser } from '@/stores/user.js'
-import { reactive, ref, onMounted } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
-import api from '@/services/api'
+import { user as globalUser } from '@/stores/user.js';
+import { reactive, ref, onMounted } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+import api from '@/services/api';
 import { gapi } from 'gapi-script';
 
-const route = useRoute()
-const router = useRouter()
+const route = useRoute();
+const router = useRouter();
 
-const loginForm = reactive({
-  email: '',
-  password: ''
-})
+const loginForm = reactive({ email: '', password: '' });
+const loading = ref(false);
+const errorMessage = ref('');
 
-const loading = ref(false)
-const errorMessage = ref('')
+// Login via query (Google)
+const access = route.query.access;
+const refresh = route.query.refresh;
+const email = route.query.email;
+const avatar = route.query.avatar;
 
-const access = route.query.access
-const refresh = route.query.refresh
+if (access && refresh && email) {
+  localStorage.setItem('access_token', access);
+  localStorage.setItem('refresh_token', refresh);
+  localStorage.setItem('globalUser_email', email);
+  localStorage.setItem('globalUser_avatar', avatar || '/images/avatar.png');
 
-if (access && refresh) {
-  localStorage.setItem('access_token', access)
-  localStorage.setItem('refresh_token', refresh)
-  router.replace('/')  // 🔥 redireciona pra home
+  globalUser.value = { email, avatar: avatar || '/images/avatar.png' };
+  router.replace('/');
 }
 
-// Inicializa o SDK do Google quando o componente monta
+// Inicializa SDK Google
 onMounted(() => {
   gapi.load('auth2', () => {
     gapi.auth2.init({
-      client_id: '307764432125-sj64153ja75622bdbssdj7o471skrlds.apps.googleusercontent.com',
-      ux_mode: 'popup', // evita redirect
-    })
-  })
-})
+      client_id: 'SEU_CLIENT_ID',
+      ux_mode: 'popup'
+    });
+  });
+});
 
 function loginWithGoogle() {
-  // redireciona para o endpoint Django que inicia o OAuth
-  window.location.href = 'http://localhost:8000/accounts/google/login/?process=login'
+  window.location.href = 'http://localhost:8000/accounts/google/login/?process=login';
 }
 
-function handleGoogleLogin() {
-  const auth2 = gapi.auth2.getAuthInstance()
-  auth2.signIn().then(googleUser => {
-    const id_token = googleUser.getAuthResponse().id_token
-
-    fetch('http://localhost:8000/auth/social/google/', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ id_token }), // 👈 id_token em vez de access_token
-    })
-      .then(async res => {
-        if (!res.ok) throw new Error('Falha no backend')
-        return await res.json()
-      })
-      .then(data => {
-        console.log('Resposta backend:', data)
-        localStorage.setItem('access_token', data.access_token)
-        router.push('/') // 🔥 redireciona para home
-      })
-      .catch(err => {
-        console.error('Erro login Google:', err)
-        errorMessage.value = 'Erro ao logar com Google'
-      })
-  })
-}
-
-async function login() {
-  loading.value = true
-  errorMessage.value = ''
+async function loginManual() {
+  loading.value = true;
+  errorMessage.value = '';
 
   try {
     const response = await api.post('token/', {
       email: loginForm.email,
-      password: loginForm.password,
-    })
+      password: loginForm.password
+    });
 
+    localStorage.setItem('access_token', response.data.access);
+    localStorage.setItem('refresh_token', response.data.refresh);
+    localStorage.setItem('globalUser_email', loginForm.email);
+    localStorage.setItem('globalUser_avatar', '/images/avatar.png');
 
-    localStorage.setItem('access_token', response.data.access)
-    localStorage.setItem('refresh_token', response.data.refresh)
+    globalUser.value = { email: loginForm.email, avatar: '/images/avatar.png' };
 
-    globalUser.value = {
-      email: loginForm.email,
-      avatar: 'caminho/para/foto.jpg'
-    }
-
-    console.log('Login OK:', response.data)
-
-    router.push('/')
+    router.push('/');
   } catch (error) {
-    console.error('Erro no login:', error.response?.data || error.message)
-
-    if (error.response?.data?.detail) {
-      errorMessage.value = error.response.data.detail
-    } else {
-      errorMessage.value = 'Erro ao conectar com o servidor.'
-    }
+    errorMessage.value = error.response?.data?.detail || 'Erro ao conectar com o servidor.';
+  } finally {
+    loading.value = false;
   }
 }
-
-console.log('Mensagem de erro que vai aparecer:', errorMessage.value)
-
 </script>
 
 <template>
@@ -114,7 +79,7 @@ console.log('Mensagem de erro que vai aparecer:', errorMessage.value)
           <input class="email" type="text" v-model="loginForm.email" placeholder="Insira o seu email...">
           <input class="senha" type="password" v-model="loginForm.password" placeholder="Insira a sua senha...">
           <p class="esq"><a class="esq" href="">Esqueceu sua senha?</a></p>
-          <button class="bum" @click="login">
+          <button class="bum" @click="loginManual">
             <p>Entrar</p>
           </button>
 
@@ -200,14 +165,12 @@ section {
   justify-content: center;
   align-items: center;
   margin-left: 8vw;
-
 }
 
 .um h1 {
   text-align: center;
   position: relative;
   bottom: 3vh;
-
   font-weight: 700;
   color: black;
   font-size: 2.2rem;
@@ -246,7 +209,6 @@ section {
 .email,
 .senha {
   color: #000000;
-  /* texto digitado em preto */
 }
 
 .senha {
