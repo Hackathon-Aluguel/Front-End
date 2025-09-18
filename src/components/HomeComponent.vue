@@ -469,7 +469,7 @@ function toggleLike(produto) {
       </li>
       <li class="passo4">
         <div class="esquerda">
-          <img src="/public/images/passos/avaliacao.png" alt="" />
+          <img src="/public/images/passos/avaliacao1.png" alt="" />
         </div>
         <div class="direita">
           <button><span class="mdi mdi-package-variant-closed"></span></button>
