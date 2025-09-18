@@ -14,7 +14,10 @@ export default defineConfig({
     watch: {
       usePolling: true,
       interval: 100
-    }
+    },
+    proxy: {
+      '/api': 'http://localhost:8000'
+    },
   },
   resolve: {
     alias: {

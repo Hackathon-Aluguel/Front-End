@@ -1,8 +1,8 @@
-<script>
-import axios from 'axios'
+<script >
+import api from '@/services/api.js' // vamos usar o axios já configurado
 
 export default {
-  name: 'Profile',
+  name: 'ProfileView',
   props: {
     username: { type: String, required: true }
   },
@@ -11,19 +11,22 @@ export default {
       profile: null,
       loading: true,
       error: null,
-      currentUser: null, // usuário logado (vamos buscar do back)
+      currentUser: null,
     }
   },
   async created() {
     try {
-      // Busca o perfil do usuário
-      const res = await axios.get(`/api/profile/${this.username}/`)
+      // Busca o perfil que está sendo visitado
+      const res = await api.get(`profile/${this.username}/`)
       this.profile = res.data
+      console.log('Perfil recebido:', this.profile)
 
-      // Busca dados do usuário logado (opcional, usado p/ esconder botão "Converse comigo")
-      const me = await axios.get(`/api/profile/me/`)
+      // Busca o usuário logado
+      const me = await api.get(`users/me/`)
       this.currentUser = me.data
+      console.log('Usuário logado:', this.currentUser)
     } catch (err) {
+      console.error('Erro ao carregar perfil:', err)
       this.error = 'Não foi possível carregar o perfil.'
     } finally {
       this.loading = false
@@ -40,11 +43,11 @@ export default {
       <div class="profile-card">
         <img
           class="avatar"
-          :src="profile.avatar"
+          :src="profile.avatar || '/default-avatar.png'"
           alt="Avatar"
         />
-        <h1>{{ profile.name }}</h1>
-        <div class="username">@{{ profile.user.username }}</div>
+        <h1>{{ profile.name || profile.username || 'Sem nome' }}</h1>
+        <div class="username">@{{ profile.user?.username || profile.username || 'desconhecido' }}</div>
 
         <div v-if="profile.info" class="info">
           {{ profile.info }}
@@ -52,9 +55,9 @@ export default {
 
         <!-- Só mostra botão se o perfil não for o do próprio user -->
         <button
-          v-if="currentUser && currentUser.username !== profile.user.username"
+          v-if="currentUser && profile.user && currentUser.username !== profile.user.username"
           class="chat-btn"
-          @click="$router.push({ name: 'Chat', params: { chatroomName: profile.user.username } })"
+          @click="$router.push({ name: 'chat-room', params: { chatroomName: profile.user.username } })"
         >
           Converse comigo!
         </button>
@@ -109,4 +112,3 @@ export default {
   background-color: #45a049;
 }
 </style>
-
