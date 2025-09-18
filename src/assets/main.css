@@ -15,14 +15,14 @@ p, h1, h2, h3, h4, h5, h6, a, span, strong, button, span{
     font-family: poppins, sans-serif;
     text-decoration: none;
 }
-
-
 html,body {
   background-color: white;
 }
 
-
-
+p, h1, h2, h3, h4, h5, h6, a, span, strong, ::placeholder, button{
+    font-family: poppins, sans-serif;
+    text-decoration: none;
+}
 span {
     font-weight: 600;
 }
