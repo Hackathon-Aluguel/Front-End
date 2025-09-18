@@ -785,8 +785,9 @@ section.categorias div.cat {
 }
 
 section.categorias div.cat button {
+  margin: 6vw 0 0 0;
+  align-items: center;
   position: relative;
-
   width: 390px;
   height: 260px;
   border: none;
