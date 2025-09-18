@@ -1,7 +1,6 @@
 <script setup>
 import 'vue3-carousel/carousel.css'
 import { Carousel, Slide, Navigation } from 'vue3-carousel'
-
 import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import HeaderComponent from "./HeaderComponent.vue";
@@ -9,19 +8,6 @@ import axios from 'axios'
 
 // Avaliações fictícias
 
-import { ref } from "vue";
-
-const imagens = [
-  "https://cdn11.bigcommerce.com/s-y0mb5v9hpd/images/stencil/1280x1280/products/732/1538/Makita_GEC01PL4_Power_Cutter_Saw__62735.1682308055.png?c=2",
-  "https://www.powertoolworld.co.uk/media/catalog/product/cache/7c271e7e94c8021213ee582f782fed0d/m/a/makduc101z_1.jpg",
-  "https://cdn11.bigcommerce.com/s-y0mb5v9hpd/images/stencil/1280x1280/products/732/1538/Makita_GEC01PL4_Power_Cutter_Saw__62735.1682308055.png?c=2",
-  "https://www.powertoolworld.co.uk/media/catalog/product/cache/7c271e7e94c8021213ee582f782fed0d/m/a/makduc101z_1.jpg",
-];
-const fotoAtual = ref(imagens[0]);
-
-const trocarFoto = (src) => {
-  fotoAtual.value = src;
-};
 
 
 const avaliacoes = [
@@ -95,30 +81,8 @@ onMounted(async () => {
   }
 })
 </script>
-
 <template>
   <HeaderComponent />
-  <section v-if="produto" class="produto">
-
-    300: {
-      itemsToShow: 2,
-      snapAlign: 'center',
-    },
-    400: {
-      itemsToShow: 3,
-      snapAlign: 'start',
-    },
-    500: {
-      itemsToShow: 4,
-      snapAlign: 'start',
-    },
-  },
-}
-
-
-</script>
-
-<template>
   <section class="produto">
 
     <div class="foto">
@@ -126,19 +90,14 @@ onMounted(async () => {
         <img :src="fotoAtual" alt="Foto principal do produto" />
       </div>
 
-      <div class="baixo" v-if="imagens.length > 1">
-        <div v-for="(img, i) in imagens" :key="i" class="pequenas" @click="trocarFoto(img)">
-
       <div class="baixo">
         <div v-for="(img, index) in imagens" :key="index" class="pequenas" @click="trocarFoto(img)">
-
           <img :src="img" alt="Miniatura do produto" />
         </div>
       </div>
     </div>
 
-
-    <div class="info">
+    <div class="info" v-if="produto">
       <h1>{{ produto.nome }}</h1>
       <p>4.5 <span class="mdi mdi-star-outline"></span><span class="avaliar">(15 avaliações)</span></p>
       <p class="preco">R${{ produto.preco }} / DIA</p>
@@ -149,14 +108,16 @@ onMounted(async () => {
       </div>
 
       <button class="favorito"><span class="mdi mdi-heart-outline"></span>Adicionar aos favoritos</button>
+
       <RouterLink to="/perfil">
-      <div class="dono" v-if="dono && Object.keys(dono).length">
-        <p class="foto">
-          <img :src="dono.imagem || fotoPadrao" alt="Foto do dono" />
-        </p>
-        <h2>Dono do produto: <span>{{ dono.username || 'Usuário' }}</span></h2>
-      </div>
+        <div class="dono" v-if="dono && Object.keys(dono).length">
+          <p class="foto">
+            <img :src="dono.imagem || fotoPadrao" alt="Foto do dono" />
+          </p>
+          <h2>Dono do produto: <span>{{ dono.username || 'Usuário' }}</span></h2>
+        </div>
       </RouterLink>
+
       <button class="mensagem">Mandar mensagem <span class="mdi mdi-send-variant-outline"></span></button>
     </div>
   </section>
@@ -165,65 +126,32 @@ onMounted(async () => {
   <section class="avaliacao" v-if="avaliacoes.length">
     <h2>Avaliações de "Nome da pessoa"</h2>
 
-    <div class="info">
-      <h1>Tenda Para Evento 3x3m</h1>
-      <p>4.5 <span class="mdi mdi-star-outline"></span><span class="avaliar">(15 avaliações)</span></p>
-
-      <p class="preco">R$ 20 / DIA</p>
-      <div class="botoes">
-        <button><span class="mdi mdi-cart-outline"></span>Adicionar ao carrinho</button>
-        <button class="alugar">Alugar</button>
-      </div>
-      <button class="favorito">
-        <span class="mdi mdi-heart-outline"></span> adicionar aos favoritos
-      </button>
-      <div class="dono">
-        <p class="foto"></p>
-        <h2>Dono do produto: <span>Renan</span></h2>
-      </div>
-      <button class="mensagem">Mandar mensagem <span class="mdi mdi-send-variant-outline"></span></button>
-    </div>
 
   </section>
+
   <section class="avaliacao">
     <h2>Avaliações de "Nome da pessoa"</h2>
-
 
     <div class="carousel__wrapper">
       <Carousel v-bind="config">
         <Slide v-for="avaliacao in avaliacoes" :key="avaliacao.id">
           <ul>
-
             <li>
-              <img
-                src="https://s2.glbimg.com/CZ7vt10tkQki58E3X37KbSrW8PA=/620x430/e.glbimg.com/og/ed/f/original/2022/04/11/dall_e_ia.png"
-                alt="Foto de Perfil" style="height: 50px; width: 50px; border-radius: 30px;">
+              <img src="https://s2.glbimg.com/CZ7vt10tkQki58E3X37KbSrW8PA=/620x430/e.glbimg.com/og/ed/f/original/2022/04/11/dall_e_ia.png"
+                   alt="Foto de Perfil" style="height: 50px; width: 50px; border-radius: 30px;">
+              <h2>{{ avaliacao.nome }}</h2>
             </li>
             <li>
-              <h2>{{ avaliacao.nome }}</h2>
-
-            <li><img
-                src="https://s2.glbimg.com/CZ7vt10tkQki58E3X37KbSrW8PA=/620x430/e.glbimg.com/og/ed/f/original/2022/04/11/dall_e_ia.png"
-                alt="Foto de Perfil" style="height: 50px; width: 50px; border-radius: 30px;"></li>
-            <li>
+              <img src="https://s2.glbimg.com/CZ7vt10tkQki58E3X37KbSrW8PA=/620x430/e.glbimg.com/og/ed/f/original/2022/04/11/dall_e_ia.png"
+                   alt="Foto de Perfil" style="height: 50px; width: 50px; border-radius: 30px;">
               <h2>Nome pessoa</h2>
-
             </li>
           </ul>
           <div class="textos_Inferiores">
             <p>Estrelinhas Obs: Ver depois!</p>
-
             <p>{{ avaliacao.texto }}</p>
           </div>
         </Slide>
-
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Asperiores facilis officia
-              iusto.
-              Quod animi voluptates rerum? Exercitationem ut dolores ipsum modi at possimus adipisci
-              officia rerum cupiditate rem, aliquam molestiae. </p>
-          </div>
-        </Slide>
-
 
         <template #addons>
           <Navigation />
@@ -231,26 +159,9 @@ onMounted(async () => {
       </Carousel>
     </div>
   </section>
-
 </template>
 
 <style scoped>
-
-   Produto
-
-section {
-  background-color: white;
-}
-
-
-
-</template>
-
-<style scoped>
-/*///////////////
-    Produto
-//////////////*/
-
 .produto {
   display: flex;
   margin: 2vw 0 0 10vw;
@@ -275,13 +186,7 @@ section {
 }
 
 
-  color: #000;
-  font-family: Poppins, sans-serif;
-  font-size: 30px;
-  font-style: normal;
-  font-weight: 600;
-  line-height: normal;
-}
+
 
 .info p {
   color: #000;
@@ -309,11 +214,6 @@ section {
   color: #1D2D51;
 }
 
-.botoes {
-
-.info p span {
-  color: #FFD700;
-}
 
 .info p.preco {
   color: #000;
@@ -330,9 +230,6 @@ div.botoes {
   display: flex;
   gap: 30px;
 }
-
-
-.botoes button {
 
 div.botoes button {
 
@@ -383,16 +280,17 @@ button.favorito {
   margin: 2vw 0 10px 0;
 
 }
+
 .dono h2 {
   font-weight: 100;
 }
+
 .dono h2 span {
   font-weight: 100;
 }
 
 button.mensagem {
   all: unset;
-=======
   font-size: 18px;
   color: #CDCDCD;
   font-family: Poppins;
@@ -482,7 +380,7 @@ button.mensagem span {}
   justify-content: center;
   align-items: center;
   font-size: 18px;
-  margin: 20px 0 0 0 ;
+  margin: 20px 0 0 0;
 }
 
 div button.mensagem span {
@@ -505,11 +403,8 @@ div button.mensagem span {
 
 .baixo {
   display: flex;
-
   gap: 10px;
   margin-top: 10px;
-
-  justify-content: space-between;
   margin-top: 10px;
   gap: 10px;
 
@@ -530,17 +425,9 @@ div button.mensagem span {
 }
 
 
-/* ======================
-   Avaliações
-====================== */
-.avaliacao {
-  margin: 0 5vw;
-  margin-top: 5vw;
-  border-bottom: 2px solid #d3d1d1;
-=======
-/*///////////////
-    AVALIAÇÃO
-//////////////*/
+
+
+
 .avaliacao {
   margin: 0 5vw;
   margin-top: 5vw;
@@ -611,7 +498,7 @@ div button.mensagem span {
   border-right: 2px solid #d3d1d1;
 }
 
-.carousel__slide:last-of-type {
+
 
 .avaliacao .carousel__slide:not(:last-of-type) {
   padding: 0 40px;
