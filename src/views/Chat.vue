@@ -69,158 +69,159 @@
           v-model="newMessage"
           placeholder="Digite sua mensagem aqui..."
         />
-        <button type="submit" class="mic-btn" @click="submit">
-          >
-        </button>
+        <button type="submit" class="mic-btn" @click="submit">></button>
       </form>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
-import axios from 'axios'
-import HeaderComponent from '@/components/HeaderComponent.vue'
+import { ref, onMounted } from "vue";
+import axios from "axios";
+import HeaderComponent from "@/components/HeaderComponent.vue";
 
-const chatroomName = ref('public-chat')
-const newMessage = ref('')
-const messages = ref([])
-const selectedFile = ref(null)
-const ws = ref(null)
+const chatroomName = ref("public-chat");
+const newMessage = ref("");
+const messages = ref([]);
+const selectedFile = ref(null);
+const ws = ref(null);
 
 const chats = ref([
-  { name: 'Erick', preview: 'Lorem ipsum dolor sit amet' },
-  { name: 'Matue', preview: 'Lorem ipsum dolor sit amet' },
-  { name: 'Renan', preview: 'Lorem ipsum dolor sit amet' },
-  { name: 'Teteu', preview: 'Lorem ipsum dolor sit amet' },
-  { name: 'Ricardo', preview: 'Lorem ipsum dolor sit amet' },
-  { name: 'Bianca Lunelli', preview: 'Lorem ipsum dolor sit amet' }
-])
-const activeChat = ref('Renan')
+  { name: "Erick", preview: "Lorem ipsum dolor sit amet" },
+  { name: "Matue", preview: "Lorem ipsum dolor sit amet" },
+  { name: "Renan", preview: "Lorem ipsum dolor sit amet" },
+  { name: "Teteu", preview: "Lorem ipsum dolor sit amet" },
+  { name: "Ricardo", preview: "Lorem ipsum dolor sit amet" },
+  { name: "Bianca Lunelli", preview: "Lorem ipsum dolor sit amet" },
+]);
+const activeChat = ref("Renan");
 
 const api = axios.create({
-  baseURL: 'http://127.0.0.1:8000/api/',
-})
+  baseURL: "http://127.0.0.1:8000/api/",
+});
 
 const getValidToken = async () => {
-  let token = localStorage.getItem('access_token')
+  let token = localStorage.getItem("access_token");
   if (!token) {
-    const refresh = localStorage.getItem('refresh_token')
-    if (!refresh) return null
+    const refresh = localStorage.getItem("refresh_token");
+    if (!refresh) return null;
     try {
-      const res = await api.post('token/refresh/', { refresh })
-      token = res.data.access
-      localStorage.setItem('access_token', token)
+      const res = await api.post("token/refresh/", { refresh });
+      token = res.data.access;
+      localStorage.setItem("access_token", token);
     } catch (err) {
-      console.error("Erro ao renovar token", err)
-      return null
+      console.error("Erro ao renovar token", err);
+      return null;
     }
   }
-  return token
-}
+  return token;
+};
 
 const loadMessages = async () => {
   try {
-    const token = await getValidToken()
-    if (!token) return
+    const token = await getValidToken();
+    if (!token) return;
     const res = await api.get(`chat/${chatroomName.value}/messages/`, {
       headers: { Authorization: `Bearer ${token}` },
-    })
-    messages.value = res.data.map(msg => ({
+    });
+    messages.value = res.data.map((msg) => ({
       username: msg.author_username,
       content: msg.body,
-      file: msg.file
-    }))
-    scrollToBottom()
+      file: msg.file,
+    }));
+    scrollToBottom();
   } catch (err) {
-    console.error("Erro ao carregar mensagens:", err)
+    console.error("Erro ao carregar mensagens:", err);
   }
-}
+};
 
 const connectWebSocket = async () => {
-  const token = await getValidToken()
-  if (!token) return
+  const token = await getValidToken();
+  if (!token) return;
 
   ws.value = new WebSocket(
     `ws://127.0.0.1:8000/ws/chatroom/${chatroomName.value}/?token=${token}`
-  )
+  );
 
-  ws.value.onopen = () => console.log('WS conectado')
+  ws.value.onopen = () => console.log("WS conectado");
 
-  ws.value.onmessage = event => {
-    const data = JSON.parse(event.data)
-    if (data.author !== 'Você') {
-    messages.value.push({
-      username: data.author,
-      content: data.message,
-      file: data.file || null
-    })
-    scrollToBottom()
-  }
-}
-
-
+  ws.value.onmessage = (event) => {
+    const data = JSON.parse(event.data);
+    if (data.author !== "voce") {
+      messages.value.push({
+        username: data.author,
+        content: data.message,
+        file: data.file || null,
+      });
+      scrollToBottom();
+    }
+  };
 
   ws.value.onclose = () => {
-    console.warn('WS fechado, reconectando em 2s...')
-    setTimeout(connectWebSocket, 2000)
-  }
+    console.warn("WS fechado, reconectando em 2s...");
+    setTimeout(connectWebSocket, 2000);
+  };
 
-  ws.value.onerror = err => console.error('Erro WS', err)
-}
+  ws.value.onerror = (err) => console.error("Erro WS", err);
+};
 
 const scrollToBottom = () => {
-  const container = document.querySelector('.messages')
-  if (container) container.scrollTop = container.scrollHeight
-}
+  const container = document.querySelector(".messages");
+  if (container) container.scrollTop = container.scrollHeight;
+};
 
 const sendMessage = async () => {
-  if (!newMessage.value && !selectedFile.value) return
+  if (!newMessage.value && !selectedFile.value) return;
 
-  let tempMessage = { username: 'Você', content: newMessage.value, file: null }
+  let tempMessage = { username: "Você", content: newMessage.value, file: null };
 
   if (selectedFile.value) {
-    const formData = new FormData()
-    formData.append('file', selectedFile.value)
+    const formData = new FormData();
+    formData.append("file", selectedFile.value);
     try {
-      const token = await getValidToken()
+      const token = await getValidToken();
       const res = await api.post(`chat/fileupload/${chatroomName.value}/`, formData, {
-        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data' }
-      })
-      tempMessage.file = res.data.file
-      selectedFile.value = null
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      tempMessage.file = res.data.file;
+      selectedFile.value = null;
     } catch (err) {
-      console.error('Erro upload:', err)
-      return
+      console.error("Erro upload:", err);
+      return;
     }
   }
 
-  messages.value.push(tempMessage)
-  newMessage.value = ''
-  scrollToBottom()
+  messages.value.push(tempMessage);
+  newMessage.value = "";
+  scrollToBottom();
 
   if (ws.value && ws.value.readyState === WebSocket.OPEN) {
-    ws.value.send(JSON.stringify({
-      author: 'Você',
-      message: tempMessage.content,
-      file: tempMessage.file
-    }))
+    ws.value.send(
+      JSON.stringify({
+        author: "Você",
+        message: tempMessage.content,
+        file: tempMessage.file,
+      })
+    );
   }
-}
+};
 
-const handleFileUpload = event => {
-  selectedFile.value = event.target.files[0]
-  event.target.value = ''
-}
+// const handleFileUpload = (event) => {
+//   selectedFile.value = event.target.files[0];
+//   event.target.value = "";
+// };
 
 const selectChat = (name) => {
-  activeChat.value = name
-}
+  activeChat.value = name;
+};
 
 onMounted(() => {
-  loadMessages()
-  connectWebSocket()
-})
+  loadMessages();
+  connectWebSocket();
+});
 </script>
 
 <style scoped>
