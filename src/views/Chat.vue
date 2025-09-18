@@ -5,7 +5,6 @@
     <div class="sidebar">
       <h2 class="sidebar-title">Suas <span>conversas</span></h2>
       <ul class="conversations-list">
-        <!-- Exemplo estático - depois pode trocar por loop de chats -->
         <li
           v-for="(chat, index) in chats"
           :key="index"
@@ -70,9 +69,8 @@
           v-model="newMessage"
           placeholder="Digite sua mensagem aqui..."
         />
-        <input type="file" @change="handleFileUpload" class="hidden" ref="fileInput" />
-        <button type="button" class="mic-btn" @click="$refs.fileInput.click()">
-          🎤
+        <button type="submit" class="mic-btn" @click="submit">
+          >
         </button>
       </form>
     </div>
@@ -82,7 +80,6 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
-import OnlineCount from '@/components/chat_components/chat_/OnlineCount.vue'
 import HeaderComponent from '@/components/HeaderComponent.vue'
 
 const chatroomName = ref('public-chat')
@@ -91,7 +88,6 @@ const messages = ref([])
 const selectedFile = ref(null)
 const ws = ref(null)
 
-// Lista de conversas fake (troque pelo backend se precisar)
 const chats = ref([
   { name: 'Erick', preview: 'Lorem ipsum dolor sit amet' },
   { name: 'Matue', preview: 'Lorem ipsum dolor sit amet' },
@@ -102,12 +98,10 @@ const chats = ref([
 ])
 const activeChat = ref('Renan')
 
-// Axios
 const api = axios.create({
   baseURL: 'http://127.0.0.1:8000/api/',
 })
 
-// Token JWT
 const getValidToken = async () => {
   let token = localStorage.getItem('access_token')
   if (!token) {
@@ -125,7 +119,6 @@ const getValidToken = async () => {
   return token
 }
 
-// Carregar mensagens
 const loadMessages = async () => {
   try {
     const token = await getValidToken()
@@ -144,7 +137,6 @@ const loadMessages = async () => {
   }
 }
 
-// WS
 const connectWebSocket = async () => {
   const token = await getValidToken()
   if (!token) return
@@ -157,6 +149,7 @@ const connectWebSocket = async () => {
 
   ws.value.onmessage = event => {
     const data = JSON.parse(event.data)
+    if (data.author !== 'Você') {
     messages.value.push({
       username: data.author,
       content: data.message,
@@ -164,6 +157,9 @@ const connectWebSocket = async () => {
     })
     scrollToBottom()
   }
+}
+
+
 
   ws.value.onclose = () => {
     console.warn('WS fechado, reconectando em 2s...')
@@ -173,13 +169,11 @@ const connectWebSocket = async () => {
   ws.value.onerror = err => console.error('Erro WS', err)
 }
 
-// Scroll
 const scrollToBottom = () => {
   const container = document.querySelector('.messages')
   if (container) container.scrollTop = container.scrollHeight
 }
 
-// Enviar
 const sendMessage = async () => {
   if (!newMessage.value && !selectedFile.value) return
 
@@ -214,13 +208,11 @@ const sendMessage = async () => {
   }
 }
 
-// Upload
 const handleFileUpload = event => {
   selectedFile.value = event.target.files[0]
   event.target.value = ''
 }
 
-// Selecionar conversa
 const selectChat = (name) => {
   activeChat.value = name
 }
