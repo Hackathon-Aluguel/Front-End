@@ -1,6 +1,6 @@
 
 <script setup>
-
+import CadastrarProduto from '@/components/CadastrarProdutoComponent.vue'
 import { user } from '@/stores/user.js'
 import api from '@/services/api'
 
@@ -17,6 +17,7 @@ if (token && !user.value) {
 
 <template>
   <RouterView />
+  <CadastrarProduto />
 </template>
 
 

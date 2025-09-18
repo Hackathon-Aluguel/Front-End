@@ -1,7 +1,8 @@
 <script setup>
-import { reactive, ref } from 'vue'
+import { reactive, ref, onMounted } from 'vue'
 import MapaScriptComponent from './MapaScriptComponent.vue'
 import FiltroMapa from './FiltroMapa.vue'
+import axios from 'axios'
 import HeaderComponent from './HeaderComponent.vue'
 import FooterComponent from './FooterComponent.vue'
 
@@ -53,6 +54,24 @@ function fecharFiltro() {
 function onFiltrar(filtrados) {
   produtosFiltrados.value = [...filtrados]
 }
+/*CODIGO DO BACKEND */
+const produtosBackend = ref([])
+
+const carregarProdutos = async () => {
+  try {
+    const response = await axios.get('http://127.0.0.1:8000/api/itens/')
+    produtosBackend.value = response.data
+    console.log('Produtos carregados:', response.data)
+  } catch (error) {
+    console.error(error.response?.data || error.message)
+    alert('Erro ao carregar produtos')
+  }
+}
+
+// Carrega produtos assim que o componente monta
+onMounted(() => {
+  carregarProdutos()
+})
 </script>
 
 <template>
@@ -61,31 +80,29 @@ function onFiltrar(filtrados) {
     <div class="produtosTodo">
       <div class="rolagem">
         <ul>
-          <li v-for="produto in produtosFiltrados" :key="produto.id" class="produto"
-              @mouseover="marcarHover(produto.id)"
-              @mouseleave="removerHover()">
-            <div class="info">
-              <img :src="produto.imagem" :alt="produto.nome" />
-              <div class="nome">
-                <h2>{{ produto.nome }}</h2>
-                <p class="categoria">{{ produto.categoria }}</p>
-                <p><span class="mdi mdi-map-marker"></span> {{ produto.cidade }} - {{ produto.estado }}</p>
-                <h2 class="preco">R${{ produto.preco }}/dia</h2>
+          <li v-for="produto in produtosBackend" :key="produto.id" class="produto" @mouseover="marcarHover(produto.id)"
+            @mouseleave="removerHover()">
+            <RouterLink :to="{ name: 'Produto', params: { id: produto.id } }" class="produto-link">
+              <div class="info">
+                <img :src="produto.midias?.[0]?.file || 'https://via.placeholder.com/150'" :alt="produto.nome" />
+                <div class="nome">
+                  <h2>{{ produto.nome }}</h2>
+                  <p class="categoria">{{ produto.categoria_nome }}</p>
+                  <p>
+                    <span class="mdi mdi-map-marker"></span>
+                    {{ produto.cidade || 'Joinville' }} - {{ produto.estado || 'SC' }}
+                  </p>
+                  <h2 class="preco">R${{ parseFloat(produto.preco).toFixed(2).replace('.', ',') }}/dia</h2>
+                </div>
               </div>
-            </div>
-            <button class="like-btn" @click="toggleLike(produto)">
-              <span :class="produto.liked ? 'mdi mdi-heart' : 'mdi mdi-heart-outline'"></span>
-              {{ produto.likes }}
-            </button>
+            </RouterLink>
           </li>
         </ul>
       </div>
     </div>
 
     <div class="mapa">
-      <MapaScriptComponent :hoverId="hoverId" 
-      :produtos="produtosFiltrados" 
-  @produtos-filtrados="onFiltrar"/>
+      <MapaScriptComponent :hoverId="hoverId" :produtos="produtosFiltrados" @produtos-filtrados="onFiltrar" />
     </div>
   </section>
   <FooterComponent />
@@ -93,24 +110,31 @@ function onFiltrar(filtrados) {
 
 
 <style scoped>
-p,h1,h2,button {
+p,
+h1,
+h2,
+button {
   font-family: poppins, sans-serif;
 }
+
 section {
   background-color: white;
   display: flex;
   margin: 0 0 9vw 0;
 }
+
 section div.produtosTodo {
   margin: 4vw 4vw 0 0vw;
   width: 36%;
-  background-color: white ;
+  background-color: white;
 }
+
 section div.produtosTodo .rolagem {
   max-height: 35vw;
   overflow-y: auto;
   border-radius: 1vw;
 }
+
 .rolagem::-webkit-scrollbar {
   width: 8px;
   /* largura da barra */
@@ -126,36 +150,44 @@ section div.produtosTodo .rolagem {
   background: #244e84;
   /* cor quando passa o mouse */
 }
+
 section ul li.produto {
-    display: flex;
-    justify-content: space-between;
-    width: 30vw;
-    height: 20vh;
-    border: 1px solid #cdcdcd;
-    border-radius: 1vw;
-    margin: 1vw;
+  display: flex;
+  justify-content: space-between;
+  width: 30vw;
+  height: 20vh;
+  border: 1px solid #cdcdcd;
+  border-radius: 1vw;
+  margin: 1vw;
 }
+
 section ul li.produto img {
-    width: 11vw;
-    height: 15vh;
-    margin: 1vw;
-    border-radius: 1vw;
-    
+  width: 9vw;
+  height: 16vh;
+  margin: 1vw;
+  border-radius: 1vw;
 }
-section ul li.produto div.info{
-display: flex;
+
+section ul li.produto div.info {
+  display: flex;
+
 }
+
 section ul li.produto div.info div.nome {
   width: 11vw;
+  margin-top: 0.4vw;
 }
+
 section ul li.produto div.info p.categoria {
   color: #BEBEBE;
 }
+
 section ul li.produto div.info p {
   color: #CDCDCD;
 }
+
 section ul li.produto div.info h2 {
-    font-size: 1.2vw;
+  font-size: 1.2vw;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -164,9 +196,11 @@ section ul li.produto div.info h2 {
   color: black;
   font-weight: bold;
 }
+
 section ul li.produto div.info h2.preco {
   color: #386CBE;
 }
+
 section ul li.produto .like-btn {
   background: #244e84;
   color: white;

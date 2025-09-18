@@ -322,7 +322,7 @@ function toggleLike(produto) {
       <div class="carousel__wrapper">
         <Carousel ref="carousel" v-bind="config" :navigationEnabled="false">
           <Slide v-for="produto in produtos" :key="produto.id">
-            <div class="produto">
+            <div class="produtoHome">
               <button class="like-btn" @click="toggleLike(produto)">
                 <span :class="produto.liked ? 'mdi mdi-heart' : 'mdi mdi-heart-outline'"></span>
                 {{ produto.likes }}
@@ -371,7 +371,7 @@ function toggleLike(produto) {
         <Carousel ref="carousel" v-bind="config" :navigationEnabled="false">
           <Slide v-for="produto in produtosBackend" :key="produto.id">
             <RouterLink :to="{ name: 'Produto', params: { id: produto.id } }" class="produto-link">
-              <div class="produto">
+              <div class="produtoHome">
                 <button class="like-btn" @click="toggleLike(produto)">
                 <span :class="produto.liked ? 'mdi mdi-heart' : 'mdi mdi-heart-outline'"></span>
                 {{ produto.likes }}
@@ -388,7 +388,7 @@ function toggleLike(produto) {
                     <span class="mdi mdi-star"></span>
                     <span class="mdi mdi-star"></span>
                   </p>
-                  <strong>R${{ produto.preco }}/Dia</strong>
+                  <strong>R${{ parseFloat(produto.preco).toFixed(2).replace('.', ',') }}/Dia</strong>
                   <p class="vezes">
                     {{ produto.descricao }}
                   </p>
@@ -951,29 +951,42 @@ div.produtosFundos {
   justify-content: center;
 }
 
-div.produto {
+div.produtoHome {
   max-width: 18vw;
   height: 45vh;
   width: 18vw;
   background: #fff;
   border-radius: 10px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  border: none;
   border: 1px solid #cecece;
   text-align: center;
   position: relative;
 }
 
 /* Imagem */
-div.produto img {
-  width: 85%;
+div.produtoHome .imagem {
+  width: 100%;
   height: 180px;
-  object-fit: cover;
   border-radius: 8px;
   margin: 3vh 0 0;
+  position: relative; /* importante para centralizar a img */
+  overflow: hidden;
 }
 
+div.produtoHome .imagem img {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%); /* centraliza */
+  height: 100%; /* ou max-height: 100%; */
+  width: auto;   /* mantém proporção */
+}
+
+
+
 /* Nome do produto */
-div.produto h1 {
+div.produtoHome h1 {
   font-size: 28px;
   font-weight: 600;
   margin: 10px 0 1vw 1vw;
@@ -981,36 +994,36 @@ div.produto h1 {
 }
 
 /* Info preço e estrelas */
-div.produto .info p,
-div.produto .info strong {
+div.produtoHome .info p,
+div.produtoHome .info strong {
   margin: 3px 0;
   padding: 0;
 }
 
-div.produto .info {
+div.produtoHome .info {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   margin: 1vw 0 0 1vw;
 }
 
-div.produto .info p span {
+div.produtoHome .info p span {
   font-size: 23px;
 }
 
-div.produto .info strong {
+div.produtoHome .info strong {
   font-size: 22px;
   margin: 0.5vw 0;
 }
 
-div.produto p.vezes {
+div.produtoHome p.vezes {
   margin: 0.3vw 0;
   font-size: 16px;
   color: #bebebe;
   font-family: poppins, sans-serif;
 }
 
-div.produto span {
+div.produtoHome span {
   color: #ffd700;
 }
 
@@ -1021,7 +1034,7 @@ div.produto span {
   --vc-nav-size: 30px;
 }
 
-div.produto .like-btn {
+div.produtoHome .like-btn {
   position: absolute;
   top: 1.3vw;
   right: 1vw;
@@ -1041,7 +1054,7 @@ div.produto .like-btn {
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
-div.produto .like-btn span {
+div.produtoHome .like-btn span {
   color: white;
 }
 

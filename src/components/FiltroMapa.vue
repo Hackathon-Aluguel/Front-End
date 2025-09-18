@@ -14,77 +14,36 @@ const props = defineProps({
 // Eventos emitidos
 const emit = defineEmits(['filtrar', 'fechar', 'produtos-filtrados'])
 
-// Estado reativo do componente
+// Estado reativo
 const produtosFiltrados = ref([...props.produtosAntes])
-const distanciaAtual = ref(15)
-const categoriasSelecionadas = ref([])
-const precoSelecionado = ref(props.precoMax / 2)
+const distanciaAtual = ref(15) // valor inicial do filtro de distância (km)
+const categoriasSelecionadas = ref([]) // categorias selecionadas
+const precoSelecionado = ref(props.precoMax / 2) // valor inicial do slider
 const tooltipPos = ref(50)
 const rangeSlider = ref(null)
 
+// Lista de categorias
 const categorias = [
-  'Eventos e festas', 'Esporte e lazer', 'Casa e utilidades', 
-  'Tecnologia e Eletrônicos', 'Construção e Reforma', 'Infantil', 
-  'Roupas e acessórios', 'Instrumentos musicais'
+  'Eventos e festas',
+  'Esporte e lazer',
+  'Casa e utilidades',
+  'Tecnologia e Eletrônicos',
+  'Construção e Reforma',
+  'Infantil',
+  'Roupas e acessórios',
+  'Instrumentos musicais'
 ]
 
-// Observa mudanças na localização para refiltrar automaticamente
-watch(() => props.minhaLocalizacao, () => {
-  filtrarProdutos()
-}, { deep: true })
-
-function calcularDistanciaKm(lat1, lng1, lat2, lng2) {
-  const R = 6371; // raio da Terra em km
-  const dLat = (lat2 - lat1) * Math.PI / 180;
-  const dLng = (lng2 - lng1) * Math.PI / 180;
-  const a =
-    Math.sin(dLat/2) * Math.sin(dLat/2) +
-    Math.cos(lat1 * Math.PI/180) * Math.cos(lat2 * Math.PI/180) *
-    Math.sin(dLng/2) * Math.sin(dLng/2);
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-  return R * c; // distância em km
-}
-function filtrarProdutos() {
-  const limiteKm = Number(distanciaAtual.value)
-
-  const filtrados = props.produtosAntes.filter(produto => {
-    // Calcula distância real em km
-    const distancia = getDistance(
-      { latitude: produto.lat, longitude: produto.lng },
-      { latitude: props.minhaLocalizacao.lat, longitude: props.minhaLocalizacao.lng }
-    ) / 1000 // metros para km
-
-    // Verifica se está dentro da distância
-    const passaDistancia = distancia <= limiteKm
-
-    // Verifica categoria: se nada selecionado, passa todos
-    const passaCategoria =
-      categoriasSelecionadas.value.length === 0
-        ? true
-        : categoriasSelecionadas.value.includes(produto.categoria)
-
-    // Verifica preço
-    const passaPreco = produto.preco <= precoSelecionado.value
-
-    // Debug
-    console.log(
-      produto.nome,
-      "distancia calculada:", distancia.toFixed(2),
-      "passa?", passaDistancia,
-      "categoria?", passaCategoria,
-      "preco?", passaPreco
-    )
-
-    return passaDistancia && passaCategoria && passaPreco
-  })
-
-  produtosFiltrados.value = filtrados
-  emit('produtos-filtrados', filtrados)
-
-  console.log("FILTRADOS COMPLETO:", filtrados.map(p => p.nome))
+// Alterna categoria clicada (ativa/desativa)
+function toggleCategoria(categoria) {
+  if (categoriasSelecionadas.value.includes(categoria)) {
+    categoriasSelecionadas.value = categoriasSelecionadas.value.filter(c => c !== categoria)
+  } else {
+    categoriasSelecionadas.value.push(categoria)
+  }
 }
 
-// Atualiza posição do tooltip do slider e gradiente
+// Atualiza cor do slider
 function atualizarTooltip() {
   const slider = rangeSlider.value
   if (!slider) return
@@ -92,22 +51,52 @@ function atualizarTooltip() {
   const val = precoSelecionado.value
   const min = Number(slider.min)
   const max = Number(slider.max)
-  tooltipPos.value = ((val - min) / (max - min)) * 100
-  slider.style.background = `linear-gradient(to right, #1D2D51 0%, #1D2D51 ${tooltipPos.value}%, #ddd ${tooltipPos.value}%, #ddd 100%)`
+  const percent = ((val - min) / (max - min)) * 100
+  tooltipPos.value = percent
+
+  slider.style.background = `linear-gradient(to right, #1D2D51 0%, #1D2D51 ${percent}%, #ddd ${percent}%, #ddd 100%)`
 }
 
-// Função de wrapper para botão "Pronto"
+// Função para aplicar todos os filtros
 function aplicarFiltro() {
-  filtrarProdutos() // atualiza produtosFiltrados local
-  console.log("Emitindo produtos-filtrados:", produtosFiltrados.value) // debug
-  emit('produtos-filtrados', produtosFiltrados.value) // envia para o pai
-  emit('fechar') // fecha o filtro
+  let filtrados = [...props.produtosAntes]
+
+  // 🔹 Filtra por categorias
+  if (categoriasSelecionadas.value.length > 0) {
+    filtrados = filtrados.filter(produto =>
+      categoriasSelecionadas.value.includes(produto.categoria_nome)
+    )
+  }
+
+  // 🔹 Filtra por preço
+  filtrados = filtrados.filter(produto =>
+    Number(produto.preco) <= Number(precoSelecionado.value)
+  )
+
+  // 🔹 Filtra por distância
+  if (props.minhaLocalizacao && props.minhaLocalizacao.lat && props.minhaLocalizacao.lng) {
+    filtrados = filtrados.filter(produto => {
+      if (!produto.lat || !produto.lng) return false
+      const distanciaProduto = getDistance(
+        { latitude: produto.lat, longitude: produto.lng },
+        { latitude: props.minhaLocalizacao.lat, longitude: props.minhaLocalizacao.lng }
+      ) / 1000
+      return distanciaProduto <= Number(distanciaAtual.value)
+    })
+  }
+
+  produtosFiltrados.value = filtrados
+  emit('produtos-filtrados', filtrados)
+  emit('fechar')
 }
-// Inicializa tooltip ao montar
+
+// Inicializa cor do slider
 onMounted(() => {
   atualizarTooltip()
 })
 </script>
+
+
 
 
 <template>
@@ -117,32 +106,42 @@ onMounted(() => {
       <h1>Filtros</h1>
     </div>
 
+    <!-- Distância -->
     <h2>Distância</h2>
     <div class="distancia">
-<button @click="distanciaAtual = 6; " :class="{ ativo: distanciaAtual === 6 }">Até 2km</button>
-<button @click="distanciaAtual = 9; " :class="{ ativo: distanciaAtual === 9 }">5km</button>
-<button @click="distanciaAtual = 14; " :class="{ ativo: distanciaAtual === 14 }">10km</button>
-<button @click="distanciaAtual = 24;" :class="{ ativo: distanciaAtual === 24 }">20km</button>
-</div>
+      <button @click="distanciaAtual = 2" :class="{ ativo: distanciaAtual === 2 }">Até 2km</button>
+      <button @click="distanciaAtual = 5" :class="{ ativo: distanciaAtual === 5 }">Até 5km</button>
+      <button @click="distanciaAtual = 10" :class="{ ativo: distanciaAtual === 10 }">Até 10km</button>
+      <button @click="distanciaAtual = 20" :class="{ ativo: distanciaAtual === 20 }">Até 20km</button>
+    </div>
 
+    <!-- Categorias -->
     <h2>Categoria</h2>
     <div class="categorias">
       <div class="checkbox-container" v-for="categoria in categorias" :key="categoria">
         <label>
-          <input type="checkbox" :value="categoria" v-model="categoriasSelecionadas" />
+          <input type="checkbox" :value="categoria" v-model="categoriasSelecionadas"/>
           {{ categoria }}
         </label>
       </div>
     </div>
 
+    <!-- Preço -->
     <h2>Preço do produto por dia</h2>
     <div class="slider-overlay">
       <div class="double-slider-box">
         <div class="price-slider">
           <h3>R${{ props.precoMin }}</h3>
-          <div class="input-wrapper slider-event-shield">
-            <input type="range" class="range-slider" :min="props.precoMin" :max="props.precoMax"
-              v-model="precoSelecionado" @input="atualizarTooltip" ref="rangeSlider" />
+          <div class="input-wrapper">
+            <input 
+              type="range" 
+              class="range-slider" 
+              :min="props.precoMin" 
+              :max="props.precoMax"
+              v-model="precoSelecionado" 
+              ref="rangeSlider" 
+              @input="atualizarTooltip"
+            />
             <div class="tooltip" :style="{ left: tooltipPos + '%' }">
               R${{ precoSelecionado }}
             </div>
@@ -150,6 +149,8 @@ onMounted(() => {
           <h3>R${{ props.precoMax }}</h3>
         </div>
       </div>
+
+      <!-- Botões -->
       <div class="botooes">
         <button class="cancelar" @click="$emit('fechar')">Cancelar</button>
         <button class="pronto" @click="aplicarFiltro">Pronto</button>
@@ -157,6 +158,7 @@ onMounted(() => {
     </div>
   </div>
 </template>
+
 
 <style scoped>
 body,
@@ -186,7 +188,7 @@ button {
     font-size: 2vw;
     display: flex;
     align-items: center;
-    margin: 1vw 3vw 0 0.7vw;
+    margin: 0vw 3vw 0 0.7vw;
 }
 
 .tituloFiltro span {
@@ -203,7 +205,7 @@ button {
 .filtroAberto h2 {
     color: black;
     font-size: 1.2vw;
-    margin: 0.7vw 1vw 0.2vw 1vw;
+    margin: 0.5vw 1vw 0.2vw 1vw;
 }
 
 .distancia {
@@ -230,15 +232,23 @@ button {
 .categorias {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.6vw;
+    gap: 0; /* espaço entre checkboxes */
     margin-left: 1vw;
-    max-width: 100%;
 }
 
 .checkbox-container {
-    flex: 1 1 10vw;
-    /* cresce e encolhe, base 10vw */
-    min-width: 8vw;
+    flex: 1 1 12vw; /* cresce e encolhe, base de 12vw */
+    min-width: 11vw; /* garante que não fique muito pequeno */
+}
+
+label {
+    display: flex;
+    align-items: center;
+    gap: 0.5vw;
+    cursor: pointer;
+    color: black;
+    font-size: 0.9vw;
+    width: 100%; /* ocupa o container do checkbox */
 }
 
 input[type="checkbox"] {
@@ -256,55 +266,31 @@ input[type="checkbox"] {
 input[type="checkbox"]:checked::after {
     content: "";
     position: absolute;
-    left: 0.5vw;
+    left: 0.4vw;
     top: 0.2vw;
-    width: 0.4vw;
-    height: 0.8vw;
+    width: 0.3vw;
+    height: 0.5vw;
     border: solid white;
     border-width: 0 0.2vw 0.2vw 0;
     transform: rotate(45deg);
 }
 
-/* opcional: muda fundo quando marcado */
+/* fundo quando marcado */
 input[type="checkbox"]:checked {
     background-color: #1D2D51;
     border: none;
 }
 
-.checkbox-container {
-    width: 10vw;
-}
-
-.categorias {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5vw;
-    margin: 0 0 0 1vw;
-}
-
-.checkbox-container {
-    width: 10vw;
-}
-
-label {
-    display: flex;
-    align-items: center;
-    gap: 0.5vw;
-    cursor: pointer;
-    color: black;
-    font-size: 1vw;
-    width: 18vw;
-}
 
 .double-slider-box {
-    margin: 4vw 2vw;
+    margin: 2vw 2vw 0 2vw;
     width: 40vw;
 }
 
 .price-slider {
-    margin: 3vh 0;
     display: flex;
     align-items: center;
+    margin: 0 0 0 3vw;
     flex-wrap: wrap;
 }
 
@@ -356,6 +342,7 @@ label {
     display: flex;
     justify-content: center;
     gap: 1.4vw;
+    margin-top: 2vw; /* ajusta para mais perto do slider */
 }
 
 .cancelar,
