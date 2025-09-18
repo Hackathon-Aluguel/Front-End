@@ -36,9 +36,10 @@
         <div
           v-for="(msg, index) in messages"
           :key="index"
-          :class="['message', msg.username === 'Você' ? 'sent' : 'received']"
+          :class="['message', isCurrentUser(msg.username) ? 'sent' : 'received']"
         >
-          <template v-if="msg.username !== 'Você'">
+          <!-- Recebidas -->
+          <template v-if="!isCurrentUser(msg.username)">
             <div class="avatar small"></div>
             <div class="message-content">
               <span class="author">{{ msg.username }}</span>
@@ -51,12 +52,15 @@
             </div>
           </template>
 
+          <!-- Enviadas -->
           <template v-else>
-            <div class="bubble">
-              <span>{{ msg.content }}</span>
-              <template v-if="msg.file">
-                <a :href="msg.file" target="_blank" class="file-link">[Arquivo]</a>
-              </template>
+            <div class="message-content">
+              <div class="bubble">
+                <span>{{ msg.content }}</span>
+                <template v-if="msg.file">
+                  <a :href="msg.file" target="_blank" class="file-link">[Arquivo]</a>
+                </template>
+              </div>
             </div>
           </template>
         </div>
@@ -69,7 +73,7 @@
           v-model="newMessage"
           placeholder="Digite sua mensagem aqui..."
         />
-        <button type="submit" class="mic-btn" @click="submit">></button>
+        <button type="submit" class="mic-btn">></button>
       </form>
     </div>
   </div>
@@ -96,9 +100,18 @@ const chats = ref([
 ]);
 const activeChat = ref("Renan");
 
+// usuário logado
+const currentUser = ref(null);
+
 const api = axios.create({
   baseURL: "http://127.0.0.1:8000/api/",
 });
+
+// Função auxiliar para comparar corretamente usuários
+const isCurrentUser = (username) => {
+  if (!username || !currentUser.value) return false;
+  return username.toLowerCase() === currentUser.value.toLowerCase();
+};
 
 const getValidToken = async () => {
   let token = localStorage.getItem("access_token");
@@ -115,6 +128,19 @@ const getValidToken = async () => {
     }
   }
   return token;
+};
+
+const loadCurrentUser = async () => {
+  try {
+    const token = await getValidToken();
+    if (!token) return;
+    const res = await api.get("users/me/", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    currentUser.value = res.data.username;
+  } catch (err) {
+    console.error("Erro ao buscar usuário logado:", err);
+  }
 };
 
 const loadMessages = async () => {
@@ -147,14 +173,12 @@ const connectWebSocket = async () => {
 
   ws.value.onmessage = (event) => {
     const data = JSON.parse(event.data);
-    if (data.author !== "voce") {
-      messages.value.push({
-        username: data.author,
-        content: data.message,
-        file: data.file || null,
-      });
-      scrollToBottom();
-    }
+    messages.value.push({
+      username: data.author,
+      content: data.message,
+      file: data.file || null,
+    });
+    scrollToBottom();
   };
 
   ws.value.onclose = () => {
@@ -173,8 +197,7 @@ const scrollToBottom = () => {
 const sendMessage = async () => {
   if (!newMessage.value && !selectedFile.value) return;
 
-  let tempMessage = { username: "Você", content: newMessage.value, file: null };
-
+  let fileUrl = null;
   if (selectedFile.value) {
     const formData = new FormData();
     formData.append("file", selectedFile.value);
@@ -186,7 +209,7 @@ const sendMessage = async () => {
           "Content-Type": "multipart/form-data",
         },
       });
-      tempMessage.file = res.data.file;
+      fileUrl = res.data.file;
       selectedFile.value = null;
     } catch (err) {
       console.error("Erro upload:", err);
@@ -194,32 +217,26 @@ const sendMessage = async () => {
     }
   }
 
-  messages.value.push(tempMessage);
-  newMessage.value = "";
-  scrollToBottom();
-
   if (ws.value && ws.value.readyState === WebSocket.OPEN) {
     ws.value.send(
       JSON.stringify({
-        author: "Você",
-        message: tempMessage.content,
-        file: tempMessage.file,
+        author: currentUser.value,
+        message: newMessage.value,
+        file: fileUrl,
       })
     );
   }
-};
 
-// const handleFileUpload = (event) => {
-//   selectedFile.value = event.target.files[0];
-//   event.target.value = "";
-// };
+  newMessage.value = "";
+};
 
 const selectChat = (name) => {
   activeChat.value = name;
 };
 
-onMounted(() => {
-  loadMessages();
+onMounted(async () => {
+  await loadCurrentUser();
+  await loadMessages();
   connectWebSocket();
 });
 </script>
@@ -354,6 +371,14 @@ onMounted(() => {
   margin-left: auto;
   justify-content: flex-end;
 }
+.message.sent .bubble {
+  background: #265df2;
+  color: #fff;
+}
+.message.received .bubble {
+  background: #eee;
+  color: #000;
+}
 .message-content {
   display: flex;
   flex-direction: column;
@@ -362,16 +387,17 @@ onMounted(() => {
 .bubble {
   padding: 10px 14px;
   border-radius: 10px;
-  background: #eee;
 }
-.sent .bubble {
-  background: #265df2;
-  color: #fff;
+.author {
+  font-size: 0.8rem;
+  color: #555;
+  margin-bottom: 2px;
 }
 .file-link {
   display: block;
   font-size: 0.8rem;
   text-decoration: underline;
+  margin-top: 5px;
 }
 
 /* Input */
