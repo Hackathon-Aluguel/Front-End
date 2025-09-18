@@ -7,7 +7,7 @@ import Signup from '@/components/SignupComponent.vue'
 
 // Módulo Chat
 import Start from '@/views/Start.vue'
-import Chat from '@/views/Chat.vue'
+
 
 // Perfil
 import Profile from '@/views/Profile.vue'
@@ -46,7 +46,7 @@ const routes = [
   {
     path: '/chat/:chatroomName',
     name: 'chat-room',
-    component: Chat,
+    component: () => import('@/views/Chat.vue'),
     props: true,
   },
 
