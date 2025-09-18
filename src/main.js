@@ -3,7 +3,10 @@ import { createPinia } from 'pinia'
 import App from './App.vue'
 import router from './router'
 import { user as globalUser } from '@/stores/user.js'
+import './assets/main.css';
+import '@mdi/font/css/materialdesignicons.css';
 
+const app = createApp(App);
 import './assets/main.css'
 import '@mdi/font/css/materialdesignicons.css'
 

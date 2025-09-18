@@ -90,7 +90,7 @@ function logout() {
   </header>
   <div class="menu">
         <a href="#">CONVERSA</a>
-        <a href="#">PERTO DE MIM</a>
+       <RouterLink to="/mapa">PERTO DE MIM</RouterLink>
         <a href="#">CATEGORIAS</a>
         <a href="#" id="ultimo">TERMOS</a>
       </div>
@@ -209,7 +209,6 @@ div.topo-header ul.login li a.conta {
   padding: 6px 12px 6px 12px;
   font-size: 1.1vw;
 }
-
 div.menu {
   display: flex;
   justify-content: center;
@@ -219,7 +218,6 @@ div.menu {
   position: relative;
   z-index: 500;
 }
-
 div.menu a {
   text-decoration: none;
   color: black;

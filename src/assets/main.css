@@ -11,10 +11,13 @@ a{
     color: black;
 }
 
+p, h1, h2, h3, h4, h5, h6, a, span, strong, button, span{
+    font-family: poppins, sans-serif;
+    text-decoration: none;
+}
 html,body {
   background-color: white;
 }
-
 
 p, h1, h2, h3, h4, h5, h6, a, span, strong, ::placeholder, button{
     font-family: poppins, sans-serif;
@@ -45,8 +48,7 @@ body {
   --vc-nav-hover-color: #ffffff;
 }
 
-.carousel__prev .carousel__icon,
-.carousel__next .carousel__icon {
+.carousel__prev .carousel__icon, .carousel__next .carousel__icon {
   width: 50px !important;
   height: 50px !important;
 

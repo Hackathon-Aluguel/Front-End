@@ -33,6 +33,9 @@
 </template>
 <style scoped>
 .pai {
+  position: relative; /* referência para os filhos absolutos */
+  height: 130px;      /* altura para que as faixas fiquem visíveis */
+  width: 100%;
   overflow: hidden;
 }
 .tom1,
