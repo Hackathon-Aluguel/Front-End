@@ -1,7 +1,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { RouterLink } from 'vue-router'
-import { user } from '@/stores/user.js'
+import { user as globalUser } from '@/stores/user.js'
 import axios from 'axios'
 
 const isLogged = computed(() => !!localStorage.getItem('access_token'))
@@ -53,12 +53,10 @@ const selecionarFotos = (event) => {
 
 // Cadastro de produto
 const cadastrarProduto = async () => {
+
   try {
     const token = localStorage.getItem('access_token')
-    if (!token) {
-      alert("Você precisa estar logado para cadastrar um produto.")
-      return
-    }
+
 
     const formData = new FormData()
     formData.append('nome', nome.value)
@@ -112,7 +110,7 @@ const cadastrarProduto = async () => {
 </script>
 
 <template>
-  <div v-if="user">
+  <div v-if="globalUser">
     <div class="fundo">
       <h1>Cadastre seu produto</h1>
       <div class="cadastro-produto">
@@ -204,8 +202,8 @@ const cadastrarProduto = async () => {
       </div>
     </div>
   </div>
-  <div v-else>
-    <p>Você precisa <RouterLink to="/login">entrar</RouterLink> para cadastrar produtos.</p>
+  <div v-else class="logue">
+    <p>Você precisa <span><RouterLink to="/login" class="link-login">entrar</RouterLink></span> para cadastrar produtos.</p>
   </div>
 </template>
 
@@ -356,5 +354,14 @@ h1 {
     color: gray;
     font-size: 14px;
   }
+}
+
+.logue{
+  text-align: center;
+  font-family: poppins, sans-serif;
+  font-size: 1.75rem;
+}
+.link-login{
+  color: #244E8A !important;
 }
 </style>

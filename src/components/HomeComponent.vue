@@ -3,10 +3,9 @@ import 'vue3-carousel/carousel.css'
 import { ref, reactive, computed, onMounted } from 'vue'
 import axios from 'axios'
 import { Carousel, Slide, Navigation } from 'vue3-carousel'
-import HeaderComponent from "./HeaderComponent.vue";
-import FooterComponent from './FooterComponent.vue';
-
-
+import HeaderComponent from './HeaderComponent.vue'
+import FooterComponent from './FooterComponent.vue'
+import CadastrarProdutoComponent from './CadastrarProdutoComponent.vue'
 
 /* BACKENDDDDDDDDDDDDDDDDDDDDDDDDDDDDD */
 const produtosBackend = ref([])
@@ -31,12 +30,17 @@ onMounted(() => {
   carregarProdutos()
 })
 
-
 /* FINALLLLLLLLLLLLLL DO BACKENDDDDD */
 const liked = ref(false)
 const likes = ref(0)
 const showNav = ref(false)
 // Carrossel de 1 imagem
+
+
+const imagesSingle1 = Array.from({ length: 10 }, (_, index) => ({
+  id: index + 1,
+  url: `https://picsum.photos/400/300?random=${index + 100}`,
+}))
 
 // Carrossel multi-imagem
 const categorias = [
@@ -49,35 +53,118 @@ const categorias = [
   { id: 7, nome: 'Infantil', cor: '#244E8A', icone: 'mdi mdi-teddy-bear' },
   { id: 8, nome: 'Instrumentos musicais', cor: '#244E8A', icone: 'mdi mdi-guitar-electric' }
 ]
-const botaoAnunciante = ref(true);
+const botaoAnunciante = ref(true)
 function trocarCliente() {
-  botaoAnunciante.value = false;
+  botaoAnunciante.value = false
 }
 function trocarAnunciante() {
-  botaoAnunciante.value = true;
+  botaoAnunciante.value = true
 }
 const avaliacoesCliente = [
-  { id: 1, nome: 'Pietro', texto: 'Não sabia sobre esse site, depois que conheci ele consegui fazer minhas coisas sem precisar gastar muito' },
-  { id: 2, nome: 'Mariana', texto: 'Consegui alugar o que eu precisava de forma rápida e prática, super recomendo!' },
-  { id: 3, nome: 'Lucas', texto: 'Achei muito útil, economizei dinheiro e ainda conheci um serviço confiável.' },
-  { id: 4, nome: 'Beatriz', texto: 'Experiência excelente, o atendimento foi ótimo e o processo bem simples.' },
-  { id: 5, nome: 'Rafael', texto: 'Já usei várias vezes e sempre deu tudo certo, muito melhor do que comprar algo que vou usar pouco.' },
-  { id: 6, nome: 'Carolina', texto: 'Adorei a ideia, é sustentável e ajuda bastante no dia a dia.' },
-  { id: 7, nome: 'Fernanda', texto: 'Me surpreendi com a qualidade do serviço, certamente vou usar de novo.' },
-  { id: 8, nome: 'João', texto: 'Muito prático, facilitou bastante minha vida em um momento que eu precisava.' },
+  {
+    id: 1,
+    nome: 'Pietro',
+    texto:
+      'Não sabia sobre esse site, depois que conheci ele consegui fazer minhas coisas sem precisar gastar muito',
+  },
+  {
+    id: 2,
+    nome: 'Mariana',
+    texto: 'Consegui alugar o que eu precisava de forma rápida e prática, super recomendo!',
+  },
+  {
+    id: 3,
+    nome: 'Lucas',
+    texto: 'Achei muito útil, economizei dinheiro e ainda conheci um serviço confiável.',
+  },
+  {
+    id: 4,
+    nome: 'Beatriz',
+    texto: 'Experiência excelente, o atendimento foi ótimo e o processo bem simples.',
+  },
+  {
+    id: 5,
+    nome: 'Rafael',
+    texto:
+      'Já usei várias vezes e sempre deu tudo certo, muito melhor do que comprar algo que vou usar pouco.',
+  },
+  {
+    id: 6,
+    nome: 'Carolina',
+    texto: 'Adorei a ideia, é sustentável e ajuda bastante no dia a dia.',
+  },
+  {
+    id: 7,
+    nome: 'Fernanda',
+    texto: 'Me surpreendi com a qualidade do serviço, certamente vou usar de novo.',
+  },
+  {
+    id: 8,
+    nome: 'João',
+    texto: 'Muito prático, facilitou bastante minha vida em um momento que eu precisava.',
+  },
 ]
 const avaliacoesAnunciante = [
-  { id: 1, nome: 'André', texto: 'Comecei a anunciar meus equipamentos e em pouco tempo já estava ganhando uma renda extra.' },
-  { id: 2, nome: 'Patrícia', texto: 'O processo de cadastro é super simples e meus itens ganharam visibilidade rapidamente.' },
-  { id: 3, nome: 'Thiago', texto: 'Consegui alugar ferramentas que ficavam paradas em casa, agora elas geram lucro.' },
-  { id: 4, nome: 'Camila', texto: 'A plataforma é segura e prática, tive ótimas experiências com os locatários.' },
-  { id: 5, nome: 'Eduardo', texto: 'Anunciar foi muito fácil, e em menos de uma semana já tive o primeiro aluguel.' },
-  { id: 6, nome: 'Sofia', texto: 'Ótima oportunidade para quem quer monetizar objetos que não usa todo dia.' },
-  { id: 7, nome: 'Mateus', texto: 'Achei incrível, consegui transformar minhas coisas guardadas em fonte de renda.' },
-  { id: 8, nome: 'Larissa', texto: 'A visibilidade que meus produtos tiveram aqui foi muito maior do que eu esperava.' },
-];
+  {
+    id: 1,
+    nome: 'André',
+    texto:
+      'Comecei a anunciar meus equipamentos e em pouco tempo já estava ganhando uma renda extra.',
+  },
+  {
+    id: 2,
+    nome: 'Patrícia',
+    texto: 'O processo de cadastro é super simples e meus itens ganharam visibilidade rapidamente.',
+  },
+  {
+    id: 3,
+    nome: 'Thiago',
+    texto: 'Consegui alugar ferramentas que ficavam paradas em casa, agora elas geram lucro.',
+  },
+  {
+    id: 4,
+    nome: 'Camila',
+    texto: 'A plataforma é segura e prática, tive ótimas experiências com os locatários.',
+  },
+  {
+    id: 5,
+    nome: 'Eduardo',
+    texto: 'Anunciar foi muito fácil, e em menos de uma semana já tive o primeiro aluguel.',
+  },
+  {
+    id: 6,
+    nome: 'Sofia',
+    texto: 'Ótima oportunidade para quem quer monetizar objetos que não usa todo dia.',
+  },
+  {
+    id: 7,
+    nome: 'Mateus',
+    texto: 'Achei incrível, consegui transformar minhas coisas guardadas em fonte de renda.',
+  },
+  {
+    id: 8,
+    nome: 'Larissa',
+    texto: 'A visibilidade que meus produtos tiveram aqui foi muito maior do que eu esperava.',
+  },
+]
+
+// Carousel configuration
+// Configuração carrossel 1 imagem
+
+const configDuo = {
+  height: 510,
+  itemsToShow: 2,
+  snapAlign: 'start',
+  breakpoints: {
+    600: { itemsToShow: 1 },
+    900: { itemsToShow: 2 },
+    1200: { itemsToShow: 2 },
+  },
+}
+
 
 /* CARROSSEL DE PRODUTOOOSSSSS */
+
 const configMulti = {
   height: 400,
   itemsToShow: 3,
@@ -92,20 +179,20 @@ const config = {
   snapAlign: 'center',
   breakpointMode: 'carousel',
   breakpoints: {
-    300: { itemsToShow: 3 },  // só reduzir se for muito estreito
+    300: { itemsToShow: 3 }, // só reduzir se for muito estreito
     500: { itemsToShow: 4 },
-    800: { itemsToShow: 5 }
+    800: { itemsToShow: 5 },
   },
 }
-const carousel = ref(null);
+const carousel = ref(null)
 
 const prevSlide = () => {
-  carousel.value.prev();
-};
+  carousel.value.prev()
+}
 
 const nextSlide = () => {
-  carousel.value.next();
-};
+  carousel.value.next()
+}
 const produtos = reactive([
   { id: 1, nome: 'barraca', preco: 30, estrelas: 3, likes: 20, liked: false },
   { id: 2, nome: 'saco de dormir', preco: 25, estrelas: 5, likes: 4, liked: false },
@@ -142,12 +229,16 @@ const config1 = {
   <section class="primeira">
     <div class="primeiro">
       <h1>
-        Alugue itens que voce deseja,<br />
+        Alugue itens que você deseja,<br />
         apenas por alguns dias
       </h1>
       <div class="container">
         <form action="" class="search-bar">
-          <input type="text" placeholder="Precisa de algo só por uns dias? Encontre aqui" name="q" />
+          <input
+            type="text"
+            placeholder="Precisa de algo só por uns dias? Encontre aqui"
+            name="q"
+          />
           <button type="submit"><span class="mdi mdi-magnify"></span></button>
         </form>
       </div>
@@ -175,7 +266,9 @@ const config1 = {
     <h1 class="principal">Junte-se a mais de 1.000.000 de pessoas que amam o Alugae</h1>
     <div class="botoes">
       <button :class="{ ativo: botaoAnunciante }" @click="trocarAnunciante()">Anunciante</button>
-      <button :class="{ ativo: !botaoAnunciante }" @click="trocarCliente(botaoCliente)">Cliente</button>
+      <button :class="{ ativo: !botaoAnunciante }" @click="trocarCliente(botaoCliente)">
+        Cliente
+      </button>
     </div>
 
     <div class="meio" v-if="botaoAnunciante == true">
@@ -227,6 +320,7 @@ const config1 = {
 
   <section class="categorias">
     <h1 class="principal">O que você deseja no Alugaê?</h1>
+
     <div class="catego">
       <Carousel v-bind="config1">
         <Slide v-for="categoria in categorias" :key="categoria.id">
@@ -246,10 +340,11 @@ const config1 = {
     </div>
   </section>
 
-
   <section class="carro3">
     <h1 class="principal">Mais do que apenas alugueis</h1>
-    <h2 class="secundaria">Desfrute de uma variedade de produtos de alegria, sempre únicos, sempre seus</h2>
+    <h2 class="secundaria">
+      Desfrute de uma variedade de produtos de alegria, sempre únicos, sempre seus
+    </h2>
     <h1 class="titulo">Mais v<span>e</span>ndidos</h1>
     <div class="produtosFundos">
       <div class="carousel__wrapper">
@@ -263,20 +358,24 @@ const config1 = {
               <div class="imagem">
                 <img
                   src="https://casadosoldador.com.br/files/products_images/9307/0053586-serra-marmore-4polegadas-4100nh3z-seco-110v-makita.jpg?1651750862"
-                  alt="">
+                  alt=""
+                />
               </div>
 
               <div class="info">
                 <h1>{{ produto.nome }}</h1>
                 <p class="estrelasProduto">
-                  <span v-for="n in 5" :key="n" :class="[
-                    'mdi mdi-star',
-                    n <= produto.estrelas ? 'estrela-cheia' : 'estrela-vazia'
-                  ]"></span>
+                  <span
+                    v-for="n in 5"
+                    :key="n"
+                    :class="[
+                      'mdi mdi-star',
+                      n <= produto.estrelas ? 'estrela-cheia' : 'estrela-vazia',
+                    ]"
+                  ></span>
                 </p>
                 <strong>R${{ produto.preco.toFixed(2).replace('.', ',') }}/Dia</strong>
-                <p class="vezes">Em até 10 vezes {{ (produto.preco / 10).toFixed(2) }} </p>
-
+                <p class="vezes">Em até 10 vezes {{ (produto.preco / 10).toFixed(2) }}</p>
               </div>
             </div>
           </Slide>
@@ -298,29 +397,32 @@ const config1 = {
     <div class="produtosFundos">
       <div class="carousel__wrapper">
         <Carousel ref="carousel" v-bind="config" :navigationEnabled="false">
-
           <Slide v-for="produto in produtosBackend" :key="produto.id">
-            <div class="produto">
-
-              <div class="imagem" v-for="foto in produto.midias" :key="foto.id">
-                <img :src="foto.file" alt="">
+            <RouterLink :to="{ name: 'Produto', params: { id: produto.id } }" class="produto-link">
+              <div class="produto">
+                <button class="like-btn" @click="toggleLike(produto)">
+                <span :class="produto.liked ? 'mdi mdi-heart' : 'mdi mdi-heart-outline'"></span>
+                {{ produto.likes }}
+              </button>
+                <div class="imagem" v-if="produto.midias.length > 0">
+                  <img :src="produto.midias[0].file" alt="" />
+                </div>
+                <h1>{{ produto.nome }}</h1>
+                <div class="info">
+                  <p class="estrelasProduto">
+                    <span class="mdi mdi-star"></span>
+                    <span class="mdi mdi-star"></span>
+                    <span class="mdi mdi-star"></span>
+                    <span class="mdi mdi-star"></span>
+                    <span class="mdi mdi-star"></span>
+                  </p>
+                  <strong>R${{ produto.preco }}/Dia</strong>
+                  <p class="vezes">
+                    {{ produto.descricao }}
+                  </p>
+                </div>
               </div>
-              <h1>{{ produto.nome }}</h1>
-              <div class="info">
-                <p class="estrelasProduto">
-                  <span class="mdi mdi-star"></span>
-                  <span class="mdi mdi-star"></span>
-                  <span class="mdi mdi-star"></span>
-                  <span class="mdi mdi-star"></span>
-                  <span class="mdi mdi-star"></span>
-                </p>
-                <strong>R${{ produto.preco }}/Dia</strong>
-                <p class="vezes">
-                  {{ produto.descricao }}
-                </p>
-              </div>
-
-            </div>
+            </RouterLink>
           </Slide>
 
           <!-- addons precisa ficar dentro do Carousel -->
@@ -334,14 +436,11 @@ const config1 = {
               </button>
             </div>
           </template>
-
         </Carousel>
       </div>
     </div>
 
-    <button class="perto">
-      Descubra produtos perto de você
-    </button>
+    <button class="perto">Descubra produtos perto de você</button>
   </section>
   <section class="passoApasso">
     <h1>Aqui está o seu guia para alugar corretamente.</h1>
@@ -350,62 +449,70 @@ const config1 = {
       <li class="passo1">
         <div class="esquerda">
           <button><span class="mdi mdi-magnify"></span></button>
-          <h1>Passo 1: encontre o item que voce deseja</h1>
-          <h2>Navegue pela nossa lista de itens disponíveis para aluguel e escolha o que mais combina com a sua
-            necessidade.</h2>
+          <h1>Passo 1: encontre o item que você deseja</h1>
+          <h2>
+            Navegue pela nossa lista de itens disponíveis para aluguel e escolha o que mais combina
+            com a sua necessidade.
+          </h2>
         </div>
         <div class="direita">
-          <img src="/public/images/passos/procurando.png" alt="">
+          <img src="/public/images/passos/procurando.png" alt="" />
         </div>
       </li>
       <li class="caminhoDireita">
-        <img src="/public/images/passos/direitaEsquerda.png" alt="">
+        <img src="/public/images/passos/direitaEsquerda.png" alt="" />
       </li>
       <li class="passo2">
         <div class="esquerda">
-          <img src="/public/images/passos/esperando.png" alt="">
+          <img src="/public/images/passos/esperando.png" alt="" />
         </div>
         <div class="direita">
           <button><span class="mdi mdi-package-variant-closed"></span></button>
           <h1>Passo 2: espere o item que você alugou chegar</h1>
-          <h2>Depois de finalizar o aluguel, basta aguardar com tranquilidade: o produto será entregue no endereço
-            informado de forma rápida e segura.</h2>
+          <h2>
+            Depois de finalizar o aluguel, basta aguardar com tranquilidade: o produto será entregue
+            no endereço informado de forma rápida e segura.
+          </h2>
         </div>
-
       </li>
       <li class="caminhoEsquerda">
-        <img src="/public/images/passos/esquerdaDireita.png" alt="">
+        <img src="/public/images/passos/esquerdaDireita.png" alt="" />
       </li>
       <li class="passo3">
         <div class="esquerda">
           <button><span class="mdi mdi-magnify"></span></button>
           <h1>Passo 3: aproveite o seu produto.</h1>
-          <h2>Seu produto chegou! Agora é hora de curtir, usar com cuidado e aproveitar ao máximo cada momento que ele
-            oferece. </h2>
+          <h2>
+            Seu produto chegou! Agora é hora de curtir, usar com cuidado e aproveitar ao máximo cada
+            momento que ele oferece.
+          </h2>
         </div>
         <div class="direita">
-          <img src="/public/images/passos/aproveitando.png" alt="">
+          <img src="/public/images/passos/aproveitando.png" alt="" />
         </div>
       </li>
       <li class="caminhoDireita">
-        <img src="/public/images/passos/direitaEsquerda.png" alt="">
+        <img src="/public/images/passos/direitaEsquerda.png" alt="" />
       </li>
       <li class="passo4">
         <div class="esquerda">
-          <img src="/public/images/passos/avaliacao.png" alt="">
+          <img src="/public/images/passos/avaliacao1.png" alt="" />
         </div>
         <div class="direita">
           <button><span class="mdi mdi-package-variant-closed"></span></button>
-          <h1>Passo 4: avalie o produto que voce alugou.</h1>
-          <h2>Depois de usar, deixe sua avaliação. Ajuda outros usuários e o proprietário a melhorar o serviço.</h2>
+          <h1>Passo 4: avalie o produto que você alugou.</h1>
+          <h2>
+            Depois de usar, deixe sua avaliação. Ajuda outros usuários e o proprietário a melhorar o
+            serviço.
+          </h2>
         </div>
       </li>
     </ul>
   </section>
   <section class="avaliacoes">
-    <h1>SUA OPNIÃO TAMBÉM IMPORTA!</h1>
+    <h1>SUA OPINIÃO TAMBÉM IMPORTA!</h1>
     <h3>
-      Confira os comentarios de quem usa nossa plataforma<br />
+      Confira os comentários de quem usa nossa plataforma<br />
       no dia a dia
     </h3>
     <ul>
@@ -460,7 +567,7 @@ const config1 = {
     </ul>
   </section>
 
-
+  <CadastrarProdutoComponent/>
   <FooterComponent />
 </template>
 
@@ -532,7 +639,6 @@ img {
   line-height: 0;
   /* evita espaçamento extra do ícone */
 }
-
 
 .carousel {
   --vc-nav-background: rgba(255, 0, 0, 0.7);
@@ -625,15 +731,16 @@ section.primeira .primeiro {
 }
 
 .tom3 .maior {
-  margin: 0.7vw 0 0 0;
+
   display: flex;
   font-size: 1.2rem;
+  align-items: center;
 }
 
 .estrelas1 {
   display: flex;
   gap: 0;
-  margin: 0.43vw 0.5vw 0 0.5vw;
+  margin: 0vw 0.5vw 0 0.5vw;
   justify-content: center;
 }
 
@@ -654,7 +761,7 @@ section.juntar {
   flex-direction: column;
   justify-content: center;
   text-align: center;
-  background: linear-gradient(to bottom, #E0E5EF 70%, white 100%);
+  background: linear-gradient(to bottom, #e0e5ef 70%, white 100%);
 }
 
 section.juntar h1.principal {
@@ -668,7 +775,7 @@ section.juntar div.botoes {
 }
 
 section.juntar div.botoes button.ativo {
-  background-color: #386CBE;
+  background-color: #386cbe;
   border: none;
   color: #1d2d51;
   width: 12vw;
@@ -676,17 +783,20 @@ section.juntar div.botoes button.ativo {
   border-radius: 6px;
   font-size: 1.2vw;
   margin: 0 0.5vw;
+  cursor: pointer;
+  transition: ease 0.5s;
 }
 
 section.juntar div.botoes button {
   background-color: white;
-  border: 1px solid #386CBE;
-  color: #386CBE;
+  border: 1px solid #386cbe;
+  color: #386cbe;
   font-size: 1.2vw;
   width: 12vw;
   height: 7vh;
   border-radius: 6px;
   margin: 0 0.5vw;
+  cursor: pointer;
 }
 
 div.meio {
@@ -705,6 +815,7 @@ div.meio {
   justify-content: center;
   border-radius: 1vw;
   border: none;
+  margin: 0 1vw 0 0;
   transition: all 0.3s ease;
   box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
 }
@@ -897,7 +1008,7 @@ div.produtosFundos {
 
 div.produto {
   max-width: 18vw;
-  height: 60vh;
+  height: 45vh;
   width: 18vw;
   background: #fff;
   border-radius: 10px;
@@ -915,7 +1026,6 @@ div.produto img {
   border-radius: 8px;
   margin: 3vh 0 0;
 }
-
 
 /* Nome do produto */
 div.produto h1 {
@@ -951,7 +1061,7 @@ div.produto .info strong {
 div.produto p.vezes {
   margin: 0.3vw 0;
   font-size: 16px;
-  color: #BEBEBE;
+  color: #bebebe;
   font-family: poppins, sans-serif;
 }
 
@@ -989,7 +1099,6 @@ div.produto .like-btn {
 div.produto .like-btn span {
   color: white;
 }
-
 
 .carro3 button.perto {
   display: flex;
@@ -1102,7 +1211,6 @@ section.passoApasso h1 {
 section.passoApasso h2 {
   font-size: 24px;
   color: #555;
-
 }
 
 section.passoApasso ul {
@@ -1188,7 +1296,6 @@ section.passoApasso ul li.passo2 .direita {
   flex-direction: column;
   justify-content: center;
 }
-
 
 /* botão */
 ul li.passo2 .direita button {
@@ -1301,7 +1408,6 @@ section.passoApasso ul li.passo4 .direita {
   justify-content: center;
 }
 
-
 /* botão */
 ul li.passo4 .direita button {
   background-color: #244e84;
@@ -1334,7 +1440,7 @@ ul li.passo4 .direita h2 {
 
 /* imagem */
 section.passoApasso ul li.passo4 .esquerda img {
-  width: 100%;
+  width: 75%;
   /* ocupa todo espaço da esquerda */
   height: auto;
   display: block;

@@ -1,19 +1,51 @@
 <script setup>
-import { user } from '@/stores/user.js'
-import { useRouter } from 'vue-router'
+import { user as globalUser } from '@/stores/user.js';
+import { onMounted } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 
-const router = useRouter()
+const router = useRouter();
+const route = useRoute();
+
+onMounted(() => {
+  const access = route.query.access;
+  const refresh = route.query.refresh;
+  const email = route.query.email;
+  const avatar = route.query.avatar;
+
+  // Login via Google
+  if (access && refresh && email) {
+    localStorage.setItem('access_token', access);
+    localStorage.setItem('refresh_token', refresh);
+    localStorage.setItem('globalUser_email', email);
+    localStorage.setItem('globalUser_avatar', avatar || '/images/avatar.png');
+
+    globalUser.value = { email, avatar: avatar || '/images/avatar.png' };
+    router.replace('/');
+    return;
+  }
+
+  // Reconstrução do usuário do localStorage (para F5)
+  const storedEmail = localStorage.getItem('globalUser_email');
+  const storedAvatar = localStorage.getItem('globalUser_avatar');
+
+  if (storedEmail) {
+    globalUser.value = {
+      email: storedEmail,
+      avatar: storedAvatar || '/images/avatar.png'
+    };
+  }
+});
 
 function logout() {
-  // Remove os tokens
-  localStorage.removeItem('access_token')
-  localStorage.removeItem('refresh_token')
+  localStorage.removeItem('access_token');
+  localStorage.removeItem('refresh_token');
+  localStorage.removeItem('globalUser_email');
+  localStorage.removeItem('globalUser_avatar');
 
-  // Reseta o estado global do usuário
-  user.value = null
+  globalUser.value = null;
 
-  // Redireciona para a home ou login
-  router.push('/')
+  // Logout Google
+  window.location.href = 'http://localhost:8000/google-logout/';
 }
 </script>
 
@@ -37,13 +69,14 @@ function logout() {
           <li><span class="mdi mdi-heart-outline"></span></li>
         </ul>
 
-        <ul class="login" v-if="user">
-          <li>
-            <img :src="user.avatar" alt="Avatar" class="avatar" />
-            <span class="usuario">{{ user.email }}</span>
-            <button><span class="mdi mdi-chevron-down"></span></button>
+        <!-- Usuário logado -->
+        <ul class="login" v-if="globalUser">
+          <li id="botoca">
+            <img :src="globalUser.avatar || '/images/avatar.png'" alt="Avatar" class="avatar" />
+            <span class="usuario">{{ globalUser.email }}</span>
+            <button id="seta"><span class="mdi mdi-chevron-down"></span></button>
           </li>
-          <li><button @click="logout">Sair</button></li>
+          <li><button id="sair" @click="logout">Sair</button></li>
         </ul>
 
         <ul class="login" v-else>
@@ -53,14 +86,13 @@ function logout() {
 
       </div>
 
-
     </nav>
   </header>
   <div class="menu">
-        <a href="#">MEUS <br>  PEDIDOS</a>
-        <a href="#">OFERTAS</a>
-        <a href="#">ATENDIMENTO</a>
-        <a href="#">TERMOS</a>
+        <a href="#">CONVERSA</a>
+       <RouterLink to="/mapa">PERTO DE MIM</RouterLink>
+        <a href="#">CATEGORIAS</a>
+        <a href="#" id="ultimo">TERMOS</a>
       </div>
 </template>
 <style scoped>
@@ -158,7 +190,11 @@ div.topo-header ul.login {
 
 div.topo-header ul.login li {
   list-style: none;
-  margin: 0 1.8vw 0 0;
+  margin: 0 1vw 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
 }
 
 div.topo-header ul.login li a.log {
@@ -173,17 +209,15 @@ div.topo-header ul.login li a.conta {
   padding: 6px 12px 6px 12px;
   font-size: 1.1vw;
 }
-
 div.menu {
   display: flex;
   justify-content: center;
   border-top: 1px solid #244E8A;
   background-color: white;
-  margin-top: 11vh; /* empurra o menu para baixo do header */
+  margin-top: 11vh;
   position: relative;
-  z-index: 500; /* abaixo do header */
+  z-index: 500;
 }
-
 div.menu a {
   text-decoration: none;
   color: black;
@@ -196,6 +230,10 @@ div.menu a {
   margin: 1.5vw 3.5vw 0 0;
   transition: all 0.3s ease;
   position: relative;
+}
+
+#ultimo {
+  margin: 1.5vw 0 0 0;
 }
 
 div.menu a:hover {
@@ -226,9 +264,7 @@ ul.logado button {
 }
 
 ul.logado .avatar {
-  width: 35px;
-  height: 35px;
-  background-color: #d3d3d3;
+  width: 80px;
   border-radius: 50%;
   margin: 0 15px 0 0;
 }
@@ -244,6 +280,43 @@ ul.logado span.usuario {
   font-style: normal;
   font-weight: 600;
   line-height: normal;
-  margin: 10px 0 0 0;
+  margin: 10px 0 0px 0;
 }
+
+.login span {
+    font-family: poppins, sans-serif;
+    font-weight: none;
+    text-decoration: none;
+}
+.login img{
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+#sair {
+  background-color: #244E8A;
+  border: none;
+  border-radius: 10px;
+  color: white;
+  font-size: 1.0rem;
+  padding: 5px 10px;
+  text-align: center;
+  cursor: pointer;
+}
+
+#seta {
+  border: none;
+  background-color: transparent;
+  color: #244E8A;
+  font-size: 1.5rem;
+  margin: 0 0px 0 0px;
+  cursor: pointer;
+}
+
+#ultimo {
+
+}
+
 </style>
