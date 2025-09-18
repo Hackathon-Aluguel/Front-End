@@ -5,6 +5,7 @@ import axios from 'axios'
 import { Carousel, Slide, Navigation } from 'vue3-carousel'
 import HeaderComponent from './HeaderComponent.vue'
 import FooterComponent from './FooterComponent.vue'
+import CadastrarProdutoComponent from './CadastrarProdutoComponent.vue'
 
 /* BACKENDDDDDDDDDDDDDDDDDDDDDDDDDDDDD */
 const produtosBackend = ref([])
@@ -213,7 +214,7 @@ function toggleLike(produto) {
   <section class="primeira">
     <div class="primeiro">
       <h1>
-        Alugue itens que voce deseja,<br />
+        Alugue itens que você deseja,<br />
         apenas por alguns dias
       </h1>
       <div class="container">
@@ -322,7 +323,7 @@ function toggleLike(produto) {
       <div class="carousel__wrapper">
         <Carousel ref="carousel" v-bind="config" :navigationEnabled="false">
           <Slide v-for="produto in produtos" :key="produto.id">
-            <div class="produtoHome">
+            <div class="produto">
               <button class="like-btn" @click="toggleLike(produto)">
                 <span :class="produto.liked ? 'mdi mdi-heart' : 'mdi mdi-heart-outline'"></span>
                 {{ produto.likes }}
@@ -371,7 +372,7 @@ function toggleLike(produto) {
         <Carousel ref="carousel" v-bind="config" :navigationEnabled="false">
           <Slide v-for="produto in produtosBackend" :key="produto.id">
             <RouterLink :to="{ name: 'Produto', params: { id: produto.id } }" class="produto-link">
-              <div class="produtoHome">
+              <div class="produto">
                 <button class="like-btn" @click="toggleLike(produto)">
                 <span :class="produto.liked ? 'mdi mdi-heart' : 'mdi mdi-heart-outline'"></span>
                 {{ produto.likes }}
@@ -388,7 +389,7 @@ function toggleLike(produto) {
                     <span class="mdi mdi-star"></span>
                     <span class="mdi mdi-star"></span>
                   </p>
-                  <strong>R${{ parseFloat(produto.preco).toFixed(2).replace('.', ',') }}/Dia</strong>
+                  <strong>R${{ produto.preco }}/Dia</strong>
                   <p class="vezes">
                     {{ produto.descricao }}
                   </p>
@@ -412,7 +413,7 @@ function toggleLike(produto) {
       </div>
     </div>
 
-    <RouterLink to="/mapa"><button class="perto">Descubra produtos perto de você</button></RouterLink>
+    <button class="perto">Descubra produtos perto de você</button>
   </section>
   <section class="passoApasso">
     <h1>Aqui está o seu guia para alugar corretamente.</h1>
@@ -421,7 +422,7 @@ function toggleLike(produto) {
       <li class="passo1">
         <div class="esquerda">
           <button><span class="mdi mdi-magnify"></span></button>
-          <h1>Passo 1: encontre o item que voce deseja</h1>
+          <h1>Passo 1: encontre o item que você deseja</h1>
           <h2>
             Navegue pela nossa lista de itens disponíveis para aluguel e escolha o que mais combina
             com a sua necessidade.
@@ -472,7 +473,7 @@ function toggleLike(produto) {
         </div>
         <div class="direita">
           <button><span class="mdi mdi-package-variant-closed"></span></button>
-          <h1>Passo 4: avalie o produto que voce alugou.</h1>
+          <h1>Passo 4: avalie o produto que você alugou.</h1>
           <h2>
             Depois de usar, deixe sua avaliação. Ajuda outros usuários e o proprietário a melhorar o
             serviço.
@@ -539,6 +540,7 @@ function toggleLike(produto) {
     </ul>
   </section>
 
+  <CadastrarProdutoComponent/>
   <FooterComponent />
 </template>
 
@@ -702,7 +704,7 @@ section.primeira .primeiro {
 }
 
 .tom3 .maior {
-  
+
   display: flex;
   font-size: 1.2rem;
   align-items: center;
@@ -951,42 +953,29 @@ div.produtosFundos {
   justify-content: center;
 }
 
-div.produtoHome {
+div.produto {
   max-width: 18vw;
   height: 45vh;
   width: 18vw;
   background: #fff;
   border-radius: 10px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-  border: none;
   border: 1px solid #cecece;
   text-align: center;
   position: relative;
 }
 
 /* Imagem */
-div.produtoHome .imagem {
-  width: 100%;
+div.produto img {
+  width: 85%;
   height: 180px;
+  object-fit: cover;
   border-radius: 8px;
   margin: 3vh 0 0;
-  position: relative; /* importante para centralizar a img */
-  overflow: hidden;
 }
-
-div.produtoHome .imagem img {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%); /* centraliza */
-  height: 100%; /* ou max-height: 100%; */
-  width: auto;   /* mantém proporção */
-}
-
-
 
 /* Nome do produto */
-div.produtoHome h1 {
+div.produto h1 {
   font-size: 28px;
   font-weight: 600;
   margin: 10px 0 1vw 1vw;
@@ -994,36 +983,36 @@ div.produtoHome h1 {
 }
 
 /* Info preço e estrelas */
-div.produtoHome .info p,
-div.produtoHome .info strong {
+div.produto .info p,
+div.produto .info strong {
   margin: 3px 0;
   padding: 0;
 }
 
-div.produtoHome .info {
+div.produto .info {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   margin: 1vw 0 0 1vw;
 }
 
-div.produtoHome .info p span {
+div.produto .info p span {
   font-size: 23px;
 }
 
-div.produtoHome .info strong {
+div.produto .info strong {
   font-size: 22px;
   margin: 0.5vw 0;
 }
 
-div.produtoHome p.vezes {
+div.produto p.vezes {
   margin: 0.3vw 0;
   font-size: 16px;
   color: #bebebe;
   font-family: poppins, sans-serif;
 }
 
-div.produtoHome span {
+div.produto span {
   color: #ffd700;
 }
 
@@ -1034,7 +1023,7 @@ div.produtoHome span {
   --vc-nav-size: 30px;
 }
 
-div.produtoHome .like-btn {
+div.produto .like-btn {
   position: absolute;
   top: 1.3vw;
   right: 1vw;
@@ -1054,7 +1043,7 @@ div.produtoHome .like-btn {
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
-div.produtoHome .like-btn span {
+div.produto .like-btn span {
   color: white;
 }
 
@@ -1398,7 +1387,7 @@ ul li.passo4 .direita h2 {
 
 /* imagem */
 section.passoApasso ul li.passo4 .esquerda img {
-  width: 100%;
+  width: 75%;
   /* ocupa todo espaço da esquerda */
   height: auto;
   display: block;
