@@ -23,23 +23,23 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
-    "@vuepic/vue-datepicker": "^11.0.2",
     "@mdi/font": "^7.4.47",
+    "@vuepic/vue-datepicker": "^11.0.2",
     "axios": "^1.11.0",
+    "gapi": "^0.0.3",
+    "gapi-script": "^1.2.0",
     "geolib": "^3.3.4",
+    "gsap": "^3.13.0",
     "leaflet": "^1.9.4",
     "nominatim-client": "^3.2.1",
     "oh-vue-icons": "^1.0.0-rc3",
     "pinia": "^3.0.3",
-    "vue": "^3.5.18",
-    "gapi": "^0.0.3",
-    "gapi-script": "^1.2.0",
-    "gsap": "^3.13.0",
     "three": "^0.180.0",
+    "vue": "^3.5.18",
     "vue-router": "^4.5.1",
     "vue-virtual-scroll-list": "^2.3.5",
-    "vue3-datepicker": "^0.4.0",
-    "vue3-carousel": "^0.16.0"
+    "vue3-carousel": "^0.16.0",
+    "vue3-datepicker": "^0.4.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.31.0",

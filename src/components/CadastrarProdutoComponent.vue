@@ -60,7 +60,7 @@ const cadastrarProduto = async () => {
 
     const formData = new FormData()
     formData.append('nome', nome.value)
-    formData.append('preco', preco.value)
+    formData.append('preco', parseFloat(preco.value).toFixed(2))
     formData.append('tempo_limite', tempo_limite.value)
     formData.append('descricao', descricao.value)
     formData.append('numero', numero.value)
