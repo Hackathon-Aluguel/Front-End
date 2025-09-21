@@ -39,7 +39,7 @@ onMounted(() => {
 });
 
 function loginWithGoogle() {
-  window.location.href = 'http://localhost:8000/accounts/google/login/?process=login';
+  window.location.href = "http://localhost:8000/accounts/google/login/?process=login&next=/auth/google/success/";
 }
 
 async function loginManual() {
