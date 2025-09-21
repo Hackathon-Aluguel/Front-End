@@ -315,8 +315,8 @@ ul.logado span.usuario {
   cursor: pointer;
 }
 
-#ultimo {
-
+li a.conta a {
+  color: white;
 }
 
 </style>
