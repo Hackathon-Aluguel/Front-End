@@ -141,7 +141,7 @@ section {
   display: flex;
   justify-content: center;
   align-items: center;
-
+  text-align: center;
 
 }
 
@@ -174,24 +174,23 @@ section {
   font-weight: 700;
   color: black;
   font-size: 2.2rem;
-
 }
 
 .sub {
   color: black;
   font-family: poppins, sans-serif;
   font-weight: 600;
-  font-size: 0.6rem;
+  font-size: 0.7rem;
   text-align: left;
-  margin-left: 1.3vw;
+
   margin-bottom: 1vh;
 }
 
 .email,
 .senha {
-  width: 87%;
+  width: 84%;
 
-  height: 5vh;
+  height: 4.5vh;
   border-radius: 0.8vw;
   border: none;
   background-color: #d9d9d9;
