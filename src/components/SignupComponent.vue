@@ -36,7 +36,7 @@ async function registerUser() {
     // Atualiza o estado global do usuário
     globalUser.value = {
       email: form.email,
-      avatar: "caminho/para/foto.jpg" // ou pegue do backend se retornar
+      avatar: '/images/avatar.png' // ou pegue do backend se retornar
     }
 
     router.push('/')
@@ -158,8 +158,7 @@ section {
 .um h1 {
   text-align: center;
   position: relative;
-  bottom: 6.2vh;
-
+  bottom: 2.5vh;
 
 
   font-weight: 700;
@@ -172,7 +171,7 @@ section {
   color: black;
   font-family: poppins, sans-serif;
   font-weight: 600;
-  font-size: 0.7rem;
+  font-size: 0.9rem;
   text-align: left;
   margin-left: 1.3vw;
   margin-bottom: 1vh;
@@ -195,7 +194,7 @@ section {
 .usu,
 .num {
   width: 13vw;
-  height: 4.8vh;
+  height: 2vh;
   border-radius: 0.8vw;
   border: none;
   background-color: #d9d9d9;
@@ -217,7 +216,7 @@ section {
 .email,
 .senha {
   width: 28vw;
-  height: 4.8vh;
+  height: 2vh;
   border-radius: 0.8vw;
   border: none;
   background-color: #d9d9d9;
@@ -352,7 +351,6 @@ section {
   width: 1.4vw;
   height: 1.4vw;
   margin-right: 0.8vw;
-
 }
 
 .nt {
@@ -400,6 +398,7 @@ section {
   right: 1vw;
   top: 10vh;
   position: absolute;
+  pointer-events: none;
 
 
 }
