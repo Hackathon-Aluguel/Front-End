@@ -11,7 +11,6 @@ import Mapa from '@/components/MapaComponent.vue'
 // Módulo Chat
 import Start from '@/views/Start.vue'
 
-
 // Perfil
 import Profile from '@/views/Profile.vue'
 import ProfileEdit from '@/views/ProfileEdit.vue'
@@ -19,6 +18,10 @@ import ProfileSettings from '@/views/ProfileSettings.vue'
 
 // Erros
 import NotFound from '@/views/NotFound.vue'
+
+//Forgot Password e Reset Password
+import ForgotPassword from '@/components/ForgotPassword.vue'
+import ResetPassword from '@/components/ResetPassword.vue'
 
 const routes = [
   // Home principal do site
@@ -38,6 +41,16 @@ const routes = [
     path: '/register',
     name: 'register',
     component: Signup,
+  },
+  {
+    path: '/forgot-password',
+    name: 'forgot-password',
+    component: ForgotPassword,
+  },
+   {
+    path: '/reset-password',
+    name: 'reset-password',
+    component: ResetPassword,
   },
   {
     path: '/produto/:id',

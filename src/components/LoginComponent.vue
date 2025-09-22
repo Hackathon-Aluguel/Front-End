@@ -4,6 +4,7 @@ import { reactive, ref, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import api from '@/services/api';
 import { gapi } from 'gapi-script';
+import ForgotPassword from './ForgotPassword.vue';
 
 const route = useRoute();
 const router = useRouter();
@@ -78,7 +79,7 @@ async function loginManual() {
           <p class="sub">Por favor, preencha os seguintes campos para logar</p>
           <input class="email" type="text" v-model="loginForm.email" placeholder="Insira o seu email...">
           <input class="senha" type="password" v-model="loginForm.password" placeholder="Insira a sua senha...">
-          <p class="esq"><a class="esq" href="">Esqueceu sua senha?</a></p>
+          <router-link class="esq" to="/forgot-password">Esqueceu sua senha?</router-link>
           <button class="bum" @click="loginManual">
             <p>Entrar</p>
           </button>
