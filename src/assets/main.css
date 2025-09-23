@@ -9,8 +9,11 @@ a{
     color: black;
 }
 
-p, h1, h2, h3, h4, h5, h6, a, span, strong, button, span{
-    font-family: poppins, sans-serif;
+p, h1, h2, h3, h4, h5, h6, a, span, strong, button, 
+label, input, textarea, select, 
+small, b, i, em, u, 
+ul, ol, li {
+    font-family: 'Poppins', sans-serif;
     text-decoration: none;
 }
 html,body {

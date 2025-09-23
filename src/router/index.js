@@ -5,9 +5,11 @@ import Home from '@/components/HomeComponent.vue'
 import Login from '@/components/LoginComponent.vue'
 import Signup from '@/components/SignupComponent.vue'
 import Produto from '@/components/ProdutoComponent.vue'
+import MeusProdutos from '@/components/ListarProdutoComponent.vue'
 import Perfil from '@/components/PerfilComponent.vue'
 import Mapa from '@/components/MapaComponent.vue'
-
+import Carrinho from '@/components/CarrinhoComponent.vue'
+import Cadastrar from '@/components/CadastrarProdutoComponent.vue'
 // Módulo Chat
 import Start from '@/views/Start.vue'
 
@@ -54,6 +56,21 @@ const routes = [
     path: '/mapa',
     name: 'mapa',
     component: Mapa,
+  },
+  {
+    path: '/carrinho',
+    name: 'carrinho',
+    component: Carrinho,
+  },
+  {
+    path: '/meusprodutos',
+    name: 'meusprodutos',
+    component: MeusProdutos,
+  },
+  {
+    path: '/cadastrar',
+    name: 'cadastrar',
+    component: Cadastrar,
   },
   // Chat
   {
