@@ -1,7 +1,7 @@
 <script setup>
 import 'vue3-carousel/carousel.css'
 import { Carousel, Slide, Navigation } from 'vue3-carousel'
-import { ref, reactive, computed } from 'vue'
+import { ref, reactive, computed, onMounted } from 'vue'
 
 
 
@@ -395,6 +395,18 @@ function voltarResumo() {
   else if (telaAnterior.value === 'suiciAuto') mostrarSuiciAutoulti.value = true
   else if (telaAnterior.value === 'infoPrivada') mostrarInfoPrivada.value = true
 }
+
+/* BACKENDDDDDDDDDDDDDDDDD */
+import { useRoute } from 'vue-router'
+import axios from 'axios'
+
+const usuario = ref({})
+const route = useRoute()
+
+onMounted(async () => {
+  const { data } = await axios.get(`http://127.0.0.1:8000/api/user-publico/${route.params.id}/`)
+  usuario.value = data
+})
 </script>
 
 <template>
@@ -403,14 +415,11 @@ function voltarResumo() {
       <div class="superior">
         <ul>
           <li>
-            <img
-              src="https://s2.glbimg.com/CZ7vt10tkQki58E3X37KbSrW8PA=/620x430/e.glbimg.com/og/ed/f/original/2022/04/11/dall_e_ia.png"
-              alt="Foto de Perfil"
-            />
+            <img :src="usuario.imagem || '/images/avatar.png'" alt="Avatar" class="avatar" />
           </li>
           <li>
-            <h1>Nome</h1>
-            <p><span class="mdi mdi-map-marker"></span> Cidade - estado</p>
+            <h1>{{ usuario.username }}</h1>
+            <p><span class="mdi mdi-map-marker"></span> Joinville - SC</p>
             <button>Mandar mensagem <span class="mdi mdi-send"></span></button>
           </li>
         </ul>
@@ -434,7 +443,7 @@ function voltarResumo() {
       </div>
     </div>
     <div class="p2">
-      <h2>Sobre "Nome da pessoa"</h2>
+      <h2>Sobre {{ usuario.username }}</h2>
       <p>
         <span class="mdi mdi-notebook"></span>Onde estudei: Escola Municipal Dr Sadalla Amin Ghanem
       </p>
@@ -818,7 +827,6 @@ function voltarResumo() {
         & img {
           height: 215px;
           width: 220px;
-          background-color: #1d2d51;
           border-radius: 120px;
           margin-right: 1vw;
         }
@@ -829,6 +837,7 @@ function voltarResumo() {
           font-weight: bold;
           font-size: 30px;
           color: black;
+          text-align: left;
         }
 
         & p {
