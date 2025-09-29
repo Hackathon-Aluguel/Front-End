@@ -3,49 +3,39 @@ import { user as globalUser } from '@/stores/user.js';
 import { onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
-const router = useRouter();
-const route = useRoute();
+const router = useRouter()
+const route = useRoute()
 
 onMounted(() => {
-  const access = route.query.access;
-  const refresh = route.query.refresh;
-  const email = route.query.email;
-  const avatar = route.query.avatar;
+  const access = route.query.access
+  const refresh = route.query.refresh
+  const email = route.query.email
+  const avatar = route.query.avatar
 
-  // Login via Google
+  // Login via Google (quando volta do backend com tokens)
   if (access && refresh && email) {
-    localStorage.setItem('access_token', access);
-    localStorage.setItem('refresh_token', refresh);
-    localStorage.setItem('globalUser_email', email);
-    localStorage.setItem('globalUser_avatar', avatar || '/images/avatar.png');
+    localStorage.setItem('access_token', access)
+    localStorage.setItem('refresh_token', refresh)
+    localStorage.setItem('globalUser_email', email)
+    localStorage.setItem('globalUser_avatar', avatar || '/images/avatar.png')
 
-    globalUser.value = { email, avatar: avatar || '/images/avatar.png' };
-    router.replace('/');
-    return;
+    globalUser.value = { email, avatar: avatar || '/images/avatar.png' }
+
+    // remove os query params da URL
+    router.replace('/')
   }
-
-  // Reconstrução do usuário do localStorage (para F5)
-  const storedEmail = localStorage.getItem('globalUser_email');
-  const storedAvatar = localStorage.getItem('globalUser_avatar');
-
-  if (storedEmail) {
-    globalUser.value = {
-      email: storedEmail,
-      avatar: storedAvatar || '/images/avatar.png'
-    };
-  }
-});
+})
 
 function logout() {
-  localStorage.removeItem('access_token');
-  localStorage.removeItem('refresh_token');
-  localStorage.removeItem('globalUser_email');
-  localStorage.removeItem('globalUser_avatar');
+  localStorage.removeItem('access_token')
+  localStorage.removeItem('refresh_token')
+  localStorage.removeItem('globalUser_email')
+  localStorage.removeItem('globalUser_avatar')
 
-  globalUser.value = null;
+  globalUser.value = null
 
-  // Logout Google
-  window.location.href = 'http://localhost:8000/google-logout/';
+  // Logout Google (se o backend precisar invalidar a sessão)
+  window.location.href = 'http://localhost:8000/google-logout/'
 }
 const aberto = ref(false)
 function abrir() {
