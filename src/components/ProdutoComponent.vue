@@ -99,7 +99,7 @@ onMounted(async () => {
 
       <button class="favorito"><span class="mdi mdi-heart-outline"></span>Adicionar aos favoritos</button>
 
-      <RouterLink to="/perfil">
+      <RouterLink :to="`/perfil/${dono.id}`">
         <div class="dono" v-if="dono && Object.keys(dono).length">
           <p class="foto">
             <img :src="dono.imagem || fotoPadrao" alt="Foto do dono" />
