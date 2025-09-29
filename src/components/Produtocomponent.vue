@@ -55,7 +55,7 @@ const fotoPadrao = 'https://via.placeholder.com/150';
 // função para carregar os dados do dono
 const carregarDono = async (usuarioId) => {
   try {
-    const { data } = await axios.get(`http://127.0.0.1:8000/api/user-publico/${usuarioId}/`)
+    const { data } = await axios.get(`http://127.0.0.1:8000/api/usuarios/${usuarioId}/`)
     dono.value = data
   } catch (err) {
     console.error('Erro ao carregar dados do dono:', err)
@@ -126,7 +126,7 @@ onMounted(async () => {
   <section class="avaliacao" v-if="avaliacoes.length">
     <h2>Avaliações de "Nome da pessoa"</h2>
 
-    
+
   </section>
 
   <section class="avaliacao">

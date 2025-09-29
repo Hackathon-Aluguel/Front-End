@@ -438,7 +438,7 @@ const config1 = {
       </div>
     </div>
 
-    <button class="perto">Descubra produtos perto de você</button>
+    <RouterLink to="/mapa"><button class="perto">Descubra produtos perto de você</button></RouterLink>
   </section>
   <section class="passoApasso">
     <h1>Aqui está o seu guia para alugar corretamente.</h1>
@@ -564,8 +564,6 @@ const config1 = {
       </li>
     </ul>
   </section>
-
-  <CadastrarProdutoComponent/>
   <FooterComponent />
 </template>
 
