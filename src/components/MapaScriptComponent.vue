@@ -69,9 +69,9 @@ function updateMarkers(lista) {
 
   lista.forEach(produto => {
     const isHovered = props.hoverId === produto.id;
-    const marker = L.marker([produto.lat, produto.lng], { 
-      icon: isHovered 
-        ? packageIcon('#ffffff', '#244e84') 
+    const marker = L.marker([produto.lat, produto.lng], {
+      icon: isHovered
+        ? packageIcon('#ffffff', '#244e84')
         : packageIcon('#244e84', '#ffffff')
     }).addTo(window.map);
 
@@ -83,7 +83,7 @@ function updateMarkers(lista) {
 
 watch(() => props.hoverId, (id) => {
   produtoMarkers.forEach(marker => {
-    if(marker.produtoId === id) {
+    if (marker.produtoId === id) {
       marker.setIcon(packageIcon('#ffffff', '#244e84'));
     } else {
       marker.setIcon(packageIcon('#244e84', '#ffffff'));
@@ -142,8 +142,8 @@ onMounted(async () => {
 
   window.map.locate({ watch: true, setView: false, maxZoom: 16, enableHighAccuracy: true });
   window.map.on("locationfound", (e) => {
-    if (firstLocation) { 
-      window.map.setView(e.latlng, 16); 
+    if (firstLocation) {
+      window.map.setView(e.latlng, 16);
       firstLocation = false;
     }
 
@@ -183,47 +183,142 @@ watch(() => props.produtos, (novaLista) => {
 
     <!-- Filtro -->
 
-<FiltroMapa
-  v-if="filtroAberto"
-  :produtosAntes="produtosBackend"
-  :precoMin="0"
-  :precoMax="150"
-  :filtroAberto="filtroAberto"
-  :minhaLocalizacao="minhaLocalizacao"
-  @produtos-filtrados="onFiltrar"
-  @fechar="fecharFiltro"
-/>
+    <FiltroMapa v-if="filtroAberto" :produtosAntes="produtosBackend" :precoMin="0" :precoMax="150"
+      :filtroAberto="filtroAberto" :minhaLocalizacao="minhaLocalizacao" @produtos-filtrados="onFiltrar"
+      @fechar="fecharFiltro" />
 
 
     <!-- Carrossel -->
-    <div v-if="showCarrossel && produtoSelecionado" class="carrossel-container" :style="{ top: cardTop + 'px', left: cardLeft + 'px' }" @click.stop>
+    <div v-if="showCarrossel && produtoSelecionado" class="carrossel-container"
+      :style="{ top: cardTop + 'px', left: cardLeft + 'px' }" @click.stop>
       <button class="botaoProduto">
+        <RouterLink :to="{ name: 'Produto', params: { id: produtoSelecionado.id } }" class="produto-link">
         <Carousel :height="200" :width="300" :itemsToShow="1" snapAlign="start">
-          <Slide v-for="i in 5" :key="i">
-            <img :src="`https://picsum.photos/400/300?random=${i+100}`" alt="image" />
-          </Slide>
+          <div class="imagem" v-if="produtoSelecionado.midias && produtoSelecionado.midias.length > 0">
+            <img :src="produtoSelecionado.midias[0].file" alt="" />
+          </div>
           <template #addons>
             <Navigation />
           </template>
         </Carousel>
         <h1>{{ produtoSelecionado.nome }}</h1>
         <h3>{{ produtoSelecionado.categoria_nome }}</h3>
+        <div class="estrelasProduto">
+          <span class="mdi mdi-star"></span>
+          <span class="mdi mdi-star"></span>
+          <span class="mdi mdi-star"></span>
+          <span class="mdi mdi-star"></span>
+          <span class="mdi mdi-star"></span>
+        </div>
         <h2>R${{ produtoSelecionado.preco }}/dia</h2>
+        </RouterLink>
       </button>
-      <button @click="showCarrossel = false" class="fecharBotao">Fechar</button>
     </div>
   </div>
 
 </template>
 
 <style>
-#map { margin: 4vw 0 0 0; height: 80vh; width: 55vw; position: relative; border-radius: 10px; }
-.btn-filtro { position: absolute; margin: 1vw 1vw; z-index: 999; background-color: #1D2D51; color: white; border: none; padding: 10px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 1rem; }
-.carrossel-container { position: absolute; width: 320px; background: white; border-radius: 12px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25); display: flex; flex-direction: column; z-index: 1000; padding: 5px; }
-.carrossel-container img { width: 100%; height: 180px; object-fit: cover; border-radius: 8px; }
-.carrossel-container h1 { font-size: 1.6rem; margin: 5px 0 2px 1vw; color: black; }
-.carrossel-container h3 { font-size: 14px; margin: 0 0 2px 1vw; color: #CDCDCD; }
-.carrossel-container h2 { font-size: 1.4rem; margin: 2px 0 2px 1vw; color: #244e84; font-weight: bold; }
-.botaoProduto { display: block; background: none; border: none; padding: 0; margin: 0; width: 100%; text-align: left; cursor: pointer; }
-.fecharBotao { background-color: #244e84; color: white; border: none; border-radius: 6px; padding: 6px 12px; margin-top: 5px; cursor: pointer; }
+#map {
+  margin: 4vw 0 0 0;
+  height: 80vh;
+  width: 55vw;
+  position: relative;
+  border-radius: 10px;
+}
+
+.btn-filtro {
+  position: absolute;
+  margin: 1vw 1vw;
+  z-index: 999;
+  background-color: #1D2D51;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+.carrossel-container {
+  position: absolute;
+  width: 320px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  display: flex;
+  flex-direction: column;
+  z-index: 1000;
+  padding: 5px;
+}
+.carrossel-container button.botaoProduto div.imagem {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  overflow: hidden;
+}
+
+.carrossel-container button.botaoProduto div.imagem img {
+    max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  border-radius: 8px;
+  margin: 3vh 0 0;
+}
+
+.carrossel-container h1 {
+  font-size: 1.6rem;
+  margin: 1vw 0 0.3vw 1vw;
+  color: black;
+  text-align: left;
+  letter-spacing: 0.08vw;
+}
+
+.carrossel-container h3 {
+  font-size: 14px;
+  margin: 0 0 0.5vw 1vw;
+  color: #CDCDCD;
+  letter-spacing: 0.08vw;
+}
+
+.carrossel-container h2 {
+  font-size: 1.4rem;
+  margin: 2px 0 0.5vw 1vw;
+  color: #244e84;
+  font-weight: bold;
+  letter-spacing: 0.08vw;
+}
+.estrelasProduto {
+  display: flex;
+  gap: 0;
+  margin: 0vw 0.5vw 0.5vw 1vw;
+}
+
+.estrelasProduto span {
+  font-size: 1.4rem;
+  color: #FFB400;
+}
+
+.botaoProduto {
+  display: block;
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+}
+
+.fecharBotao {
+  background-color: #244e84;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 12px;
+  margin-top: 5px;
+  cursor: pointer;
+}
 </style>

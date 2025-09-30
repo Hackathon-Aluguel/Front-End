@@ -5,12 +5,13 @@ import Home from '@/components/HomeComponent.vue'
 import Login from '@/components/LoginComponent.vue'
 import Signup from '@/components/SignupComponent.vue'
 import Produto from '@/components/ProdutoComponent.vue'
+import MeusProdutos from '@/components/ListarProdutoComponent.vue'
 import Perfil from '@/components/PerfilComponent.vue'
 import Mapa from '@/components/MapaComponent.vue'
-
+import Carrinho from '@/components/CarrinhoComponent.vue'
+import Cadastrar from '@/components/CadastrarProdutoComponent.vue'
 // Módulo Chat
 import Start from '@/views/Start.vue'
-
 
 // Perfil
 import Profile from '@/views/Profile.vue'
@@ -19,6 +20,10 @@ import ProfileSettings from '@/views/ProfileSettings.vue'
 
 // Erros
 import NotFound from '@/views/NotFound.vue'
+
+//Forgot Password e Reset Password
+import ForgotPassword from '@/components/ForgotPassword.vue'
+import ResetPassword from '@/components/ResetPassword.vue'
 
 const routes = [
   // Home principal do site
@@ -40,13 +45,23 @@ const routes = [
     component: Signup,
   },
   {
+    path: '/forgot-password',
+    name: 'forgot-password',
+    component: ForgotPassword,
+  },
+   {
+    path: '/reset-password',
+    name: 'reset-password',
+    component: ResetPassword,
+  },
+  {
     path: '/produto/:id',
     name: 'Produto',
     component: Produto,
     props: true
   },
   {
-    path: '/perfil',
+    path: '/perfil/:id',
     name: 'perfil',
     component: Perfil,
   },
@@ -54,6 +69,21 @@ const routes = [
     path: '/mapa',
     name: 'mapa',
     component: Mapa,
+  },
+  {
+    path: '/carrinho',
+    name: 'carrinho',
+    component: Carrinho,
+  },
+  {
+    path: '/meusprodutos',
+    name: 'meusprodutos',
+    component: MeusProdutos,
+  },
+  {
+    path: '/cadastrar',
+    name: 'cadastrar',
+    component: Cadastrar,
   },
   // Chat
   {

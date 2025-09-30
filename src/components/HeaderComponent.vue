@@ -1,51 +1,45 @@
 <script setup>
 import { user as globalUser } from '@/stores/user.js';
-import { onMounted } from 'vue';
+import { onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
-const router = useRouter();
-const route = useRoute();
+const router = useRouter()
+const route = useRoute()
 
 onMounted(() => {
-  const access = route.query.access;
-  const refresh = route.query.refresh;
-  const email = route.query.email;
-  const avatar = route.query.avatar;
+  const access = route.query.access
+  const refresh = route.query.refresh
+  const email = route.query.email
+  const avatar = route.query.avatar
 
-  // Login via Google
+  // Login via Google (quando volta do backend com tokens)
   if (access && refresh && email) {
-    localStorage.setItem('access_token', access);
-    localStorage.setItem('refresh_token', refresh);
-    localStorage.setItem('globalUser_email', email);
-    localStorage.setItem('globalUser_avatar', avatar || '/images/avatar.png');
+    localStorage.setItem('access_token', access)
+    localStorage.setItem('refresh_token', refresh)
+    localStorage.setItem('globalUser_email', email)
+    localStorage.setItem('globalUser_avatar', avatar || '/images/avatar.png')
 
-    globalUser.value = { email, avatar: avatar || '/images/avatar.png' };
-    router.replace('/');
-    return;
+    globalUser.value = { email, avatar: avatar || '/images/avatar.png' }
+
+    // remove os query params da URL
+    router.replace('/')
   }
-
-  // Reconstrução do usuário do localStorage (para F5)
-  const storedEmail = localStorage.getItem('globalUser_email');
-  const storedAvatar = localStorage.getItem('globalUser_avatar');
-
-  if (storedEmail) {
-    globalUser.value = {
-      email: storedEmail,
-      avatar: storedAvatar || '/images/avatar.png'
-    };
-  }
-});
+})
 
 function logout() {
-  localStorage.removeItem('access_token');
-  localStorage.removeItem('refresh_token');
-  localStorage.removeItem('globalUser_email');
-  localStorage.removeItem('globalUser_avatar');
+  localStorage.removeItem('access_token')
+  localStorage.removeItem('refresh_token')
+  localStorage.removeItem('globalUser_email')
+  localStorage.removeItem('globalUser_avatar')
 
-  globalUser.value = null;
+  globalUser.value = null
 
-  // Logout Google
-  window.location.href = 'http://localhost:8000/google-logout/';
+  // Logout Google (se o backend precisar invalidar a sessão)
+  window.location.href = 'http://localhost:8000/google-logout/'
+}
+const aberto = ref(false)
+function abrir() {
+  aberto.value = !aberto.value
 }
 </script>
 
@@ -72,35 +66,68 @@ function logout() {
         <!-- Usuário logado -->
         <ul class="login" v-if="globalUser">
           <li id="botoca">
-            <img :src="globalUser.avatar || '/images/avatar.png'" alt="Avatar" class="avatar" />
-            <span class="usuario">{{ globalUser.email }}</span>
-            <button id="seta"><span class="mdi mdi-chevron-down"></span></button>
+            <div class="cima">
+              <img :src="globalUser.avatar || '/images/avatar.png'" alt="Avatar" class="avatar" />
+              <span class="usuario">{{ globalUser.email }}</span>
+              <button id="seta" @click="abrir()"><span class="mdi mdi-chevron-down"></span></button>
+            </div>
+
+            <div v-if="aberto" class="baixo">
+              <ul>
+                <RouterLink to="/meusprodutos">
+                <li>
+                  <a href="#">Meus produtos</a>
+                </li>
+                </RouterLink>
+                <RouterLink to="/carrinho">
+                  <li>
+                  <a href="#">Carrinho</a>
+                </li>
+                </RouterLink>
+                <RouterLink to="/cadastrar">
+                <li>
+                  <a href="#">Cadastrar produto</a>
+                </li>
+                </RouterLink>
+                <li>
+                  <a href="#">Conversas</a>
+                </li>
+                <li class="config">
+                  <span class="mdi mdi-cog-outline"></span>
+                  <a href="#">Configurações</a>
+                </li>
+              </ul>
+            </div>
           </li>
-          <li><button id="sair" @click="logout">Sair</button></li>
-        </ul>
 
+          <li class="sair"><button id="sair" @click="logout">Sair</button></li>
+        </ul>
         <ul class="login" v-else>
-          <li><a class="log"><RouterLink to="/login">Log in</RouterLink></a></li>
-          <li><a class="conta"><RouterLink to="/register">Criar Conta</RouterLink></a></li>
+          <li><a class="log">
+              <RouterLink to="/login">Log in</RouterLink>
+            </a></li>
+          <li><a class="conta">
+              <RouterLink to="/register">Criar Conta</RouterLink>
+            </a></li>
         </ul>
-
       </div>
 
     </nav>
   </header>
   <div class="menu">
-        <a href="#">CONVERSA</a>
-       <RouterLink to="/mapa">PERTO DE MIM</RouterLink>
-        <a href="#">CATEGORIAS</a>
-        <a href="#" id="ultimo">TERMOS</a>
-      </div>
+    <a href="#">CONVERSA</a>
+    <RouterLink to="/mapa">PERTO DE MIM</RouterLink>
+    <a href="#">CATEGORIAS</a>
+    <a href="#" id="ultimo">TERMOS</a>
+  </div>
 </template>
 <style scoped>
-
 header nav div.topo-header {
   position: fixed;
-  top: 0; /* garante que fique colado no topo */
-  left: 0; /* garante alinhamento à esquerda */
+  top: 0;
+  /* garante que fique colado no topo */
+  left: 0;
+  /* garante alinhamento à esquerda */
   z-index: 1000;
   width: 100%;
   background-color: white;
@@ -109,9 +136,12 @@ header nav div.topo-header {
   justify-content: center;
   align-items: center;
   padding: 14px 0 0 0;
-  margin: 0; /* remove margens que podem empurrar */
-   box-shadow: 0 4px 6px -2px rgba(0, 0, 0, 0.1); /* sombra só embaixo */
+  margin: 0;
+  /* remove margens que podem empurrar */
+  box-shadow: 0 4px 6px -2px rgba(0, 0, 0, 0.1);
+  /* sombra só embaixo */
 }
+
 header div.topo-header h1 {
   color: #000;
   font-family: Poppins, sans-serif;
@@ -134,6 +164,7 @@ div.topo-header span.alugae {
   border-radius: 100px;
   margin: 15px 0px 10px 13px;
 }
+
 .search-bar {
   width: 100%;
   display: flex;
@@ -142,7 +173,7 @@ div.topo-header span.alugae {
 }
 
 .search-bar input {
-   background-color: transparent;
+  background-color: transparent;
   flex: 1;
   border: 0;
   outline: none;
@@ -152,7 +183,8 @@ div.topo-header span.alugae {
 }
 
 .search-bar button {
-  background-color:  ; /* azul */
+  background-color: ;
+  /* azul */
   border: none;
   width: 32px;
   height: 32px;
@@ -161,7 +193,7 @@ div.topo-header span.alugae {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-    }
+}
 
 .search-bar button span {
   color: white;
@@ -188,7 +220,22 @@ div.topo-header ul.login {
   display: flex;
 }
 
+
 div.topo-header ul.login li {
+  list-style: none;
+  margin: 0 1vw 0 0;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+div.topo-header ul.login li#botoca {
+  position: relative;
+}
+div.topo-header ul.login li.sair {
+  display: flex;
+  align-items: center ;
+}
+div.topo-header ul.login li div.cima {
   list-style: none;
   margin: 0 1vw 0 0;
   display: flex;
@@ -196,10 +243,61 @@ div.topo-header ul.login li {
   justify-content: center;
   gap: 10px;
 }
+div.topo-header ul.login li div.baixo {
+  width: 100%;
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: #fff;
+  box-shadow: 0 8px 24px rgba(149, 157, 165, 0.2);
+  border-radius: 8px;
+  z-index: 9999;
+}
 
-div.topo-header ul.login li a.log {
-  color: #244E8A;
-  font-size: 1.1vw;
+/* reset da lista */
+div.topo-header ul.login li div.baixo ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  width: 90%;
+  height: 100%;
+}
+
+/* cada item */
+div.topo-header ul.login li div.baixo li {
+  margin: 0;
+  padding: 10px 16px;
+  width: 100%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: background 0.2s ease;
+}
+
+div.topo-header ul.login li div.baixo li:hover {
+  background-color: #f5f5f5;
+}
+
+/* links */
+div.topo-header ul.login li div.baixo li a {
+  text-decoration: none;
+  width: 100%;
+  color: #333;
+  font-size: 16px;
+  flex: 1;
+}
+
+/* ícones */
+div.topo-header ul.login li div.baixo li .mdi {
+  font-size: 18px;
+  color: #666;
+}
+
+/* separador */
+div.topo-header ul.login li div.baixo li.config {
+  border-top: 1px solid #eee;
+  padding-top: 10px;
 }
 
 div.topo-header ul.login li a.conta {
@@ -209,6 +307,7 @@ div.topo-header ul.login li a.conta {
   padding: 6px 12px 6px 12px;
   font-size: 1.1vw;
 }
+
 div.menu {
   display: flex;
   justify-content: center;
@@ -218,6 +317,7 @@ div.menu {
   position: relative;
   z-index: 500;
 }
+
 div.menu a {
   text-decoration: none;
   color: black;
@@ -257,6 +357,7 @@ div.menu a:hover::before {
 ul.logado {
   display: flex;
 }
+
 ul.logado button {
   all: unset;
   cursor: pointer;
@@ -284,11 +385,12 @@ ul.logado span.usuario {
 }
 
 .login span {
-    font-family: poppins, sans-serif;
-    font-weight: none;
-    text-decoration: none;
+  font-family: poppins, sans-serif;
+  font-weight: none;
+  text-decoration: none;
 }
-.login img{
+
+.login img {
   width: 60px;
   height: 60px;
   object-fit: cover;
@@ -318,5 +420,4 @@ ul.logado span.usuario {
 li a.conta a {
   color: white;
 }
-
 </style>

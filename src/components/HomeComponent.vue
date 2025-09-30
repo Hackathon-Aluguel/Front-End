@@ -18,10 +18,8 @@ const carregarProdutos = async () => {
   try {
     const response = await axios.get('http://127.0.0.1:8000/api/itens/')
     produtosBackend.value = response.data
-    console.log('Produtos carregados:', response.data)
   } catch (error) {
     console.error(error.response?.data || error.message)
-    alert('Erro ao carregar produtos')
   }
 }
 
@@ -440,7 +438,7 @@ const config1 = {
       </div>
     </div>
 
-    <button class="perto">Descubra produtos perto de você</button>
+    <RouterLink to="/mapa"><button class="perto">Descubra produtos perto de você</button></RouterLink>
   </section>
   <section class="passoApasso">
     <h1>Aqui está o seu guia para alugar corretamente.</h1>
@@ -566,8 +564,6 @@ const config1 = {
       </li>
     </ul>
   </section>
-
-  <CadastrarProdutoComponent/>
   <FooterComponent />
 </template>
 

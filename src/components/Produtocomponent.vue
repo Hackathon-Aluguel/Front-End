@@ -55,7 +55,7 @@ const fotoPadrao = 'https://via.placeholder.com/150';
 // função para carregar os dados do dono
 const carregarDono = async (usuarioId) => {
   try {
-    const { data } = await axios.get(`http://127.0.0.1:8000/api/user-publico/${usuarioId}/`)
+    const { data } = await axios.get(`http://127.0.0.1:8000/api/usuarios/${usuarioId}/`)
     dono.value = data
   } catch (err) {
     console.error('Erro ao carregar dados do dono:', err)
@@ -109,7 +109,7 @@ onMounted(async () => {
 
       <button class="favorito"><span class="mdi mdi-heart-outline"></span>Adicionar aos favoritos</button>
 
-      <RouterLink to="/perfil">
+      <RouterLink :to="`/perfil/${dono.id}`">
         <div class="dono" v-if="dono && Object.keys(dono).length">
           <p class="foto">
             <img :src="dono.imagem || fotoPadrao" alt="Foto do dono" />
@@ -126,7 +126,7 @@ onMounted(async () => {
   <section class="avaliacao" v-if="avaliacoes.length">
     <h2>Avaliações de "Nome da pessoa"</h2>
 
-    
+
   </section>
 
   <section class="avaliacao">
