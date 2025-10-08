@@ -192,26 +192,46 @@ const nextSlide = () => {
   carousel.value.next()
 }
 const produtos = reactive([
-  { id: 1, nome: 'barraca', preco: 30, estrelas: 3, likes: 20, liked: false,
-    imagem: 'https://panoramahomecenter.vtexassets.com/arquivos/ids/5459704/Barraca_Iglu_4_Pessoas__MOR_74820901.png?v=638602752623900000' /* foto de barraca */ },
-  { id: 2, nome: 'saco de dormir', preco: 25, estrelas: 5, likes: 4, liked: false,
-    imagem: 'https://http2.mlstatic.com/D_NQ_NP_624878-CBT75865054864_042024-O.webp'},
-  { id: 3, nome: 'lanterna', preco: 10, estrelas: 4, likes: 14, liked: false,
-    imagem: 'https://images.tcdn.com.br/img/img_prod/685751/lanterna_solar_recarregavel_bivolt_sq_3806_led_5w_31577_1_218932b95bddb353140c0943dca87f85_20250918024156.jpg' },
-  { id: 4, nome: 'fogareiro', preco: 40, estrelas: 3, likes: 12, liked: false,
-    imagem: 'https://images.tcdn.com.br/img/img_prod/612392/fogao_fogareiro_p_churrasqueira_preto_inox_fog40_299_1_20180127195638.jpg' },
-  { id: 5, nome: 'mochila', preco: 50, estrelas: 5, likes: 10, liked: false,
-    imagem: 'https://fila.vteximg.com.br/arquivos/ids/907374/F23L00166_1004.jpg?v=638337461096130000' },
-  { id: 6, nome: 'bota de trilha', preco: 80, estrelas: 4, likes: 18, liked: false,
-    imagem: 'https://cdn.awsli.com.br/600x1000/2113/2113598/produto/215175405/1-z5lkvucxvj.png' },
-  { id: 7, nome: 'cantil', preco: 15, estrelas: 3, likes: 6, liked: false,
-    imagem: 'https://www.lojaapolo.com.br/6262-large_default/cantil-inox-de-bolso-%C3%A0-prova-de-vazamentos-230ml.jpg' },
-  { id: 8, nome: 'corda de escalada', preco: 60, estrelas: 5, likes: 9, liked: false,
-    imagem: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT8W79gc5lYTqm-WxJhX60nf8c3s1mbbepbOQ&s' },
-  { id: 9, nome: 'jaqueta corta-vento', preco: 120, estrelas: 4, likes: 15, liked: false,
-    imagem: 'https://cdn.sistemawbuy.com.br/arquivos/f0853c897b6ec0b9ff1e212e78ca35d6/produtos/664df06b12e19/jaqueta-corta-vento-preta-basica-4mud-casual-1-frente-664df06b856ca.jpg' },
-  { id: 10, nome: 'kit primeiros socorros', preco: 35, estrelas: 5, likes: 25, liked: false,
-    imagem: 'https://dvuc6j6nz56aj.cloudfront.net/Custom/Content/Products/13/23/13239_maleta-p-medicamento-28x18x18cm-5000p-plasnorthon_z1_637884018754629743.webp' },
+  {
+    id: 1, nome: 'Barraca', preco: 30, estrelas: 3, likes: 20, liked: false,
+    imagem: 'https://panoramahomecenter.vtexassets.com/arquivos/ids/5459704/Barraca_Iglu_4_Pessoas__MOR_74820901.png?v=638602752623900000' /* foto de barraca */
+  },
+  {
+    id: 2, nome: 'Saco de dormir', preco: 25, estrelas: 5, likes: 4, liked: false,
+    imagem: 'https://http2.mlstatic.com/D_NQ_NP_624878-CBT75865054864_042024-O.webp'
+  },
+  {
+    id: 3, nome: 'Lanterna', preco: 10, estrelas: 4, likes: 14, liked: false,
+    imagem: 'https://images.tcdn.com.br/img/img_prod/685751/lanterna_solar_recarregavel_bivolt_sq_3806_led_5w_31577_1_218932b95bddb353140c0943dca87f85_20250918024156.jpg'
+  },
+  {
+    id: 4, nome: 'Fogareiro', preco: 40, estrelas: 3, likes: 12, liked: false,
+    imagem: 'https://images.tcdn.com.br/img/img_prod/612392/fogao_fogareiro_p_churrasqueira_preto_inox_fog40_299_1_20180127195638.jpg'
+  },
+  {
+    id: 5, nome: 'Mochila', preco: 50, estrelas: 5, likes: 10, liked: false,
+    imagem: 'https://fila.vteximg.com.br/arquivos/ids/907374/F23L00166_1004.jpg?v=638337461096130000'
+  },
+  {
+    id: 6, nome: 'Bota de trilha', preco: 80, estrelas: 4, likes: 18, liked: false,
+    imagem: 'https://cdn.awsli.com.br/600x1000/2113/2113598/produto/215175405/1-z5lkvucxvj.png'
+  },
+  {
+    id: 7, nome: 'Cantil', preco: 15, estrelas: 3, likes: 6, liked: false,
+    imagem: 'https://www.lojaapolo.com.br/6262-large_default/cantil-inox-de-bolso-%C3%A0-prova-de-vazamentos-230ml.jpg'
+  },
+  {
+    id: 8, nome: 'Corda de escalada', preco: 60, estrelas: 5, likes: 9, liked: false,
+    imagem: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT8W79gc5lYTqm-WxJhX60nf8c3s1mbbepbOQ&s'
+  },
+  {
+    id: 9, nome: 'Jaqueta corta-vento', preco: 120, estrelas: 4, likes: 15, liked: false,
+    imagem: 'https://cdn.sistemawbuy.com.br/arquivos/f0853c897b6ec0b9ff1e212e78ca35d6/produtos/664df06b12e19/jaqueta-corta-vento-preta-basica-4mud-casual-1-frente-664df06b856ca.jpg'
+  },
+  {
+    id: 10, nome: 'Kit primeiros socorros', preco: 35, estrelas: 5, likes: 25, liked: false,
+    imagem: 'https://dvuc6j6nz56aj.cloudfront.net/Custom/Content/Products/13/23/13239_maleta-p-medicamento-28x18x18cm-5000p-plasnorthon_z1_637884018754629743.webp'
+  },
 ])
 function toggleLike(produto) {
   produto.liked = !produto.liked
@@ -242,11 +262,7 @@ const config1 = {
       </h1>
       <div class="container">
         <form action="" class="search-bar">
-          <input
-            type="text"
-            placeholder="Precisa de algo só por uns dias? Encontre aqui"
-            name="q"
-          />
+          <input type="text" placeholder="Precisa de algo só por uns dias? Encontre aqui" name="q" />
           <button type="submit"><span class="mdi mdi-magnify"></span></button>
         </form>
       </div>
@@ -364,21 +380,16 @@ const config1 = {
                 {{ produto.likes }}
               </button>
               <div class="imagem">
-                <img :src="produto.imagem"
-                />
+                <img :src="produto.imagem" />
               </div>
-<h1>{{ produto.nome }}</h1>
+              <h1>{{ produto.nome }}</h1>
               <div class="info">
 
                 <p class="estrelasProduto">
-                  <span
-                    v-for="n in 5"
-                    :key="n"
-                    :class="[
-                      'mdi mdi-star',
-                      n <= produto.estrelas ? 'estrela-cheia' : 'estrela-vazia',
-                    ]"
-                  ></span>
+                  <span v-for="n in 5" :key="n" :class="[
+                    'mdi mdi-star',
+                    n <= produto.estrelas ? 'estrela-cheia' : 'estrela-vazia',
+                  ]"></span>
                 </p>
                 <strong>R${{ produto.preco.toFixed(2).replace('.', ',') }}/Dia</strong>
               </div>
@@ -406,9 +417,9 @@ const config1 = {
             <RouterLink :to="{ name: 'Produto', params: { id: produto.id } }" class="produto-link">
               <div class="produtoHome">
                 <button class="like-btn" @click="toggleLike(produto)">
-                <span :class="produto.liked ? 'mdi mdi-heart' : 'mdi mdi-heart-outline'"></span>
-                {{ produto.likes }}
-              </button>
+                  <span :class="produto.liked ? 'mdi mdi-heart' : 'mdi mdi-heart-outline'"></span>
+                  {{ produto.likes }}
+                </button>
                 <div class="imagem" v-if="produto.midias.length > 0">
                   <img :src="produto.midias[0].file" alt="" />
                 </div>
@@ -520,12 +531,11 @@ const config1 = {
     </h3>
     <ul>
       <li>
-        <img src="https://picsum.photos/400/300" alt="" />
+        <img src="/images/renan.jpeg" alt="renan" />
         <h2>Renan</h2>
         <p>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis culpa rem laudantium
-          sunt ipsam iure repellat numquam, fugiat quo quae reiciendis minus praesentium id quidem
-          dolor natus esse, temporibus nisi?
+          Aluguei uma barraca para um fim de semana no parque estadual e foi tudo perfeito! Produto limpo, sem nenhum
+          defeito e super espaçoso. O dono ainda deu dicas de montagem. Melhor do que comprar uma só pra usar uma vez!
         </p>
         <div class="estrelas">
           <span class="mdi mdi-star"></span>
@@ -535,13 +545,12 @@ const config1 = {
           <span class="mdi mdi-star"></span>
         </div>
       </li>
-      <li>
-        <img src="https://picsum.photos/400/300" alt="" />
+      <li>h
+        <img src="/images/ricardo.jpeg" alt="ricardo" />
         <h2>Ricardo</h2>
         <p>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis culpa rem laudantium
-          sunt ipsam iure repellat numquam, fugiat quo quae reiciendis minus praesentium id quidem
-          dolor natus esse, temporibus nisi?
+          Precisava de uma furadeira potente só para um serviço rápido em casa e o Alugaê salvou! O equipamento estava
+          novo, funcionando perfeitamente e o processo de retirada foi simples e rápido. Economizei uma boa grana!
         </p>
         <div class="estrelas">
           <span class="mdi mdi-star"></span>
@@ -552,12 +561,12 @@ const config1 = {
         </div>
       </li>
       <li>
-        <img src="https://picsum.photos/400/300" alt="" />
+        <img src="/images/matue.jpeg" alt="mateus" />
         <h2>Mateus</h2>
         <p>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis culpa rem laudantium
-          sunt ipsam iure repellat numquam, fugiat quo quae reiciendis minus praesentium id quidem
-          dolor natus esse, temporibus nisi?
+          Usei a bike elétrica durante um final de semana no litoral e foi sensacional. Bateria durou bem e a
+          experiência
+          foi super divertida. Com certeza vou alugar de novo na próxima viagem!
         </p>
         <div class="estrelas">
           <span class="mdi mdi-star"></span>
@@ -888,8 +897,10 @@ section.categorias h1.principal {
 
 section.categorias div.cat {
   display: flex;
-  width: auto;          /* tira o 70% que deixava folga */
-  margin-bottom: 2vw;   /* diminui o espaço embaixo */
+  width: auto;
+  /* tira o 70% que deixava folga */
+  margin-bottom: 2vw;
+  /* diminui o espaço embaixo */
   gap: 0;
   justify-content: center;
   margin: 0 auto;
@@ -1246,13 +1257,15 @@ ul li.passo1 .esquerda button {
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-bottom: 2vw;
 }
 
 ul li.passo1 .esquerda h1 {
   font-size: 2rem;
   color: #000;
-  margin: 0.5vw 0 0.5vw 0;
-  line-height: 1.7vw;
+  margin: 0.5vw 0 1vw 0;
+  line-height: 2.8vw;
+  text-align: left;
 }
 
 ul li.passo1 .esquerda h2 {
@@ -1319,6 +1332,7 @@ ul li.passo2 .direita h1 {
   color: #000;
   margin: 0.5vw 0;
   line-height: 1.5;
+  text-align: left;
 }
 
 ul li.passo2 .direita h2 {
@@ -1358,13 +1372,15 @@ ul li.passo3 .esquerda button {
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-bottom: 2vw;
 }
 
 ul li.passo3 .esquerda h1 {
   font-size: 2rem;
   color: #000;
   margin: 0.5vw 0 0.5vw 0;
-  line-height: 1.7vw;
+  line-height: 2.8vw;
+  text-align: left;
 }
 
 ul li.passo3 .esquerda h2 {
@@ -1430,6 +1446,7 @@ ul li.passo4 .direita h1 {
   color: #000;
   margin: 0.5vw 0;
   line-height: 1.5;
+  text-align: left;
 }
 
 ul li.passo4 .direita h2 {
