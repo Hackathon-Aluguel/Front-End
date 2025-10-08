@@ -398,7 +398,7 @@ const config1 = {
         </Carousel>
       </div>
     </div>
-    <h1 class="titulo">Mais v<span>e</span>ndidos</h1>
+    <h1 class="titulo">Produtos</h1>
     <div class="produtosFundos">
       <div class="carousel__wrapper">
         <Carousel ref="carousel" v-bind="config" :navigationEnabled="false">
@@ -1009,7 +1009,7 @@ div.produtosFundos {
 
 div.produtoHome {
   max-width: 18vw;
-  height: 45vh;
+  height: 49vh;
   width: 18vw;
   background: #fff;
   border-radius: 10px;
