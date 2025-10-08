@@ -230,7 +230,7 @@ function remover(id) {
     </div>
     <div class="promocao">
       <h2 class="principal">
-        Codigo Promocional
+        Código Promocional
       </h2>
 
       <div class="container">
@@ -278,8 +278,8 @@ ul {
 
 div.promocao {
   background-color: #244e84;
-  height: 39vh;
-  width: 20vw;
+  height: 57vh;
+  width: 28vw;
   border-radius: 15px;
   margin: 4vw 4vw 0 2vw;
 }
@@ -291,16 +291,21 @@ div.promocao h2.principal {
 
 .container {
   display: flex;
-  padding: 20px;
+  margin: 2vw 0 2vw 1vw;
+  background-color: #244e84;
+  width: 80%;
 }
 
 .search-bar {
   display: flex;
   gap: 9px;
+    width: 100%;
 }
 
 .search-bar input {
   padding: 0.6vw 1vw;
+  height: 4.5vh;
+  width: 20vw;
   border: 1px solid #cdcdcd;
   border-radius: 5px;
   outline: none;
@@ -322,7 +327,8 @@ div.promocao h2.principal {
   font-weight: bold;
   cursor: pointer;
   transition: 0.2s ease;
-  width: 6.6vw;
+  background-color: white;
+  width: 10vw;
 }
 
 .search-bar button span {
@@ -332,6 +338,7 @@ div.promocao h2.principal {
 
 hr {
   margin: 0.5vw 1vw 0.5vw 1vw;
+  color: white;
 }
 
 div.promocao ul {
@@ -344,7 +351,7 @@ div.promocao ul {
 div.promocao ul li {
   display: flex;
   justify-content: space-between;
-  margin: 0.5vw 1vw 0 1vw;
+  margin: 0vw 1vw 0 1vw;
 }
 
 div.promocao ul li h3 {
@@ -367,8 +374,8 @@ div.promocao button.continuar {
   text-align: center;
   margin: 0 auto;
   margin-top: 0.8vw;
-  width: 16vw;
-  height: 6vh;
+  width: 25vw;
+  height: 8vh;
   color: white;
 }
 

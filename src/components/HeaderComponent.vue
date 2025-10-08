@@ -59,7 +59,7 @@ function abrir() {
         </div>
 
         <ul class="icons">
-          <li><span class="mdi mdi-cart-outline"></span></li>
+          <li><RouterLink to="/carrinho"><span class="mdi mdi-cart-outline"></span></RouterLink></li>
           <li><span class="mdi mdi-heart-outline"></span></li>
         </ul>
 
