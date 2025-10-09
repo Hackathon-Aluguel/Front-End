@@ -1,20 +1,12 @@
-import api from './api'
+import api from "./api"; // usa o axios configurado
+// não importa useRouter aqui!
 
-export default {
-  getMessages(chatroomName) {
-    return api.get(`/api/chat/${chatroomName}/messages/`)
-  },
-
-  sendMessage(chatroomName, body) {
-    return api.post(`/api/chat/${chatroomName}/send/`, { body })
-  },
-
-  uploadFile(chatroomName, file) {
-    const formData = new FormData()
-    formData.append('file', file)
-    return api.post(`/api/chat/${chatroomName}/upload/`, formData, {
-      headers: { 'Content-Type': 'multipart/form-data' }
-    })
-  }
+export async function createOrGetChat(otherUserId) {
+  const token = localStorage.getItem("access_token");
+  const res = await api.post(
+    "chats/create_or_get/",
+    { other_user_id: otherUserId },
+    { headers: { Authorization: `Bearer ${token}` } }
+  );
+  return res.data; // { chat_id, participants }
 }
-

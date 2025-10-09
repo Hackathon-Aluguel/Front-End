@@ -5,6 +5,23 @@ import { ref, reactive, computed, onMounted } from 'vue'
 
 
 
+import { useRouter } from "vue-router";
+import { createOrGetChat } from "@/services/chatService";
+
+const router = useRouter();
+
+async function onConverseMeClick(otherUserId) {
+  try {
+    const chatData = await createOrGetChat(otherUserId);
+    router.push({ name: "chat-room", params: { chatroomName: chatData.chat_id } });
+  } catch (err) {
+    console.error("Erro ao abrir conversa:", err);
+    alert("Não foi possível abrir a conversa.");
+  }
+}
+
+
+
 const avaliacoes = [
   {
     id: 1,
@@ -344,13 +361,13 @@ const opcoesSelecionadas = computed(() => {
   if (linksIlegais.value)
     lista.push('Compartilhamento de links maliciosos ou atividades ilegais digitais')
   if (dadosPrivados.value) lista.push('O perfil expõe informações de identidade privada')
-  
+
   if (fotoRosto.value) lista.push('Foto do rosto')
   if (fotoIntima.value) lista.push('Foto íntima, particular')
   if (endereco.value) lista.push('Endereço IP')
   if (nomeLegal.value) lista.push('Nome legal')
   if (infoCartao.value) lista.push('Informações do cartão de crédito')
-  
+
 
   return lista
 })
@@ -420,7 +437,7 @@ onMounted(async () => {
           <li>
             <h1>{{ usuario.username }}</h1>
             <p><span class="mdi mdi-map-marker"></span> Joinville - SC</p>
-            <button>Mandar mensagem <span class="mdi mdi-send"></span></button>
+            <button @click="onConverseMeClick(usuario.id)">Mandar mensagem <span class="mdi mdi-send"></span></button><!--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
           </li>
         </ul>
       </div>
