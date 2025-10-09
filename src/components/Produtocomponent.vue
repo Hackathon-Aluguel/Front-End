@@ -11,16 +11,57 @@ import axios from 'axios'
 
 
 const avaliacoes = [
-  { id: 1, nome: 'Pietro', texto: 'Não sabia sobre esse site, depois que conheci ele consegui fazer minhas coisas sem precisar gastar muito' },
-  { id: 2, nome: 'Mariana', texto: 'Consegui alugar o que eu precisava de forma rápida e prática, super recomendo!' },
-  { id: 3, nome: 'Lucas', texto: 'Achei muito útil, economizei dinheiro e ainda conheci um serviço confiável.' },
-  { id: 4, nome: 'Beatriz', texto: 'Experiência excelente, o atendimento foi ótimo e o processo bem simples.' },
-  { id: 5, nome: 'Rafael', texto: 'Já usei várias vezes e sempre deu tudo certo, muito melhor do que comprar algo que vou usar pouco.' },
-  { id: 6, nome: 'Carolina', texto: 'Adorei a ideia, é sustentável e ajuda bastante no dia a dia.' },
-  { id: 7, nome: 'Fernanda', texto: 'Me surpreendi com a qualidade do serviço, certamente vou usar de novo.' },
-  { id: 8, nome: 'João', texto: 'Muito prático, facilitou bastante minha vida em um momento que eu precisava.' },
+  {
+    id: 1,
+    nome: 'Pietro',
+    foto: 'https://pbs.twimg.com/media/GDLS7FPXQAA6gR_.jpg',
+    texto:
+      'Não sabia sobre esse site, depois que conheci ele consegui fazer minhas coisas sem precisar gastar muito',
+  },
+  {
+    id: 2,
+    nome: 'Mariana',
+    foto: 'https://i.pinimg.com/736x/eb/94/5b/eb945ba0c7bf9030343ddd22e564f3ca.jpg',
+    texto: 'Consegui alugar o que eu precisava de forma rápida e prática, super recomendo!',
+  },
+  {
+    id: 3,
+    nome: 'Lucas',
+    foto: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR9OBxkO5WT7_RDwRh1pcLPXxaAxQc7n_kcYQ&s',
+    texto: 'Achei muito útil, economizei dinheiro e ainda conheci um serviço confiável.',
+  },
+  {
+    id: 4,
+    nome: 'Beatriz',
+    foto: 'https://wallpapers.com/images/hd/pessoa-aleatoria-1000-x-1500-8xtpcwzjlw7vbi63.jpg',
+    texto: 'Experiência excelente, o atendimento foi ótimo e o processo bem simples.',
+  },
+  {
+    id: 5,
+    nome: 'Rafael',
+    foto: 'https://i.pinimg.com/736x/56/8c/91/568c915c538eb0fe5ebf879487007772.jpg',
+    texto:
+      'Já usei várias vezes e sempre deu tudo certo, muito melhor do que comprar algo que vou usar pouco.',
+  },
+  {
+    id: 6,
+    nome: 'Carolina',
+    foto: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcScxuH4rMlvEwcBEtRts5I11DPYgbrPTiwU8uJWGa177Go8A6O3pzw8rYDMIdNv8lJJs70&usqp=CAU',
+    texto: 'Adorei a ideia, é sustentável e ajuda bastante no dia a dia.',
+  },
+  {
+    id: 7,
+    nome: 'Fernanda',
+    foto: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSdeJFUBldNxvyJoOfQFf2SZkEJx3uSK3KskvDr4E8TnLV4fSCqCpC7mOIVRkdudRfn6l4&usqp=CAU',
+    texto: 'Me surpreendi com a qualidade do serviço, certamente vou usar de novo.',
+  },
+  {
+    id: 8,
+    nome: 'João',
+    foto: 'https://i.pinimg.com/564x/6b/8b/50/6b8b503e0f33b09bd9f39e38e2e4a28a.jpg',
+    texto: 'Muito prático, facilitou bastante minha vida em um momento que eu precisava.',
+  },
 ]
-
 
 // Config do carousel de avaliações
 
@@ -134,29 +175,31 @@ onMounted(async () => {
 
     <div class="carousel__wrapper">
       <Carousel v-bind="config">
-        <Slide v-for="avaliacao in avaliacoes" :key="avaliacao.id">
-          <ul>
-            <li>
-              <img src="https://s2.glbimg.com/CZ7vt10tkQki58E3X37KbSrW8PA=/620x430/e.glbimg.com/og/ed/f/original/2022/04/11/dall_e_ia.png"
-                   alt="Foto de Perfil" style="height: 50px; width: 50px; border-radius: 30px;">
-              <h2>{{ avaliacao.nome }}</h2>
-            </li>
-            <li>
-              <img src="https://s2.glbimg.com/CZ7vt10tkQki58E3X37KbSrW8PA=/620x430/e.glbimg.com/og/ed/f/original/2022/04/11/dall_e_ia.png"
-                   alt="Foto de Perfil" style="height: 50px; width: 50px; border-radius: 30px;">
-              <h2>Nome pessoa</h2>
-            </li>
-          </ul>
-          <div class="textos_Inferiores">
-            <p>Estrelinhas Obs: Ver depois!</p>
-            <p>{{ avaliacao.texto }}</p>
+  <Slide v-for="avaliacao in avaliacoes" :key="avaliacao.id">
+    <ul>
+      <li>
+        <img
+          :src="avaliacao.foto"
+          :alt="`Foto de ${avaliacao.nome}`"
+          style="height: 50px; width: 50px; border-radius: 30px"
+        />
+      </li>
+      <li>
+        <h2>{{ avaliacao.nome }}</h2>
+      </li>
+    </ul>
+    <div class="textos_Inferiores">
+      <div class="estrelas1">
+            <span class="mdi mdi-star"></span>
+            <span class="mdi mdi-star"></span>
+            <span class="mdi mdi-star"></span>
+            <span class="mdi mdi-star"></span>
+            <span class="mdi mdi-star"></span>
           </div>
-        </Slide>
-
-        <template #addons>
-          <Navigation />
-        </template>
-      </Carousel>
+      <p>{{ avaliacao.texto }}</p>
+    </div>
+  </Slide>
+</Carousel>
     </div>
   </section>
 </template>

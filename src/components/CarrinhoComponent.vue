@@ -2,18 +2,20 @@
 import { reactive, ref } from 'vue'
 import Datepicker from '@vuepic/vue-datepicker'
 import '@vuepic/vue-datepicker/dist/main.css'
+import HeaderComponent from './HeaderComponent.vue'
+import FooterComponent from './FooterComponent.vue'
 
 const produtos = reactive([
    {
     id: 1,
-    nome: 'pantufas extremamente macias',
+    nome: 'Barraca',
     preco: 30,
     estrelas: 4,
     likes: 20,
     liked: false,
     periodoInicial: new Date(2025, 7, 28),
     periodoFinal: new Date(2025, 7, 30),
-    imagem: 'https://picsum.photos/400/300?random=100',
+    imagem: 'https://panoramahomecenter.vtexassets.com/arquivos/ids/5459704/Barraca_Iglu_4_Pessoas__MOR_74820901.png?v=638602752623900000',
     categoria: 'camping',
     editando: false,
   },
@@ -26,7 +28,7 @@ const produtos = reactive([
     liked: false,
     periodoInicial: new Date(2025, 7, 28),
     periodoFinal: new Date(2025, 7, 30),
-    imagem: 'https://picsum.photos/400/300?random=101',
+    imagem: 'https://http2.mlstatic.com/D_NQ_NP_624878-CBT75865054864_042024-O.webp',
     categoria: 'camping',
     editando: false,
   },
@@ -39,7 +41,7 @@ const produtos = reactive([
     liked: false,
     periodoInicial: new Date(2025, 7, 28),
     periodoFinal: new Date(2025, 7, 30),
-    imagem: 'https://picsum.photos/400/300?random=102',
+    imagem: 'https://images.tcdn.com.br/img/img_prod/685751/lanterna_solar_recarregavel_bivolt_sq_3806_led_5w_31577_1_218932b95bddb353140c0943dca87f85_20250918024156.jpg',
     categoria: 'iluminação',
     editando: false,
   },
@@ -52,7 +54,7 @@ const produtos = reactive([
     liked: false,
     periodoInicial: new Date(2025, 7, 28),
     periodoFinal: new Date(2025, 7, 30),
-    imagem: 'https://picsum.photos/400/300?random=103',
+    imagem: 'https://images.tcdn.com.br/img/img_prod/612392/fogao_fogareiro_p_churrasqueira_preto_inox_fog40_299_1_20180127195638.jpg',
     categoria: 'cozinha',
     editando: false,
   },
@@ -65,7 +67,7 @@ const produtos = reactive([
     liked: false,
     periodoInicial: new Date(2025, 7, 28),
     periodoFinal: new Date(2025, 7, 30),
-    imagem: 'https://picsum.photos/400/300?random=104',
+    imagem: 'https://fila.vteximg.com.br/arquivos/ids/907374/F23L00166_1004.jpg?v=638337461096130000',
     categoria: 'mochila',
     editando: false,
   },
@@ -144,6 +146,7 @@ function remover(id) {
 </script>
 
 <template>
+  <HeaderComponent />
   <section v-if="produtos.length > 0">
     <div class="carrinho">
       <div class="titu">
@@ -265,11 +268,13 @@ function remover(id) {
         </button>
       </div>
   </section>
+  <FooterComponent />
 </template>
 
 <style scoped>
 section {
   display: flex;
+  margin: 2vw 0 8vw 0;
 }
 
 ul {
@@ -278,10 +283,10 @@ ul {
 
 div.promocao {
   background-color: #244e84;
-  height: 57vh;
-  width: 28vw;
+  height: 53vh;
+  width: 23vw;
   border-radius: 15px;
-  margin: 4vw 4vw 0 2vw;
+  margin: 4vw 4vw 0 0vw;
 }
 
 div.promocao h2.principal {
@@ -293,19 +298,19 @@ div.promocao h2.principal {
   display: flex;
   margin: 2vw 0 2vw 1vw;
   background-color: #244e84;
-  width: 80%;
+  width: 90%;
 }
 
 .search-bar {
   display: flex;
   gap: 9px;
-    width: 100%;
+  width: 100%;
 }
 
 .search-bar input {
   padding: 0.6vw 1vw;
   height: 4.5vh;
-  width: 20vw;
+  width: 40vw;
   border: 1px solid #cdcdcd;
   border-radius: 5px;
   outline: none;
@@ -328,7 +333,8 @@ div.promocao h2.principal {
   cursor: pointer;
   transition: 0.2s ease;
   background-color: white;
-  width: 10vw;
+  width: 6vw;
+  height: 7vh;
 }
 
 .search-bar button span {
@@ -374,7 +380,7 @@ div.promocao button.continuar {
   text-align: center;
   margin: 0 auto;
   margin-top: 0.8vw;
-  width: 25vw;
+  width: 20vw;
   height: 8vh;
   color: white;
 }
@@ -487,6 +493,7 @@ section div.carrinho ul li.produto div.info {
 section div.carrinho ul li.produto div.info img {
   border-radius: 0.5vw;
   margin: 0 1vw 0 0;
+  width: 13vw;
 }
 
 section div.carrinho ul li.produto div.info .nome h2 {
