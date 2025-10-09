@@ -9,12 +9,17 @@
           v-for="(chat, index) in chats"
           :key="index"
           :class="['conversation-item', { active: chat.name === activeChat }]"
-          @click="selectChat(chat.name)"
+          @click="selectChat(chat)"
         >
           <div class="avatar"></div>
           <div class="conversation-info">
-            <p class="conversation-name">{{ chat.name }}</p>
-            <p class="conversation-preview">{{ chat.preview }}</p>
+            <p class="conversation-name">
+              {{ getOtherUsername(chat.participants_usernames) }}
+            </p>
+            <p class="conversation-preview">
+              {{ chat.last_message?.body || 'Nenhuma mensagem ainda' }}
+            </p>
+
           </div>
         </li>
       </ul>
@@ -26,8 +31,7 @@
       <div class="chat-header">
         <div class="chat-header-avatar"></div>
         <div>
-          <p class="chat-header-name">{{ activeChat }}</p>
-          <span class="chat-header-sub">Clique para ver o perfil do usuário</span>
+          <p class="chat-header-name">{{ getActiveChatName() }}</p>
         </div>
       </div>
 
@@ -80,166 +84,230 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, watch } from "vue";
+import { useRouter, useRoute } from "vue-router";
 import axios from "axios";
 import HeaderComponent from "@/components/HeaderComponent.vue";
 
-const chatroomName = ref("public-chat");
-const newMessage = ref("");
-const messages = ref([]);
-const selectedFile = ref(null);
-const ws = ref(null);
-
-const chats = ref([
-  { name: "Erick", preview: "Lorem ipsum dolor sit amet" },
-  { name: "Matue", preview: "Lorem ipsum dolor sit amet" },
-  { name: "Renan", preview: "Lorem ipsum dolor sit amet" },
-  { name: "Teteu", preview: "Lorem ipsum dolor sit amet" },
-  { name: "Ricardo", preview: "Lorem ipsum dolor sit amet" },
-  { name: "Bianca Lunelli", preview: "Lorem ipsum dolor sit amet" },
-]);
-const activeChat = ref("Renan");
-
-// usuário logado
-const currentUser = ref(null);
-
-const api = axios.create({
-  baseURL: "http://127.0.0.1:8000/api/",
+const props = defineProps({
+  chatroomName: { type: String, default: null } // router passará se houver
 });
 
-// Função auxiliar para comparar corretamente usuários
-const isCurrentUser = (username) => {
-  if (!username || !currentUser.value) return false;
-  return username.toLowerCase() === currentUser.value.toLowerCase();
-};
+const router = useRouter();
+const route = useRoute();
 
-const getValidToken = async () => {
-  let token = localStorage.getItem("access_token");
-  if (!token) {
-    const refresh = localStorage.getItem("refresh_token");
-    if (!refresh) return null;
-    try {
-      const res = await api.post("token/refresh/", { refresh });
-      token = res.data.access;
-      localStorage.setItem("access_token", token);
-    } catch (err) {
-      console.error("Erro ao renovar token", err);
-      return null;
-    }
-  }
-  return token;
+const newMessage = ref("");
+const messages = ref([]);
+const ws = ref(null);
+const currentUser = ref(null);
+
+const chats = ref([]); // lista de PrivateChat { chat_id, participants_usernames, last_message }
+const activeChat = ref(props.chatroomName || ""); // chat_id
+
+import api from "@/services/api";
+
+// Reuse the token helper (or use your interceptor)
+const getValidToken = () => localStorage.getItem("access_token");
+
+const isCurrentUser = (username) => {
+  return username && currentUser.value && username.toLowerCase() === currentUser.value.toLowerCase();
 };
 
 const loadCurrentUser = async () => {
+  const token = getValidToken();
+  if (!token) return;
   try {
-    const token = await getValidToken();
-    if (!token) return;
-    const res = await api.get("users/me/", {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    const res = await api.get("users/me/", { headers: { Authorization: `Bearer ${token}` } });
     currentUser.value = res.data.username;
   } catch (err) {
-    console.error("Erro ao buscar usuário logado:", err);
+    console.error("Erro usuário:", err);
   }
 };
 
-const loadMessages = async () => {
+const loadMessages = async (chatId) => {
+  const token = getValidToken();
+  if (!token || !chatId) return;
   try {
-    const token = await getValidToken();
-    if (!token) return;
-    const res = await api.get(`chat/${chatroomName.value}/messages/`, {
+    const res = await api.get(`chats/${chatId}/messages/`, {
       headers: { Authorization: `Bearer ${token}` },
     });
-    messages.value = res.data.map((msg) => ({
-      username: msg.author_username,
-      content: msg.body,
-      file: msg.file,
+    messages.value = res.data.map((m) => ({
+      id: m.id,
+      username: m.author_username,
+      content: m.body,
+      file: m.file,
+      created: m.created,
     }));
     scrollToBottom();
   } catch (err) {
-    console.error("Erro ao carregar mensagens:", err);
+    console.error("Erro mensagens:", err);
+    // Se receber 404 -> redireciona pra lista de chats ou mostra erro
+    if (err.response && err.response.status === 404) {
+      alert("Você não tem permissão para acessar essa conversa (404).");
+      // redirect to chat index
+      router.push({ name: "home" });
+    }
   }
 };
 
-const connectWebSocket = async () => {
-  const token = await getValidToken();
+const loadMyChats = async () => {
+  const token = getValidToken();
   if (!token) return;
+  try {
+    const res = await api.get("chats/", { headers: { Authorization: `Bearer ${token}` } });
+    chats.value = res.data; // cada item: {chat_id, participants_usernames, last_message, created}
+  } catch (err) {
+    console.error("Erro ao carregar chats:", err);
+  }
+};
 
-  ws.value = new WebSocket(
-    `ws://127.0.0.1:8000/ws/chatroom/${chatroomName.value}/?token=${token}`
-  );
+const connectWebSocket = async (chatId) => {
+  const token = getValidToken();
+  if (!token || !chatId) return;
 
-  ws.value.onopen = () => console.log("WS conectado");
+  // fecha conexão antiga se existir
+  if (ws.value && ws.value.readyState === WebSocket.OPEN) {
+    ws.value.close();
+  }
 
-  ws.value.onmessage = (event) => {
-    const data = JSON.parse(event.data);
-    messages.value.push({
-      username: data.author,
-      content: data.message,
-      file: data.file || null,
-    });
-    scrollToBottom();
+  ws.value = new WebSocket(`ws://127.0.0.1:8000/ws/chatroom/${chatId}/?token=${token}`);
+
+  ws.value.onopen = () => console.log("WS conectado", chatId);
+  ws.value.onmessage = (e) => {
+  const data = JSON.parse(e.data);
+
+  // 🔹 evita duplicar a mensagem do próprio usuário
+  if (data.author === currentUser.value) {
+    const alreadyExists = messages.value.some(
+      (m) =>
+        m.content === data.message &&
+        m.username === currentUser.value &&
+        !m.pending
+    );
+    if (alreadyExists) return;
+
+    // 🔹 remove a versão "pendente" e substitui pela confirmada
+    const pendingIndex = messages.value.findIndex(
+      (m) => m.pending && m.content === data.message
+    );
+    if (pendingIndex !== -1) messages.value.splice(pendingIndex, 1);
+  }
+
+  // 🔹 adiciona a nova mensagem (ou atualizada)
+  messages.value.push({
+    id: data.id,
+    username: data.author,
+    content: data.message,
+    file: data.file,
+    created: data.created,
+  });
+
+  scrollToBottom();
+};
+
+  ws.value.onclose = (ev) => {
+    console.log("WS fechado", ev);
+    // se foi fechado porque forbidden (server fechou), não reconectamos automaticamente.
+    // se quiser reconexão automática, adicione lógica aqui com backoff.
   };
-
-  ws.value.onclose = () => {
-    console.warn("WS fechado, reconectando em 2s...");
-    setTimeout(connectWebSocket, 2000);
+  ws.value.onerror = (err) => {
+    console.error("WS error", err);
   };
-
-  ws.value.onerror = (err) => console.error("Erro WS", err);
 };
 
 const scrollToBottom = () => {
-  const container = document.querySelector(".messages");
-  if (container) container.scrollTop = container.scrollHeight;
+  const c = document.querySelector(".messages");
+  if (c) c.scrollTop = c.scrollHeight;
 };
 
 const sendMessage = async () => {
-  if (!newMessage.value && !selectedFile.value) return;
-
-  let fileUrl = null;
-  if (selectedFile.value) {
-    const formData = new FormData();
-    formData.append("file", selectedFile.value);
-    try {
-      const token = await getValidToken();
-      const res = await api.post(`chat/fileupload/${chatroomName.value}/`, formData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "multipart/form-data",
-        },
-      });
-      fileUrl = res.data.file;
-      selectedFile.value = null;
-    } catch (err) {
-      console.error("Erro upload:", err);
-      return;
-    }
-  }
+  if (!newMessage.value.trim()) return;
+  const chatId = activeChat.value;
 
   if (ws.value && ws.value.readyState === WebSocket.OPEN) {
-    ws.value.send(
-      JSON.stringify({
-        author: currentUser.value,
-        message: newMessage.value,
-        file: fileUrl,
-      })
-    );
+    const tempId = Date.now(); // 🔹 id temporário
+
+    // 🔹 adiciona a mensagem localmente (para feedback imediato)
+    messages.value.push({
+      id: tempId,
+      username: currentUser.value,
+      content: newMessage.value,
+      file: null,
+      created: new Date().toISOString(),
+      pending: true,
+    });
+
+    // 🔹 envia ao servidor
+    ws.value.send(JSON.stringify({ message: newMessage.value }));
+
+    newMessage.value = "";
+    scrollToBottom();
+    return;
   }
 
-  newMessage.value = "";
+  // fallback via REST
+  const token = getValidToken();
+  if (!token) return;
+  try {
+    await api.post(
+      `chats/${chatId}/messages/`,
+      { body: newMessage.value },
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+    newMessage.value = "";
+  } catch (err) {
+    console.error("Erro ao enviar via REST:", err);
+  }
 };
 
-const selectChat = (name) => {
-  activeChat.value = name;
+const selectChat = (chat) => {
+  // quando clicar em um chat na sidebar, navegamos para a rota do chat
+  router.push({ name: "chat-room", params: { chatroomName: chat.chat_id } });
 };
+
+const refreshChats = async () => {
+  await loadMyChats();
+};
+
+const getOtherUsername = (participants) => {
+  if (!participants || !currentUser.value) return "";
+  return participants.find(u => u !== currentUser.value) || "Desconhecido";
+};
+
+const getActiveChatName = () => {
+  const chat = chats.value.find(c => c.chat_id === activeChat.value);
+  return chat ? getOtherUsername(chat.participants_usernames) : activeChat.value;
+};
+
 
 onMounted(async () => {
   await loadCurrentUser();
-  await loadMessages();
-  connectWebSocket();
+  await loadMyChats();
+
+  const initialChat = props.chatroomName || (chats.value.length ? chats.value[0].chat_id : null);
+  if (initialChat) {
+    activeChat.value = initialChat;
+    await loadMessages(activeChat.value);
+    connectWebSocket(activeChat.value);
+  }
+});
+
+// watch para quando rota/propriedade mudar (usuário navegou)
+watch(() => route.params.chatroomName, async (newVal) => {
+  if (!newVal) return;
+  activeChat.value = newVal;
+  messages.value = [];
+  if (ws.value) {
+    try { ws.value.close(); } catch (e) {}
+  }
+  await loadMessages(activeChat.value);
+  connectWebSocket(activeChat.value);
 });
 </script>
+
+
+
+
 
 <style scoped>
 .chat-wrapper {
