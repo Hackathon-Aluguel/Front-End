@@ -3,22 +3,70 @@ import 'vue3-carousel/carousel.css'
 import { Carousel, Slide, Navigation } from 'vue3-carousel'
 import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
-import HeaderComponent from "./HeaderComponent.vue"
+import HeaderComponent from "./HeaderComponent.vue";
 import axios from 'axios'
 
 // Avaliações fictícias
+
+
+
 const avaliacoes = [
-  { id: 1, nome: 'Pietro', texto: 'Não sabia sobre esse site, depois que conheci ele consegui fazer minhas coisas sem precisar gastar muito' },
-  { id: 2, nome: 'Mariana', texto: 'Consegui alugar o que eu precisava de forma rápida e prática, super recomendo!' },
-  { id: 3, nome: 'Lucas', texto: 'Achei muito útil, economizei dinheiro e ainda conheci um serviço confiável.' },
-  { id: 4, nome: 'Beatriz', texto: 'Experiência excelente, o atendimento foi ótimo e o processo bem simples.' },
-  { id: 5, nome: 'Rafael', texto: 'Já usei várias vezes e sempre deu tudo certo, muito melhor do que comprar algo que vou usar pouco.' },
-  { id: 6, nome: 'Carolina', texto: 'Adorei a ideia, é sustentável e ajuda bastante no dia a dia.' },
-  { id: 7, nome: 'Fernanda', texto: 'Me surpreendi com a qualidade do serviço, certamente vou usar de novo.' },
-  { id: 8, nome: 'João', texto: 'Muito prático, facilitou bastante minha vida em um momento que eu precisava.' },
+  {
+    id: 1,
+    nome: 'Pietro',
+    foto: 'https://pbs.twimg.com/media/GDLS7FPXQAA6gR_.jpg',
+    texto:
+      'Não sabia sobre esse site, depois que conheci ele consegui fazer minhas coisas sem precisar gastar muito',
+  },
+  {
+    id: 2,
+    nome: 'Mariana',
+    foto: 'https://i.pinimg.com/736x/eb/94/5b/eb945ba0c7bf9030343ddd22e564f3ca.jpg',
+    texto: 'Consegui alugar o que eu precisava de forma rápida e prática, super recomendo!',
+  },
+  {
+    id: 3,
+    nome: 'Lucas',
+    foto: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR9OBxkO5WT7_RDwRh1pcLPXxaAxQc7n_kcYQ&s',
+    texto: 'Achei muito útil, economizei dinheiro e ainda conheci um serviço confiável.',
+  },
+  {
+    id: 4,
+    nome: 'Beatriz',
+    foto: 'https://wallpapers.com/images/hd/pessoa-aleatoria-1000-x-1500-8xtpcwzjlw7vbi63.jpg',
+    texto: 'Experiência excelente, o atendimento foi ótimo e o processo bem simples.',
+  },
+  {
+    id: 5,
+    nome: 'Rafael',
+    foto: 'https://i.pinimg.com/736x/56/8c/91/568c915c538eb0fe5ebf879487007772.jpg',
+    texto:
+      'Já usei várias vezes e sempre deu tudo certo, muito melhor do que comprar algo que vou usar pouco.',
+  },
+  {
+    id: 6,
+    nome: 'Carolina',
+    foto: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcScxuH4rMlvEwcBEtRts5I11DPYgbrPTiwU8uJWGa177Go8A6O3pzw8rYDMIdNv8lJJs70&usqp=CAU',
+    texto: 'Adorei a ideia, é sustentável e ajuda bastante no dia a dia.',
+  },
+  {
+    id: 7,
+    nome: 'Fernanda',
+    foto: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSdeJFUBldNxvyJoOfQFf2SZkEJx3uSK3KskvDr4E8TnLV4fSCqCpC7mOIVRkdudRfn6l4&usqp=CAU',
+    texto: 'Me surpreendi com a qualidade do serviço, certamente vou usar de novo.',
+  },
+  {
+    id: 8,
+    nome: 'João',
+    foto: 'https://i.pinimg.com/564x/6b/8b/50/6b8b503e0f33b09bd9f39e38e2e4a28a.jpg',
+    texto: 'Muito prático, facilitou bastante minha vida em um momento que eu precisava.',
+  },
 ]
 
-// Configuração do carousel
+// Config do carousel de avaliações
+
+
+
 const config = {
   height: 200,
   itemsToShow: 1,
@@ -26,6 +74,7 @@ const config = {
   snapAlign: 'center',
   breakpointMode: 'carousel',
   breakpoints: {
+
     300: { itemsToShow: 2, snapAlign: 'center' },
     400: { itemsToShow: 3, snapAlign: 'start' },
     500: { itemsToShow: 4, snapAlign: 'start' },
@@ -37,29 +86,32 @@ const route = useRoute()
 const produto = ref(null)
 const fotoAtual = ref('') // imagem grande
 const imagens = ref([])   // miniaturas
+
 const trocarFoto = (src) => fotoAtual.value = src
 
-// Dono do produto
+// Carregar produto do backend
 const dono = ref({})
-const fotoPadrao = 'https://via.placeholder.com/150'
+const fotoPadrao = 'https://via.placeholder.com/150';
 
+// função para carregar os dados do dono
 const carregarDono = async (usuarioId) => {
   try {
-    const { data } = await axios.get(`http://127.0.0.1:8000/api/user-publico/${usuarioId}/`)
+    const { data } = await axios.get(http://127.0.0.1:8000/api/usuarios/${usuarioId}/)
     dono.value = data
   } catch (err) {
     console.error('Erro ao carregar dados do dono:', err)
-    dono.value = {}
+    dono.value = {} // fallback caso dê erro
   }
 }
-
-// Carregar produto
+// Carregar produto do backend
 onMounted(async () => {
   try {
-    const { data } = await axios.get(`http://127.0.0.1:8000/api/itens/${route.params.id}/`)
+    const { data } = await axios.get(http://127.0.0.1:8000/api/itens/${route.params.id}/)
     produto.value = Array.isArray(data) ? data[0] : data
 
-    if (produto.value.usuario) carregarDono(produto.value.usuario)
+    if (produto.value.usuario) {
+      carregarDono(produto.value.usuario) // chama o endpoint público
+    }
 
     if (produto.value?.midias?.length) {
       imagens.value = produto.value.midias.map(m => m.file)
@@ -70,16 +122,15 @@ onMounted(async () => {
   }
 })
 </script>
-
 <template>
   <HeaderComponent />
-
-  <!-- Produto -->
   <section class="produto">
+
     <div class="foto">
       <div class="grande">
         <img :src="fotoAtual" alt="Foto principal do produto" />
       </div>
+
       <div class="baixo">
         <div v-for="(img, index) in imagens" :key="index" class="pequenas" @click="trocarFoto(img)">
           <img :src="img" alt="Miniatura do produto" />
@@ -99,7 +150,7 @@ onMounted(async () => {
 
       <button class="favorito"><span class="mdi mdi-heart-outline"></span>Adicionar aos favoritos</button>
 
-      <RouterLink to="/perfil">
+      <RouterLink :to="/perfil/${dono.id}">
         <div class="dono" v-if="dono && Object.keys(dono).length">
           <p class="foto">
             <img :src="dono.imagem || fotoPadrao" alt="Foto do dono" />
@@ -114,26 +165,41 @@ onMounted(async () => {
 
   <!-- Avaliações -->
   <section class="avaliacao" v-if="avaliacoes.length">
-    <h2>Avaliações</h2>
+    <h2>Avaliações de "Nome da pessoa"</h2>
+
+
+  </section>
+
+  <section class="avaliacao">
+    <h2>Avaliações de "Nome da pessoa"</h2>
+
     <div class="carousel__wrapper">
       <Carousel v-bind="config">
-        <Slide v-for="avaliacao in avaliacoes" :key="avaliacao.id">
-          <div class="avaliacao-slide">
-            <div class="perfil">
-              <img src="https://s2.glbimg.com/CZ7vt10tkQki58E3X37KbSrW8PA=/620x430/e.glbimg.com/og/ed/f/original/2022/04/11/dall_e_ia.png"
-                   alt="Foto de Perfil" class="perfil-img">
-              <h2>{{ avaliacao.nome }}</h2>
-            </div>
-            <div class="texto-avaliacao">
-              <p>{{ avaliacao.texto }}</p>
-            </div>
+  <Slide v-for="avaliacao in avaliacoes" :key="avaliacao.id">
+    <ul>
+      <li>
+        <img
+          :src="avaliacao.foto"
+          :alt="Foto de ${avaliacao.nome}"
+          style="height: 50px; width: 50px; border-radius: 30px"
+        />
+      </li>
+      <li>
+        <h2>{{ avaliacao.nome }}</h2>
+      </li>
+    </ul>
+    <div class="textos_Inferiores">
+      <div class="estrelas1">
+            <span class="mdi mdi-star"></span>
+            <span class="mdi mdi-star"></span>
+            <span class="mdi mdi-star"></span>
+            <span class="mdi mdi-star"></span>
+            <span class="mdi mdi-star"></span>
           </div>
-        </Slide>
-
-        <template #addons>
-          <Navigation />
-        </template>
-      </Carousel>
+      <p>{{ avaliacao.texto }}</p>
+    </div>
+  </Slide>
+</Carousel>
     </div>
   </section>
 </template>
@@ -144,46 +210,17 @@ onMounted(async () => {
   margin: 2vw 0 0 10vw;
 }
 
-.foto {
-  max-width: 640px;
-  margin-right: 10vw;
-}
-
-.grande img {
-  width: 100%;
-  height: 540px;
-  border-radius: 10px;
-  border: 2px solid #ccc;
-}
-
-.baixo {
-  display: flex;
-  gap: 10px;
-  margin-top: 10px;
-}
-
-.pequenas img {
-  width: 150px;
-  height: 132px;
-  object-fit: cover;
-  border-radius: 6px;
-  border: 2px solid #ccc;
-  cursor: pointer;
-  transition: border 0.3s;
-}
-
-.pequenas img:hover {
-  border: 2px solid #1D2D51;
-}
-
 .info {
   margin: 2vw 0 0 4vw;
 }
 
 .info h1 {
+
   font-size: 30px;
   font-weight: 600;
   color: #000;
+  display: flex;
+  justify-content: left;
 }
 
 .info p {
@@ -191,10 +228,23 @@ onMounted(async () => {
   color: #000;
 }
 
+
+
+
+.info p {
+  color: #000;
+  font-family: Poppins;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+}
+
 .info p span.avaliar {
   color: #CDCDCD;
   font-size: 16px;
 }
+
 
 .info p span.mdi {
   color: #FFD700;
@@ -207,24 +257,45 @@ onMounted(async () => {
   color: #1D2D51;
 }
 
-.botoes {
+
+.info p.preco {
+  color: #000;
+  font-family: Poppins, sans-serif;
+  font-size: 35px;
+  font-style: normal;
+  font-weight: 600;
+
+  line-height: normal;
+}
+
+div.botoes {
+
   display: flex;
   gap: 30px;
 }
 
-.botoes button {
+div.botoes button {
+
   all: unset;
   flex-shrink: 0;
   border-radius: 8px;
   border: 2px solid #CDCDCD;
+
+
   background: #FFF;
+
   width: 229px;
   height: 55px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
+
   color: #CDCDCD;
+}
+
+.botoes button.carrinho {
+  font-size: 0.8vw;
 }
 
 .botoes button.carrinho span {
@@ -250,37 +321,168 @@ button.favorito {
   display: flex;
   align-items: center;
   margin: 2vw 0 10px 0;
+
+}
+
+.dono h2 {
+  font-weight: 100;
 }
 
 .dono h2 span {
-  font-weight: 600;
+  font-weight: 100;
 }
 
 button.mensagem {
   all: unset;
+  font-size: 18px;
+  color: #CDCDCD;
+  font-family: Poppins;
+
+}
+
+div.botoes button span {
+  margin: 0 10px 0 0;
+  font-size: 20px;
+}
+
+div.botoes button.alugar {
+  width: 229px;
+  height: 55px;
+  background-color: #1D2D51;
+  border: none;
+  color: #FFF;
+}
+
+div button.favorito {
+  all: unset;
+  margin: 20px 0 0 0;
+  color: #1D2D51;
+  text-decoration: underline;
+  font-size: 18px;
+}
+
+div button.favorito span {
+  font-size: 20px;
+}
+
+div p.foto {
+  width: 30px;
+  height: 30px;
+  flex-shrink: 0;
+  background-color: #1D2D51;
+  border-radius: 100px;
+  margin: 0 10px 0 0;
+}
+
+div.dono {
+  display: flex;
+  align-items: center;
+  margin: 2vw 0 10px 0;
+}
+
+div.dono h2 {
+  font-size: 16px;
+  color: #000;
+}
+
+div.dono h2 span {
+  color: #000;
+
+  font-family: Poppins;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+}
+
+div button.mensagem {
+  all: unset;
+  width: 24px;
+
   width: 229px;
   height: 55px;
   background-color: #1D2D51;
   color: #FFF;
   border-radius: 8px;
   display: flex;
+
   align-items: center;
   justify-content: center;
   font-size: 18px;
   margin-top: 20px;
 }
 
-.foto .foto {
-  width: 30px;
-  height: 30px;
-  border-radius: 100px;
-  margin-right: 10px;
-  flex-shrink: 0;
+button.mensagem span {}
+
+.foto {
+  max-width: 500px;
+  margin-right: 10vw;
 }
 
+.grande img {
+  justify-content: center;
+  align-items: center;
+  font-size: 18px;
+  margin: 20px 0 0 0;
+}
+
+div button.mensagem span {
+  margin: 0 0 0 10px;
+}
+
+.foto {
+  max-width: 500px;
+  margin: 0 10vw 0 0;
+}
+
+.grande img {
+  width: 100%;
+
+  width: 640px;
+  height: 540px;
+  border-radius: 10px;
+  border: 2px solid #ccc;
+}
+
+.baixo {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+  margin-top: 10px;
+  gap: 10px;
+
+}
+
+.pequenas img {
+  width: 150px;
+  height: 132px;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 2px solid #ccc;
+  cursor: pointer;
+  transition: border 0.3s;
+}
+
+.pequenas img:hover {
+  border: 2px solid #1D2D51;
+}
+
+
+
+
+
 .avaliacao {
-  margin: 5vw 5vw 0 5vw;
+  margin: 0 5vw;
+  margin-top: 5vw;
   border-bottom: solid 2px #d3d1d1;
+
+}
+
+.avaliacao h2 {
+  font-size: 25px;
+
+  font-weight: bold;
+  margin-bottom: 20px;
 }
 
 .carousel__wrapper {
@@ -289,28 +491,65 @@ button.mensagem {
   height: 330px;
 }
 
-.avaliacao-slide {
-  display: flex;
-  flex-direction: column;
-  align-items: start;
-  min-width: 530px;
+.carousel__slide {
+  color: black;
+  font-weight: bold;
+  margin-bottom: 20px;
+
 }
 
-.perfil {
+.avaliacao .carousel__wrapper {
+  padding: 20px;
+  width: 100%;
+  height: 330px;
+  display: block;
+}
+
+.avaliacao .carousel__wrapper ul {
   display: flex;
-  align-items: center;
+  list-style: none;
+  padding: 0;
+}
+
+.avaliacao .carousel__wrapper ul img {
+  margin-right: 20px;
+}
+
+.avaliacao .carousel__wrapper ul h2 {
+  font-size: 20px;
+  margin-top: 8px;
+}
+
+.avaliacao .carousel__wrapper .textos_Inferiores p:first-of-type {
   margin-bottom: 10px;
 }
 
-.perfil-img {
-  width: 50px;
-  height: 50px;
-  border-radius: 30px;
-  margin-right: 15px;
+.avaliacao .carousel__wrapper .textos_Inferiores p:last-of-type {
+  overflow: auto;
+  max-height: 100px;
 }
 
-.texto-avaliacao p {
-  margin: 0;
+.avaliacao .carousel__slide {
+
+  display: block;
+  min-width: 530px;
+}
+
+
+.carousel__slide:not(:last-of-type) {
+  padding: 0 40px;
+  border-right: 2px solid #d3d1d1;
+}
+
+
+
+.avaliacao .carousel__slide:not(:last-of-type) {
+  padding: 0 40px;
+  border-right: solid 2px #d3d1d1;
+}
+
+.avaliacao .carousel__slide:last-of-type {
+
+  padding-left: 40px;
 }
 </style>
-

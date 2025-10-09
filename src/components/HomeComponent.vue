@@ -192,16 +192,46 @@ const nextSlide = () => {
   carousel.value.next()
 }
 const produtos = reactive([
-  { id: 1, nome: 'barraca', preco: 30, estrelas: 3, likes: 20, liked: false },
-  { id: 2, nome: 'saco de dormir', preco: 25, estrelas: 5, likes: 4, liked: false },
-  { id: 3, nome: 'lanterna', preco: 10, estrelas: 4, likes: 14, liked: false },
-  { id: 4, nome: 'fogareiro', preco: 40, estrelas: 3, likes: 12, liked: false },
-  { id: 5, nome: 'mochila', preco: 50, estrelas: 5, likes: 10, liked: false },
-  { id: 6, nome: 'bota de trilha', preco: 80, estrelas: 4, likes: 18, liked: false },
-  { id: 7, nome: 'cantil', preco: 15, estrelas: 3, likes: 6, liked: false },
-  { id: 8, nome: 'corda de escalada', preco: 60, estrelas: 5, likes: 9, liked: false },
-  { id: 9, nome: 'jaqueta corta-vento', preco: 120, estrelas: 4, likes: 15, liked: false },
-  { id: 10, nome: 'kit primeiros socorros', preco: 35, estrelas: 5, likes: 25, liked: false },
+  {
+    id: 1, nome: 'Barraca', preco: 30, estrelas: 3, likes: 20, liked: false,
+    imagem: 'https://panoramahomecenter.vtexassets.com/arquivos/ids/5459704/Barraca_Iglu_4_Pessoas__MOR_74820901.png?v=638602752623900000' /* foto de barraca */
+  },
+  {
+    id: 2, nome: 'Saco de dormir', preco: 25, estrelas: 5, likes: 4, liked: false,
+    imagem: 'https://http2.mlstatic.com/D_NQ_NP_624878-CBT75865054864_042024-O.webp'
+  },
+  {
+    id: 3, nome: 'Lanterna', preco: 10, estrelas: 4, likes: 14, liked: false,
+    imagem: 'https://images.tcdn.com.br/img/img_prod/685751/lanterna_solar_recarregavel_bivolt_sq_3806_led_5w_31577_1_218932b95bddb353140c0943dca87f85_20250918024156.jpg'
+  },
+  {
+    id: 4, nome: 'Fogareiro', preco: 40, estrelas: 3, likes: 12, liked: false,
+    imagem: 'https://images.tcdn.com.br/img/img_prod/612392/fogao_fogareiro_p_churrasqueira_preto_inox_fog40_299_1_20180127195638.jpg'
+  },
+  {
+    id: 5, nome: 'Mochila', preco: 50, estrelas: 5, likes: 10, liked: false,
+    imagem: 'https://fila.vteximg.com.br/arquivos/ids/907374/F23L00166_1004.jpg?v=638337461096130000'
+  },
+  {
+    id: 6, nome: 'Bota de trilha', preco: 80, estrelas: 4, likes: 18, liked: false,
+    imagem: 'https://cdn.awsli.com.br/600x1000/2113/2113598/produto/215175405/1-z5lkvucxvj.png'
+  },
+  {
+    id: 7, nome: 'Cantil', preco: 15, estrelas: 3, likes: 6, liked: false,
+    imagem: 'https://www.lojaapolo.com.br/6262-large_default/cantil-inox-de-bolso-%C3%A0-prova-de-vazamentos-230ml.jpg'
+  },
+  {
+    id: 8, nome: 'Corda de escalada', preco: 60, estrelas: 5, likes: 9, liked: false,
+    imagem: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT8W79gc5lYTqm-WxJhX60nf8c3s1mbbepbOQ&s'
+  },
+  {
+    id: 9, nome: 'Jaqueta corta-vento', preco: 120, estrelas: 4, likes: 15, liked: false,
+    imagem: 'https://cdn.sistemawbuy.com.br/arquivos/f0853c897b6ec0b9ff1e212e78ca35d6/produtos/664df06b12e19/jaqueta-corta-vento-preta-basica-4mud-casual-1-frente-664df06b856ca.jpg'
+  },
+  {
+    id: 10, nome: 'Kit primeiros socorros', preco: 35, estrelas: 5, likes: 25, liked: false,
+    imagem: 'https://dvuc6j6nz56aj.cloudfront.net/Custom/Content/Products/13/23/13239_maleta-p-medicamento-28x18x18cm-5000p-plasnorthon_z1_637884018754629743.webp'
+  },
 ])
 function toggleLike(produto) {
   produto.liked = !produto.liked
@@ -232,11 +262,7 @@ const config1 = {
       </h1>
       <div class="container">
         <form action="" class="search-bar">
-          <input
-            type="text"
-            placeholder="Precisa de algo só por uns dias? Encontre aqui"
-            name="q"
-          />
+          <input type="text" placeholder="Precisa de algo só por uns dias? Encontre aqui" name="q" />
           <button type="submit"><span class="mdi mdi-magnify"></span></button>
         </form>
       </div>
@@ -348,32 +374,24 @@ const config1 = {
       <div class="carousel__wrapper">
         <Carousel ref="carousel" v-bind="config" :navigationEnabled="false">
           <Slide v-for="produto in produtos" :key="produto.id">
-            <div class="produto">
+            <div class="produtoHome">
               <button class="like-btn" @click="toggleLike(produto)">
                 <span :class="produto.liked ? 'mdi mdi-heart' : 'mdi mdi-heart-outline'"></span>
                 {{ produto.likes }}
               </button>
               <div class="imagem">
-                <img
-                  src="https://casadosoldador.com.br/files/products_images/9307/0053586-serra-marmore-4polegadas-4100nh3z-seco-110v-makita.jpg?1651750862"
-                  alt=""
-                />
+                <img :src="produto.imagem" />
               </div>
-
+              <h1>{{ produto.nome }}</h1>
               <div class="info">
-                <h1>{{ produto.nome }}</h1>
+
                 <p class="estrelasProduto">
-                  <span
-                    v-for="n in 5"
-                    :key="n"
-                    :class="[
-                      'mdi mdi-star',
-                      n <= produto.estrelas ? 'estrela-cheia' : 'estrela-vazia',
-                    ]"
-                  ></span>
+                  <span v-for="n in 5" :key="n" :class="[
+                    'mdi mdi-star',
+                    n <= produto.estrelas ? 'estrela-cheia' : 'estrela-vazia',
+                  ]"></span>
                 </p>
                 <strong>R${{ produto.preco.toFixed(2).replace('.', ',') }}/Dia</strong>
-                <p class="vezes">Em até 10 vezes {{ (produto.preco / 10).toFixed(2) }}</p>
               </div>
             </div>
           </Slide>
@@ -391,17 +409,17 @@ const config1 = {
         </Carousel>
       </div>
     </div>
-    <h1 class="titulo">Mais v<span>e</span>ndidos</h1>
+    <h1 class="titulo">Produtos</h1>
     <div class="produtosFundos">
       <div class="carousel__wrapper">
         <Carousel ref="carousel" v-bind="config" :navigationEnabled="false">
           <Slide v-for="produto in produtosBackend" :key="produto.id">
             <RouterLink :to="{ name: 'Produto', params: { id: produto.id } }" class="produto-link">
-              <div class="produto">
+              <div class="produtoHome">
                 <button class="like-btn" @click="toggleLike(produto)">
-                <span :class="produto.liked ? 'mdi mdi-heart' : 'mdi mdi-heart-outline'"></span>
-                {{ produto.likes }}
-              </button>
+                  <span :class="produto.liked ? 'mdi mdi-heart' : 'mdi mdi-heart-outline'"></span>
+                  {{ produto.likes }}
+                </button>
                 <div class="imagem" v-if="produto.midias.length > 0">
                   <img :src="produto.midias[0].file" alt="" />
                 </div>
@@ -415,9 +433,7 @@ const config1 = {
                     <span class="mdi mdi-star"></span>
                   </p>
                   <strong>R${{ produto.preco }}/Dia</strong>
-                  <p class="vezes">
-                    {{ produto.descricao }}
-                  </p>
+
                 </div>
               </div>
             </RouterLink>
@@ -438,7 +454,7 @@ const config1 = {
       </div>
     </div>
 
-    <button class="perto">Descubra produtos perto de você</button>
+    <RouterLink to="/mapa"><button class="perto">Descubra produtos perto de você</button></RouterLink>
   </section>
   <section class="passoApasso">
     <h1>Aqui está o seu guia para alugar corretamente.</h1>
@@ -515,12 +531,11 @@ const config1 = {
     </h3>
     <ul>
       <li>
-        <img src="https://picsum.photos/400/300" alt="" />
+        <img src="/images/renan.jpeg" alt="renan" />
         <h2>Renan</h2>
         <p>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis culpa rem laudantium
-          sunt ipsam iure repellat numquam, fugiat quo quae reiciendis minus praesentium id quidem
-          dolor natus esse, temporibus nisi?
+          Aluguei uma barraca para um fim de semana no parque estadual e foi tudo perfeito! Produto limpo, sem nenhum
+          defeito e super espaçoso. O dono ainda deu dicas de montagem. Melhor do que comprar uma só pra usar uma vez!
         </p>
         <div class="estrelas">
           <span class="mdi mdi-star"></span>
@@ -530,13 +545,12 @@ const config1 = {
           <span class="mdi mdi-star"></span>
         </div>
       </li>
-      <li>
-        <img src="https://picsum.photos/400/300" alt="" />
+      <li>h
+        <img src="/images/ricardo.jpeg" alt="ricardo" />
         <h2>Ricardo</h2>
         <p>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis culpa rem laudantium
-          sunt ipsam iure repellat numquam, fugiat quo quae reiciendis minus praesentium id quidem
-          dolor natus esse, temporibus nisi?
+          Precisava de uma furadeira potente só para um serviço rápido em casa e o Alugaê salvou! O equipamento estava
+          novo, funcionando perfeitamente e o processo de retirada foi simples e rápido. Economizei uma boa grana!
         </p>
         <div class="estrelas">
           <span class="mdi mdi-star"></span>
@@ -547,12 +561,12 @@ const config1 = {
         </div>
       </li>
       <li>
-        <img src="https://picsum.photos/400/300" alt="" />
+        <img src="/images/matue.jpeg" alt="mateus" />
         <h2>Mateus</h2>
         <p>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis culpa rem laudantium
-          sunt ipsam iure repellat numquam, fugiat quo quae reiciendis minus praesentium id quidem
-          dolor natus esse, temporibus nisi?
+          Usei a bike elétrica durante um final de semana no litoral e foi sensacional. Bateria durou bem e a
+          experiência
+          foi super divertida. Com certeza vou alugar de novo na próxima viagem!
         </p>
         <div class="estrelas">
           <span class="mdi mdi-star"></span>
@@ -564,8 +578,6 @@ const config1 = {
       </li>
     </ul>
   </section>
-
-  <CadastrarProdutoComponent/>
   <FooterComponent />
 </template>
 
@@ -885,8 +897,10 @@ section.categorias h1.principal {
 
 section.categorias div.cat {
   display: flex;
-  width: auto;          /* tira o 70% que deixava folga */
-  margin-bottom: 2vw;   /* diminui o espaço embaixo */
+  width: auto;
+  /* tira o 70% que deixava folga */
+  margin-bottom: 2vw;
+  /* diminui o espaço embaixo */
   gap: 0;
   justify-content: center;
   margin: 0 auto;
@@ -1004,9 +1018,9 @@ div.produtosFundos {
   justify-content: center;
 }
 
-div.produto {
+div.produtoHome {
   max-width: 18vw;
-  height: 45vh;
+  height: 49vh;
   width: 18vw;
   background: #fff;
   border-radius: 10px;
@@ -1017,7 +1031,7 @@ div.produto {
 }
 
 /* Imagem */
-div.produto img {
+div.produtoHome img {
   width: 85%;
   height: 180px;
   object-fit: cover;
@@ -1026,7 +1040,7 @@ div.produto img {
 }
 
 /* Nome do produto */
-div.produto h1 {
+div.produtoHome h1 {
   font-size: 28px;
   font-weight: 600;
   margin: 10px 0 1vw 1vw;
@@ -1034,36 +1048,36 @@ div.produto h1 {
 }
 
 /* Info preço e estrelas */
-div.produto .info p,
-div.produto .info strong {
+div.produtoHome .info p,
+div.produtoHome .info strong {
   margin: 3px 0;
   padding: 0;
 }
 
-div.produto .info {
+div.produtoHome .info {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   margin: 1vw 0 0 1vw;
 }
 
-div.produto .info p span {
+div.produtoHome .info p span {
   font-size: 23px;
 }
 
-div.produto .info strong {
+div.produtoHome .info strong {
   font-size: 22px;
   margin: 0.5vw 0;
 }
 
-div.produto p.vezes {
+div.produtoHome p.vezes {
   margin: 0.3vw 0;
   font-size: 16px;
   color: #bebebe;
   font-family: poppins, sans-serif;
 }
 
-div.produto span {
+div.produtoHome span {
   color: #ffd700;
 }
 
@@ -1074,7 +1088,7 @@ div.produto span {
   --vc-nav-size: 30px;
 }
 
-div.produto .like-btn {
+div.produtoHome .like-btn {
   position: absolute;
   top: 1.3vw;
   right: 1vw;
@@ -1094,7 +1108,7 @@ div.produto .like-btn {
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
-div.produto .like-btn span {
+div.produtoHome .like-btn span {
   color: white;
 }
 
@@ -1243,13 +1257,15 @@ ul li.passo1 .esquerda button {
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-bottom: 2vw;
 }
 
 ul li.passo1 .esquerda h1 {
   font-size: 2rem;
   color: #000;
-  margin: 0.5vw 0 0.5vw 0;
-  line-height: 1.7vw;
+  margin: 0.5vw 0 1vw 0;
+  line-height: 2.8vw;
+  text-align: left;
 }
 
 ul li.passo1 .esquerda h2 {
@@ -1316,6 +1332,7 @@ ul li.passo2 .direita h1 {
   color: #000;
   margin: 0.5vw 0;
   line-height: 1.5;
+  text-align: left;
 }
 
 ul li.passo2 .direita h2 {
@@ -1355,13 +1372,15 @@ ul li.passo3 .esquerda button {
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-bottom: 2vw;
 }
 
 ul li.passo3 .esquerda h1 {
   font-size: 2rem;
   color: #000;
   margin: 0.5vw 0 0.5vw 0;
-  line-height: 1.7vw;
+  line-height: 2.8vw;
+  text-align: left;
 }
 
 ul li.passo3 .esquerda h2 {
@@ -1427,6 +1446,7 @@ ul li.passo4 .direita h1 {
   color: #000;
   margin: 0.5vw 0;
   line-height: 1.5;
+  text-align: left;
 }
 
 ul li.passo4 .direita h2 {

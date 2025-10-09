@@ -2,6 +2,7 @@
 import 'vue3-carousel/carousel.css'
 import { Carousel, Slide, Navigation } from 'vue3-carousel'
 import { ref, reactive, computed, onMounted } from 'vue'
+import HeaderComponent from './HeaderComponent.vue'
 
 
 
@@ -26,43 +27,51 @@ const avaliacoes = [
   {
     id: 1,
     nome: 'Pietro',
+    foto: 'https://pbs.twimg.com/media/GDLS7FPXQAA6gR_.jpg',
     texto:
       'Não sabia sobre esse site, depois que conheci ele consegui fazer minhas coisas sem precisar gastar muito',
   },
   {
     id: 2,
     nome: 'Mariana',
+    foto: 'https://i.pinimg.com/736x/eb/94/5b/eb945ba0c7bf9030343ddd22e564f3ca.jpg',
     texto: 'Consegui alugar o que eu precisava de forma rápida e prática, super recomendo!',
   },
   {
     id: 3,
     nome: 'Lucas',
+    foto: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR9OBxkO5WT7_RDwRh1pcLPXxaAxQc7n_kcYQ&s',
     texto: 'Achei muito útil, economizei dinheiro e ainda conheci um serviço confiável.',
   },
   {
     id: 4,
     nome: 'Beatriz',
+    foto: 'https://wallpapers.com/images/hd/pessoa-aleatoria-1000-x-1500-8xtpcwzjlw7vbi63.jpg',
     texto: 'Experiência excelente, o atendimento foi ótimo e o processo bem simples.',
   },
   {
     id: 5,
     nome: 'Rafael',
+    foto: 'https://i.pinimg.com/736x/56/8c/91/568c915c538eb0fe5ebf879487007772.jpg',
     texto:
       'Já usei várias vezes e sempre deu tudo certo, muito melhor do que comprar algo que vou usar pouco.',
   },
   {
     id: 6,
     nome: 'Carolina',
+    foto: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcScxuH4rMlvEwcBEtRts5I11DPYgbrPTiwU8uJWGa177Go8A6O3pzw8rYDMIdNv8lJJs70&usqp=CAU',
     texto: 'Adorei a ideia, é sustentável e ajuda bastante no dia a dia.',
   },
   {
     id: 7,
     nome: 'Fernanda',
+    foto: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSdeJFUBldNxvyJoOfQFf2SZkEJx3uSK3KskvDr4E8TnLV4fSCqCpC7mOIVRkdudRfn6l4&usqp=CAU',
     texto: 'Me surpreendi com a qualidade do serviço, certamente vou usar de novo.',
   },
   {
     id: 8,
     nome: 'João',
+    foto: 'https://i.pinimg.com/564x/6b/8b/50/6b8b503e0f33b09bd9f39e38e2e4a28a.jpg',
     texto: 'Muito prático, facilitou bastante minha vida em um momento que eu precisava.',
   },
 ]
@@ -427,6 +436,7 @@ onMounted(async () => {
 </script>
 
 <template>
+  <HeaderComponent />
   <section class="infos">
     <div class="p1">
       <div class="superior">
@@ -462,94 +472,54 @@ onMounted(async () => {
     <div class="p2">
       <h2>Sobre {{ usuario.username }}</h2>
       <p>
-        <span class="mdi mdi-notebook"></span>Onde estudei: Escola Municipal Dr Sadalla Amin Ghanem
+        <span class="mdi mdi-notebook"></span>Onde estudei: Escola Municipal Professora Virginia Soares
       </p>
-      <p><span class="mdi mdi-briefcase-account-outline"></span>Trabalho: Garoto de programa</p>
-      <p class="off"><span class="mdi mdi-heart"></span>Curto muito: pintar boobie goods</p>
+      <p><span class="mdi mdi-briefcase-account-outline"></span>Trabalho: Web Developer</p>
+      <p class="off"><span class="mdi mdi-heart"></span>Curto muito: viajar</p>
       <p>
-        Lorem ipsum dolor sit, amet consectetur adipisicing elit. Sed hic iste id recusandae!
-        Eveniet, repudiandae aliquid earum fugiat adipisci cupiditate placeat enim ex doloremque
-        culpa incidunt optio molestiae quaerat accusantium!
+         Sou uma pessoa curiosa e sempre em busca de aprender coisas novas.  
+  Gosto de transformar ideias em realidade através da tecnologia, e acredito que cada projeto é uma oportunidade de evoluir.  
+  Fora do computador, gosto de viajar, conhecer novas culturas e aproveitar o tempo com quem me inspira a ser melhor.
       </p>
     </div>
   </section>
 
   <section class="avaliacao">
-    <h2>Avaliações de "Nome da pessoa"</h2>
+    <h2>Avaliações de {{ usuario.username }}</h2>
 
     <div class="carousel__wrapper">
       <Carousel v-bind="config">
-        <Slide v-for="avaliacao in avaliacoes" :key="avaliacao.id">
-          <ul>
-            <li>
-              <img
-                src="https://s2.glbimg.com/CZ7vt10tkQki58E3X37KbSrW8PA=/620x430/e.glbimg.com/og/ed/f/original/2022/04/11/dall_e_ia.png"
-                alt="Foto de Perfil"
-                style="height: 50px; width: 50px; border-radius: 30px"
-              />
-            </li>
-            <li>
-              <h2>Nome pessoa</h2>
-            </li>
-          </ul>
-          <div class="textos_Inferiores">
-            <p>Estrelinhas Obs: Ver depois!</p>
-            <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Asperiores facilis officia
-              iusto. Quod animi voluptates rerum? Exercitationem ut dolores ipsum modi at possimus
-              adipisci officia rerum cupiditate rem, aliquam molestiae.
-            </p>
+  <Slide v-for="avaliacao in avaliacoes" :key="avaliacao.id">
+    <ul>
+      <li>
+        <img
+          :src="avaliacao.foto"
+          :alt="`Foto de ${avaliacao.nome}`"
+          style="height: 50px; width: 50px; border-radius: 30px"
+        />
+      </li>
+      <li>
+        <h2>{{ avaliacao.nome }}</h2>
+      </li>
+    </ul>
+    <div class="textos_Inferiores">
+      <div class="estrelas1">
+            <span class="mdi mdi-star"></span>
+            <span class="mdi mdi-star"></span>
+            <span class="mdi mdi-star"></span>
+            <span class="mdi mdi-star"></span>
+            <span class="mdi mdi-star"></span>
           </div>
-        </Slide>
-
-        <template #addons>
-          <Navigation />
-        </template>
-      </Carousel>
+      <p>{{ avaliacao.texto }}</p>
     </div>
-  </section>
-
-  <section class="produto_Usuario">
-    <h2>Produtos de "Nome da pessoa"</h2>
-    <div class="carousel2">
-      <Carousel v-bind="configMulti1" :mouseDrag="dragExterno">
-        <Slide v-for="produto in produtos" v-bind:key="produto.id">
-          <div class="produto">
-            <button class="like-btn" @click="toggleLike(produto)">
-              <span :class="produto.liked ? 'mdi mdi-heart' : 'mdi mdi-heart-outline'"></span>
-              {{ produto.likes }}
-            </button>
-
-            <div class="imagem" @mouseenter="dragExterno = false" @mouseleave="dragExterno = true">
-              <Carousel v-bind="configSingle1" class="carroProduto">
-                <Slide v-for="image in imagesSingle1" :key="image.id">
-                  <img :src="image.url" alt="image" />
-                </Slide>
-                <template #addons>
-                  <Navigation />
-                </template>
-              </Carousel>
-            </div>
-
-            <h1>{{ produto.nome }}</h1>
-
-            <div class="info">
-              <strong>R${{ produto.preco }}/dia</strong>
-              <p>{{ produto.estrelas }} <span class="mdi mdi-star"></span></p>
-            </div>
-            <button class="alugar">Alugar</button>
-          </div>
-        </Slide>
-        <template #addons>
-          <Navigation />
-        </template>
-      </Carousel>
+  </Slide>
+</Carousel>
     </div>
   </section>
   <section class="denuncia">
     <button @click="abrirDenuncia">
       <span class="mdi mdi-flag"></span>
-      Denunciar "Nome da Pessoa"
+      Denunciar {{ usuario.username }}
     </button>
   </section>
   <div v-if="mostrarDenuncia" class="modal">
@@ -818,6 +788,9 @@ onMounted(async () => {
 </template>
 
 <style lang="scss">
+.estrelas1 {
+  justify-content: left;
+}
 .infos {
   display: flex;
   gap: 9vw;

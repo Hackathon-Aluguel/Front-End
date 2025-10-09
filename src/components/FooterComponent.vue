@@ -15,7 +15,6 @@
                 <li><a href="#">Home</a></li>
                 <li><a href="#">Contato</a></li>
                 <li><a href="#">Sobre</a></li>
-                <li><a href="#">Carrinho</a></li>
             </ul>
             <p>Continue por dentro:</p>
             <ul class="icons">
@@ -143,9 +142,7 @@ footer .circle {
 
 
 footer h1 span,
-footer p span,
-.nav li:first-child a,
-.icons li:first-child span {
+footer p span{
     color: #244E8A;
 }
 
