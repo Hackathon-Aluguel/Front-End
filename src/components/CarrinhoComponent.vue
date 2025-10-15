@@ -283,7 +283,7 @@ ul {
 
 div.promocao {
   background-color: #244e84;
-  height: 53vh;
+  height: 58vh;
   width: 23vw;
   border-radius: 15px;
   margin: 4vw 4vw 0 0vw;

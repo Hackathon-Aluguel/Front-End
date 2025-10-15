@@ -96,7 +96,7 @@ const fotoPadrao = 'https://via.placeholder.com/150';
 // função para carregar os dados do dono
 const carregarDono = async (usuarioId) => {
   try {
-    const { data } = await axios.get(http://127.0.0.1:8000/api/usuarios/${usuarioId}/)
+    const { data } = await axios.get(`http://127.0.0.1:8000/api/usuarios/${usuarioId}/`)
     dono.value = data
   } catch (err) {
     console.error('Erro ao carregar dados do dono:', err)
@@ -106,7 +106,7 @@ const carregarDono = async (usuarioId) => {
 // Carregar produto do backend
 onMounted(async () => {
   try {
-    const { data } = await axios.get(http://127.0.0.1:8000/api/itens/${route.params.id}/)
+    const { data } = await axios.get(`http://127.0.0.1:8000/api/itens/${route.params.id}/`)
     produto.value = Array.isArray(data) ? data[0] : data
 
     if (produto.value.usuario) {
@@ -150,7 +150,7 @@ onMounted(async () => {
 
       <button class="favorito"><span class="mdi mdi-heart-outline"></span>Adicionar aos favoritos</button>
 
-      <RouterLink :to="/perfil/${dono.id}">
+      <RouterLink :to="`/perfil/${dono.id}`">
         <div class="dono" v-if="dono && Object.keys(dono).length">
           <p class="foto">
             <img :src="dono.imagem || fotoPadrao" alt="Foto do dono" />
@@ -180,7 +180,7 @@ onMounted(async () => {
       <li>
         <img
           :src="avaliacao.foto"
-          :alt="Foto de ${avaliacao.nome}"
+          :alt="`Foto de ${avaliacao.nome}`"
           style="height: 50px; width: 50px; border-radius: 30px"
         />
       </li>
